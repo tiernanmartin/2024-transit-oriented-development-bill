@@ -4,7 +4,9 @@
 \PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
 %
 \documentclass[
-]{agujournal2019}
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
 
 \usepackage{amsmath,amssymb}
 \usepackage{iftex}
@@ -109,11 +111,7 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
-\usepackage{url} %this package should fix any errors with URLs in refs.
-\usepackage{lineno}
-\usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
-\usepackage{soul}
-\linenumbers
+\KOMAoption{captions}{tableheading}
 \makeatletter
 \@ifpackageloaded{caption}{}{\usepackage{caption}}
 \AtBeginDocument{%
@@ -174,19 +172,22 @@ Region, Washington State 2024 Legislative Session},
   urlcolor={Blue},
   pdfcreator={LaTeX via pandoc}}
 
-\journalname{Futurewise}
-
-\draftfalse
-
-\begin{document}
 \title{Unlocking Smart Growth: The Effects of Proposed Transit-Oriented
 Development Laws on the Puget Sound Region}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Exploring the Impact of the Community and Transit-Oriented
+Housing Development Bills (HB 2160/SB 6024) Across Washington State's
+Central Puget Sound Region}
+\author{Tiernan Martin}
+\date{2024-02-08}
 
-\authors{Tiernan Martin\affil{1}}
-\affiliation{1}{Futurewise, }
-\correspondingauthor{Tiernan Martin}{tiernan@futurewise.org}
-
-
+\begin{document}
+\maketitle
 \begin{abstract}
 During the 2024 legislative session in Washington State, two bills were
 introduced in both the House and the Senate aimed at promoting community
@@ -201,18 +202,6 @@ Specifically, for land that is developable and presently zoned for lower
 development capacity than what the bills propose, the average increase
 in capacity is projected to be +1.35 in terms of floor area ratio (FAR).
 \end{abstract}
-
-\section*{Plain Language Summary}
-In 2024, the Washington State Legislature considered two new laws aimed
-at making it easier to build homes near public transit areas, like light
-rail stations and bus rapid transit stops. These laws would require
-cities to allow taller, denser buildings in these areas. Our study
-looked at how much more development could happen under these new laws
-compared to what's currently allowed. We found that, if these laws pass,
-there would be a lot more room for building new homes and apartments
-near transit stops.
-
-
 
 \section{Introduction}\label{introduction}
 
@@ -341,14 +330,13 @@ on La Palma.
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
-\vspace{1em}
-
 \bibitem[\citeproctext]{ref-marrero2019}
-Marrero, J., García, A., Berrocoso, M., Llinares, Á., Rodríguez-Losada,
-A., \& Ortiz, R. (2019). Strategies for the development of volcanic
-hazard maps in monogenetic volcanic fields: The example of {La} {Palma}
-({Canary} {Islands}). \emph{Journal of Applied Volcanology}, \emph{8}.
-\url{https://doi.org/10.1186/s13617-019-0085-5}
+Marrero, José, Alicia García, Manuel Berrocoso, Ángeles Llinares,
+Antonio Rodríguez-Losada, and R. Ortiz. 2019. {``Strategies for the
+Development of Volcanic Hazard Maps in Monogenetic Volcanic Fields: The
+Example of {La} {Palma} ({Canary} {Islands}).''} \emph{Journal of
+Applied Volcanology} 8 (July).
+\url{https://doi.org/10.1186/s13617-019-0085-5}.
 
 \end{CSLReferences}
 
