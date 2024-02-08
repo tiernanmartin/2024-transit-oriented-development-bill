@@ -1,0 +1,99 @@
+---
+title: "Unlocking Smart Growth: The Effects of Proposed Transit-Oriented Development Laws on the Puget Sound Region"
+subtitle: "Exploring the Impact of the Community and Transit-Oriented Housing Development Bills HB 2160 and SB 6024 Across Washington State's Central Puget Sound Region"
+author:
+  - name: Tiernan Martin
+    corresponding: true
+    email: tiernan@futurewise.org
+    roles:
+      - Investigation
+      - Project administration
+      - Software
+      - Visualization
+    affiliations:
+      - Futurewise
+keywords:
+  - Transit-Oriented Development
+  - Puget Sound Region
+  - Washington State 2024 Legislative Session
+abstract: |
+  During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, HB 2160 and SB 6024, propose mandating cities to permit developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial enhancement in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and presently zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be +1.35 in terms of floor area ratio (FAR).
+ 
+plain-language-summary: |
+  In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
+key-points:
+  - "Washington State Legislature's HB 2160 and SB 6024 (2024 legislative session) would substantially increase development capacity for most of the land within walking distance of high-capacity transit stops"
+date: last-modified
+bibliography: references.bib
+citation:
+  container-title: Futurewise
+number-sections: true
+---
+
+```{r}
+#| label: setup
+#| output: false
+library(tidyverse)
+library(tidycensus)
+library(glue)
+library(scales)
+```
+
+
+## Acknowledgments {.unnumbered}
+
+The authors received no financial support for the research, authorship, and/or publication of this article.
+
+Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing their agency's own [analysis](https://arcg.is/0SSvK10) of HB 2160/SB 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
+
+## Introduction
+
+![Central Puget Sound \| Photo courtesy of [Clemens Vasters from Viersen, Germany](#0), [CC BY 2.0](#0), via Wikimedia Commons](images/seattle-aerial-wikicommons.jpg){fig-alt="An aerial photo of Mercer Island, Seattle, and Kitsap County" fig-align="center"}
+
+
+```{r}
+#| label: puget-sound-population
+#| output: false
+
+# Define the counties and state
+counties <- c("King", "Pierce", "Snohomish", "Kitsap")
+state <- "WA" # Washington state abbreviation
+
+# Retrieve population data for 2010 using decennial census
+pop_2010 <- get_decennial(geography = "county", variables = "P001001", 
+                          state = state, county = counties, year = 2010)
+
+# Retrieve ACS population data for 2022
+pop_2022 <- get_acs(geography = "county", variables = "B01003_001", 
+                    state = state, county = counties, year = 2022, survey = "acs1")
+
+# Calculate total population for each year
+total_pop_2010 <- sum(pop_2010$value)
+total_pop_2022 <- sum(pop_2022$estimate)
+
+# Calculate the change in population
+pop_change <- total_pop_2022 - total_pop_2010
+
+pop_change_pct <- round(digits = 2, pop_change / total_pop_2010)
+
+pop_change_text <- glue("{comma(pop_change)} people ({percent(pop_change_pct)})")
+
+```
+
+
+The Puget Sound metropolitan region attracts jobs and residents at some of the highest rates in North America. Between 2010 and 2022, the region's population grew by `r pop_change_text`.[^1]
+
+## Data & Methods {#sec-data-methods}
+
+## Results
+
+## Discussion
+
+## Conclusion
+
+## Notes {.unnumbered}
+
+[^1]: Population statistic calculated by the author based on analysis of data from the US 2010 Decennial Census and the US 2022 American Community Survey.
+
+
+## References {.unnumbered}
