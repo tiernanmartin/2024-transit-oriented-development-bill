@@ -14,7 +14,7 @@ author:
       - Futurewise
 keywords:
   - Transit-Oriented Development
-  - Puget Sound region
+  - Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
   During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, HB 2160 and SB 6024, propose mandating cities to permit developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial enhancement in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and presently zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be +1.35 in terms of floor area ratio (FAR).
