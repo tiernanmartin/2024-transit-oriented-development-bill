@@ -1,5 +1,5 @@
 ---
-title: "Enhancing Urban Growth: The Effect of Proposed Transit-Oriented Development Laws in the Puget Sound Region"
+title: "Unlocking Smart Growth: The Effects of Proposed Transit-Oriented Development Laws on the Puget Sound Region"
 subtitle: "Exploring the Impact of the Community and Transit-Oriented Housing Development Bills (HB 2160/SB 6024) Across Washington State's Central Puget Sound Region"
 author:
   - name: Tiernan Martin
@@ -101,6 +101,7 @@ La Palma is one of the west most islands in the Volcanic Archipelago of the Cana
 ## Discussion
 ## Conclusion
 
+## Acknowledgments
 ## References {.unnumbered}
 
 :::{#refs}
