@@ -23,8 +23,8 @@ and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
 
 
 <title-group>
-<article-title>Unlocking Smart Growth: The Effect of Proposed
-Transit-Oriented Development Laws in the Puget Sound
+<article-title>Unlocking Smart Growth: The Effects of Proposed
+Transit-Oriented Development Laws on the Puget Sound
 Region</article-title>
 <subtitle>Exploring the Impact of the Community and Transit-Oriented
 Housing Development Bills (HB 2160/SB 6024) Across Washington State’s
@@ -229,6 +229,9 @@ in capacity is projected to be +1.35 in terms of floor area ratio
 <sec id="conclusion">
   <title>5 Conclusion</title>
 </sec>
+<sec id="acknowledgments">
+  <title>6 Acknowledgments</title>
+</sec>
 </body>
 
 <back>
@@ -259,8 +262,8 @@ in capacity is projected to be +1.35 in terms of floor area ratio
 <sub-article article-type="notebook" id="nb-6-nb-article">
 <front-stub>
 <title-group>
-<article-title>Unlocking Smart Growth: The Effect of Proposed
-Transit-Oriented Development Laws in the Puget Sound
+<article-title>Unlocking Smart Growth: The Effects of Proposed
+Transit-Oriented Development Laws on the Puget Sound
 Region</article-title>
 <subtitle>Exploring the Impact of the Community and Transit-Oriented
 Housing Development Bills (HB 2160/SB 6024) Across Washington State’s
@@ -464,6 +467,9 @@ avg_years_between_eruptions</code>
 </sec>
 <sec id="conclusion-nb-article">
   <title>5 Conclusion</title>
+</sec>
+<sec id="acknowledgments-nb-article">
+  <title>6 Acknowledgments</title>
 </sec>
 </body>
 
