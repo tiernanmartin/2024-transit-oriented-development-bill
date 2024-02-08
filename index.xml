@@ -9,7 +9,7 @@ and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
 <journal-id></journal-id>
 
 <journal-title-group>
-<journal-title>Earth and Space Science</journal-title>
+<journal-title>Futurewise</journal-title>
 </journal-title-group>
 <issn></issn>
 
@@ -23,19 +23,23 @@ and Interchange DTD v1.2 20190208//EN" "JATS-archivearticle1.dtd">
 
 
 <title-group>
-<article-title>La Palma Earthquakes</article-title>
+<article-title>Enhancing Urban Growth: The Effect of Proposed
+Transit-Oriented Development Laws in the Puget Sound
+Region</article-title>
+<subtitle>Exploring the Impact of the Community and Transit-Oriented
+Housing Development Bills (HB 2160/SB 6024) Across Washington State’s
+Central Puget Sound Region</subtitle>
 </title-group>
 
 <contrib-group>
 <contrib contrib-type="author" corresp="yes">
-<contrib-id contrib-id-type="orcid">0000-0002-0760-5497</contrib-id>
 <name>
-<surname>Purves</surname>
-<given-names>Steve</given-names>
+<surname>Martin</surname>
+<given-names>Tiernan</given-names>
 </name>
-<string-name>Steve Purves</string-name>
+<string-name>Tiernan Martin</string-name>
 
-<email>steve@curvenote.com</email>
+<email>tiernan@futurewise.org</email>
 <role vocab="https://credit.niso.org" vocab-term="investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
 <role vocab="https://credit.niso.org" vocab-term="project
 administration" vocab-term-identifier="https://credit.niso.org/contributor-roles/project-administration/">Project
@@ -45,20 +49,10 @@ administration</role>
 <xref ref-type="aff" rid="aff-1">a</xref>
 <xref ref-type="corresp" rid="cor-1">&#x002A;</xref>
 </contrib>
-<contrib contrib-type="author">
-<contrib-id contrib-id-type="orcid">0000-0002-7859-8394</contrib-id>
-<name>
-<surname>Cockett</surname>
-<given-names>Rowan</given-names>
-</name>
-<string-name>Rowan Cockett</string-name>
-
-<xref ref-type="aff" rid="aff-1">a</xref>
-</contrib>
 </contrib-group>
 <aff id="aff-1">
 <institution-wrap>
-<institution>Curvenote</institution>
+<institution>Futurewise</institution>
 </institution-wrap>
 
 
@@ -69,7 +63,7 @@ administration</role>
 
 </aff>
 <author-notes>
-<corresp id="cor-1">steve@curvenote.com</corresp>
+<corresp id="cor-1">tiernan@futurewise.org</corresp>
 </author-notes>
 
 <pub-date date-type="pub" publication-format="electronic" iso-8601-date="2024-02-08">
@@ -88,15 +82,24 @@ administration</role>
 
 
 <abstract>
-<p>In September 2021, a significant jump in seismic activity on the
-island of La Palma (Canary Islands, Spain) signaled the start of a
-volcanic crisis that still continues at the time of writing. Earthquake
-data is continually collected and published by the Instituto Geográphico
-Nacional (IGN). …</p>
+<p>During the 2024 legislative session in Washington State, two bills
+were introduced in both the House and the Senate aimed at promoting
+community and transit-oriented housing development. These bills, HB 2160
+and SB 6024, propose mandating cities to permit developments of a
+specific scale within certain distances from high-capacity transit
+stops. This study evaluates the extent to which the proposed increases
+in development capacity under these bills exceed current allowances. The
+findings indicate a substantial enhancement in development potential for
+the majority of areas within walking distance of transit stops.
+Specifically, for land that is developable and presently zoned for lower
+development capacity than what the bills propose, the average increase
+in capacity is projected to be +1.35 in terms of floor area ratio
+(FAR).</p>
 </abstract>
 <kwd-group kwd-group-type="author">
-<kwd>La Palma</kwd>
-<kwd>Earthquakes</kwd>
+<kwd>Transit-Oriented Development</kwd>
+<kwd>Puget Sound region</kwd>
+<kwd>Washington State 2024 Legislative Session</kwd>
 </kwd-group>
 
 
@@ -217,8 +220,14 @@ Nacional (IGN). …</p>
 <sec id="sec-data-methods">
   <title>2 Data &amp; Methods</title>
 </sec>
+<sec id="results">
+  <title>3 Results</title>
+</sec>
+<sec id="discussion">
+  <title>4 Discussion</title>
+</sec>
 <sec id="conclusion">
-  <title>3 Conclusion</title>
+  <title>5 Conclusion</title>
 </sec>
 </body>
 
@@ -250,18 +259,22 @@ Nacional (IGN). …</p>
 <sub-article article-type="notebook" id="nb-8-nb-article">
 <front-stub>
 <title-group>
-<article-title>La Palma Earthquakes</article-title>
+<article-title>Enhancing Urban Growth: The Effect of Proposed
+Transit-Oriented Development Laws in the Puget Sound
+Region</article-title>
+<subtitle>Exploring the Impact of the Community and Transit-Oriented
+Housing Development Bills (HB 2160/SB 6024) Across Washington State’s
+Central Puget Sound Region</subtitle>
 </title-group>
 <contrib-group>
 <contrib contrib-type="author" corresp="yes">
-<contrib-id contrib-id-type="orcid">0000-0002-0760-5497</contrib-id>
 <name>
-<surname>Purves</surname>
-<given-names>Steve</given-names>
+<surname>Martin</surname>
+<given-names>Tiernan</given-names>
 </name>
-<string-name>Steve Purves</string-name>
+<string-name>Tiernan Martin</string-name>
 
-<email>steve@curvenote.com</email>
+<email>tiernan@futurewise.org</email>
 <role vocab="https://credit.niso.org" vocab-term="investigation" vocab-term-identifier="https://credit.niso.org/contributor-roles/investigation/">Investigation</role>
 <role vocab="https://credit.niso.org" vocab-term="project
 administration" vocab-term-identifier="https://credit.niso.org/contributor-roles/project-administration/">Project
@@ -271,20 +284,10 @@ administration</role>
 <xref ref-type="aff" rid="aff-1-nb-article">a</xref>
 <xref ref-type="corresp" rid="cor-1-nb-article">&#x002A;</xref>
 </contrib>
-<contrib contrib-type="author">
-<contrib-id contrib-id-type="orcid">0000-0002-7859-8394</contrib-id>
-<name>
-<surname>Cockett</surname>
-<given-names>Rowan</given-names>
-</name>
-<string-name>Rowan Cockett</string-name>
-
-<xref ref-type="aff" rid="aff-1-nb-article">a</xref>
-</contrib>
 </contrib-group>
 <aff id="aff-1-nb-article">
 <institution-wrap>
-<institution>Curvenote</institution>
+<institution>Futurewise</institution>
 </institution-wrap>
 
 
@@ -295,14 +298,22 @@ administration</role>
 
 </aff>
 <author-notes>
-<corresp id="cor-1-nb-article">steve@curvenote.com</corresp>
+<corresp id="cor-1-nb-article">tiernan@futurewise.org</corresp>
 </author-notes>
 <abstract>
-<p>In September 2021, a significant jump in seismic activity on the
-island of La Palma (Canary Islands, Spain) signaled the start of a
-volcanic crisis that still continues at the time of writing. Earthquake
-data is continually collected and published by the Instituto Geográphico
-Nacional (IGN). …</p>
+<p>During the 2024 legislative session in Washington State, two bills
+were introduced in both the House and the Senate aimed at promoting
+community and transit-oriented housing development. These bills, HB 2160
+and SB 6024, propose mandating cities to permit developments of a
+specific scale within certain distances from high-capacity transit
+stops. This study evaluates the extent to which the proposed increases
+in development capacity under these bills exceed current allowances. The
+findings indicate a substantial enhancement in development potential for
+the majority of areas within walking distance of transit stops.
+Specifically, for land that is developable and presently zoned for lower
+development capacity than what the bills propose, the average increase
+in capacity is projected to be +1.35 in terms of floor area ratio
+(FAR).</p>
 </abstract>
 </front-stub>
 
@@ -445,8 +456,14 @@ avg_years_between_eruptions</code>
 <sec id="sec-data-methods-nb-article">
   <title>2 Data &amp; Methods</title>
 </sec>
+<sec id="results-nb-article">
+  <title>3 Results</title>
+</sec>
+<sec id="discussion-nb-article">
+  <title>4 Discussion</title>
+</sec>
 <sec id="conclusion-nb-article">
-  <title>3 Conclusion</title>
+  <title>5 Conclusion</title>
 </sec>
 </body>
 
