@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
     <meta name="author" content="Tiernan Martin">
+    <meta name="author" content="Alex Brennan">
     <meta name="dcterms.date" content="2024-02-08">
     <meta name="keywords" content="Transit-Oriented Development, Puget Sound Region, Washington State 2024 Legislative Session">
 
@@ -173,12 +174,14 @@
 ">
 <meta name="citation_keywords" content="Transit-Oriented Development,Puget Sound Region,Washington State 2024 Legislative Session">
 <meta name="citation_author" content="Tiernan Martin">
+<meta name="citation_author" content="Alex Brennan">
 <meta name="citation_publication_date" content="2024-02-08">
 <meta name="citation_cover_date" content="2024-02-08">
 <meta name="citation_year" content="2024">
 <meta name="citation_online_date" content="2024-02-08">
 <meta name="citation_language" content="en">
 <meta name="citation_journal_title" content="Futurewise">
+<meta name="citation_reference" content="citation_title=Regional housing strategy: 2023 monitoring report;,citation_author=undefined Puget Sound Regional Council;,citation_publication_date=2023-11;,citation_cover_date=2023-11;,citation_year=2023;,citation_fulltext_html_url=https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf;">
 </head>
 
   <body class="quarto-notebook">
@@ -201,11 +204,19 @@
     <div class="quarto-title-meta-container">
       <div class="quarto-title-meta-column-start">
             <div class="quarto-title-meta-author">
-          <div class="quarto-title-meta-heading">Author</div>
+          <div class="quarto-title-meta-heading">Authors</div>
           <div class="quarto-title-meta-heading">Affiliation</div>
           
                 <div class="quarto-title-meta-contents">
             <p class="author">Tiernan Martin <a href="mailto:tiernan@futurewise.org" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
+          </div>
+                <div class="quarto-title-meta-contents">
+                    <p class="affiliation">
+                        Futurewise
+                      </p>
+                  </div>
+                      <div class="quarto-title-meta-contents">
+            <p class="author">Alex Brennan <a href="mailto:alex@futurewise.org" class="quarto-title-author-email"><i class="bi bi-envelope"></i></a> </p>
           </div>
                 <div class="quarto-title-meta-contents">
                     <p class="affiliation">
@@ -259,7 +270,6 @@
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5</span> Conclusion</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes">Notes</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
   </ul>
 </nav>
@@ -297,6 +307,29 @@ The following object is masked from 'package:readr':
 
     col_factor</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'janitor'
+
+The following objects are masked from 'package:stats':
+
+    chisq.test, fisher.test</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>here() starts at C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill</code></pre>
+</div>
+</div></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pugetsound_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>outside_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>pugetsound_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_hu_growth_2010_2023.rds"</span>))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>outside_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_hu_growth_2010_2023.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <section id="acknowledgments" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
@@ -307,45 +340,11 @@ The following object is masked from 'package:readr':
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
+<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
 <figcaption>Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</figcaption>
 </figure>
 </div>
-<div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define the counties and state</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>counties <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"King"</span>, <span class="st">"Pierce"</span>, <span class="st">"Snohomish"</span>, <span class="st">"Kitsap"</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>state <span class="ot">&lt;-</span> <span class="st">"WA"</span> <span class="co"># Washington state abbreviation</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve population data for 2010 using decennial census</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>pop_2010 <span class="ot">&lt;-</span> <span class="fu">get_decennial</span>(<span class="at">geography =</span> <span class="st">"county"</span>, <span class="at">variables =</span> <span class="st">"P001001"</span>, </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                          <span class="at">state =</span> state, <span class="at">county =</span> counties, <span class="at">year =</span> <span class="dv">2010</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Getting data from the 2010 decennial Census</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Using Census Summary File 1</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Retrieve ACS population data for 2022</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pop_2022 <span class="ot">&lt;-</span> <span class="fu">get_acs</span>(<span class="at">geography =</span> <span class="st">"county"</span>, <span class="at">variables =</span> <span class="st">"B01003_001"</span>, </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">state =</span> state, <span class="at">county =</span> counties, <span class="at">year =</span> <span class="dv">2022</span>, <span class="at">survey =</span> <span class="st">"acs1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Getting data from the 2022 1-year ACS</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The 1-year ACS provides data for geographies with populations of 65,000 and greater.</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate total population for each year</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>total_pop_2010 <span class="ot">&lt;-</span> <span class="fu">sum</span>(pop_2010<span class="sc">$</span>value)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>total_pop_2022 <span class="ot">&lt;-</span> <span class="fu">sum</span>(pop_2022<span class="sc">$</span>estimate)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate the change in population</span></span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>pop_change <span class="ot">&lt;-</span> total_pop_2022 <span class="sc">-</span> total_pop_2010</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>pop_change_pct <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">2</span>, pop_change <span class="sc">/</span> total_pop_2010)</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>pop_change_text <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"{comma(pop_change)} people ({percent(pop_change_pct)})"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div></div>
-<p>The Puget Sound metropolitan region attracts jobs and residents at some of the highest rates in North America. Between 2010 and 2022, the region’s population grew by 620,979 people (17%).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>The Puget Sound metropolitan region is one of North America’s major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound’s four-county region (King, Snohomish, Pierce, and Kitsap) added more residents and housing units than the rest of Washington state combined.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </section>
 <section id="sec-data-methods" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="sec-data-methods"><span class="header-section-number">2</span> Data &amp; Methods</h2>
@@ -359,9 +358,6 @@ The following object is masked from 'package:readr':
 <section id="conclusion" class="level2" data-number="5">
 <h2 data-number="5" class="anchored" data-anchor-id="conclusion"><span class="header-section-number">5</span> Conclusion</h2>
 </section>
-<section id="notes" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="notes">Notes</h2>
-</section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
 <div class="hidden" aria-hidden="true">
@@ -371,7 +367,7 @@ The following object is masked from 'package:readr':
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Population statistic calculated by the author based on analysis of data from the US 2010 Decennial Census and the US 2022 American Community Survey.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>The source of these statistics are the author’s analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by 414,400 people between 2010 and 2023, while the rest of the state’s population grew by 84,300 people. During the same period, 276,177 housing units were added in the this region, while 179,786 units were created elsewhere in the state.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
      </main>
@@ -761,7 +757,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
