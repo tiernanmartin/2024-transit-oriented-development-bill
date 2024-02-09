@@ -25,7 +25,7 @@ keywords:
   - Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, HB 2160 and SB 6024, propose mandating cities to permit developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial enhancement in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and presently zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be +1.35 in terms of floor area ratio (FAR).
+  During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, House Bill 2160 and Senate Bill 6024, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -67,23 +67,39 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 
 ## About Futurewise {.unnumbered}
 
-[![](images/Futurewise Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
+[![](images/Futurewise%20Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
 
-Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at https://futurewise.org/.
+Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at <https://futurewise.org/>.
 
 ## Acknowledgments {.unnumbered}
 
-The authors received no financial support for the research, authorship, and/or publication of this article.
+The authors received no financial support for the research, authorship, or publication of this article.
 
-Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing their agency's own [analysis](https://arcg.is/0SSvK10) of HB 2160/SB 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
+Thanks to Yonah Freemark from the Urban Institute for providing zoning district data.[@urbaninstitute] Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024.[@pugetsoundregionalcouncil2024] Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
 
 ## Introduction
 
 ![Central Puget Sound \| Photo courtesy of [Clemens Vasters from Viersen, Germany](#0), [CC BY 2.0](#0), via Wikimedia Commons](images/seattle-aerial-wikicommons.jpg){fig-alt="An aerial photo of Mercer Island, Seattle, and Kitsap County" fig-align="center"}
 
-The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Snohomish, Pierce, and Kitsap) added more residents and housing units than the rest of Washington state combined.[^1]
+### The Central Puget Sound Region
+
+The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Snohomish, Pierce, and Kitsap counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050.[@pugetsoundregionalcouncil2018]
 
 [^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
+
+One challenge that the central Puget Sound region faces is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. By 2023, the annual income required to purchase the area's median priced home was \$160,000.[^2] Between July 2015 and July 2023, the median rent cost increased by 50%.[@pugetsoundregionalcouncil2023]
+
+[^2]: This estimate includes three of the four central Puget Sound counties: King, Pierce, and Snohomish.
+
+### Transit-Oriented Development
+
+Transit-oriented development (TOD) is a strategy of building homes at or near public transportation stops and stations. In the United States, this strategy has had a complicated record—often leading to increased property values while simultaneously lowering household travel costs and reducing reliance on personal vehicles.[@lund2006] TOD often raises concerns about the displacement of low-income residents and small businesses, leading some local and regional governments to include affordability requirements in their TOD programs.[@dawkins2016]
+
+While these concerns are valid, there is not an obvious, better alternative to TOD. Sharp increases in sprawling, low-density residential and commercial development in Washington during 1980s resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands. This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs).[@trohimovich2002] Many of the GMA's goals are highly aligned with TOD—particularly the first four goals of the law.[^3]
+
+[^3]: The first four goals of [*RCW 36.70A.020 Planning goals*](https://app.leg.wa.gov/rcw/default.aspx?cite=36.70a.020) are:
+
+    > \(1\) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.
 
 ## Data & Methods {#sec-data-methods}
 
@@ -94,3 +110,6 @@ The Puget Sound metropolitan region is one of North America's major growth cente
 ## Conclusion
 
 ## References {.unnumbered}
+
+::: {#refs}
+:::
