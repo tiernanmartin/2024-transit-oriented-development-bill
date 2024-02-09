@@ -406,10 +406,12 @@ questions:
 
 \subsection{Research Design}\label{research-design}
 
-We use a quantitative method to attempt to answer its research
-questions. To quantify the impact of zoning changes on development
-capacity within transit areas, we define the area-weighted mean of net
-development capacity (\(AWM_{NDC}\)) as follows:
+We use a quantitative method to attempt to answer our research
+questions.
+
+To quantify the impact of zoning changes on development capacity within
+transit areas, we define the area-weighted mean of net development
+capacity (\(AWM_{NDC}\)) as follows:
 
 \[
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
@@ -422,7 +424,8 @@ where:
 \item
   \(NDC_i = FAR_{new,i} - FAR_{old,i}\) represents the net development
   capacity for parcel \(i\), calculated as the difference between the
-  new Floor Area Ratio (FAR) and the old FAR.
+  new Floor Area Ratio (FAR) and the old FAR. Where \(NDC_i < 0\), we
+  set it equal to 0 because the bill would not reduce maximum FAR.
 \item
   \(A_i\) denotes the area of parcel \(i\).
 \item
@@ -435,14 +438,14 @@ where:
 
 This formula ensures that the calculation exclusively incorporates
 parcels meeting the specified criteria, with each parcel's contribution
-to the overall mean being proportionally weighted by its area. This
-method offers a precise metric for evaluating changes in development
-potential, reflecting the nuanced effects of the proposed bill. It also
-allows us to summarize the bills effect at different geographic levels,
-including station area, city, and region. We can then both describe
-individual geographies (e.g., a specific station area) and compare
-between geographies (e.g., several cities compared individually to the
-region).
+to the overall mean being proportionally weighted by its area.
+
+Our method offers a precise metric for evaluating changes in development
+capacity, reflecting the effects of the proposed bill. It also allows us
+to summarize the bills effect at different geographic levels, including
+station area, city, and region. We can then both describe individual
+geographies (e.g., a specific station area) and compare between
+geographies (e.g., several cities compared individually to the region).
 
 \subsection{Data Collection}\label{data-collection}
 
@@ -494,8 +497,8 @@ all parcels within the station areas. The refined parcel data are
 augmented with zoning and land use regulation information from the
 zoning districts. A maximum FAR baseline is estimated for all parcels,
 then the new maximum FAR that would be introduced by HB 2160 is
-estimated. For each parcel, the net difference between the current and
-new FAR is calculated. For parcels where the current zoning allows
+estimated. For each parcel, the net difference between the current (old)
+and new FAR is calculated. For parcels where the current zoning allows
 development greater than the new FAR, the effect of the bill is
 considered to be zero additional FAR; for parcels where the current
 zoning is more restrictive that the new FAR, the effect is calculated in
@@ -509,6 +512,65 @@ summarized using the area-weight mean.\footnote{Parcels that do not
   station area or jurisdiction.}
 
 \subsection{Limitations}\label{limitations}
+
+Our method is subject to several limitations that are important to
+consider when interpreting our findings:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Scope of Parcels}: The study is limited to parcels where
+  residential use is permitted. This exclusion may omit significant
+  areas that could be relevant under different zoning changes or future
+  development scenarios.
+\item
+  \textbf{Measurement of Transit Proximity}: Transit walksheds are
+  calculated using Euclidean distance, measuring straight lines to the
+  center of parcels, rather than using network distances that reflect
+  actual walking paths. This method may overestimate or underestimate
+  the true accessibility of parcels to transit services.
+\item
+  \textbf{Lot Coverage Assumptions}: In cases where specific regulations
+  on maximum building footprint or FAR are not provided, the study
+  assumes that 100\% lot coverage is permissible. This assumption may
+  not align with actual zoning regulations, potentially leading to
+  overestimations of development capacity.
+\item
+  \textbf{Omission of Development Regulations}: The estimated FAR metric
+  does not incorporate other development regulations, such as setbacks,
+  which can significantly impact the buildable area on a parcel.
+\item
+  \textbf{Homeowner Association (HOA) Restrictions}: The analysis does
+  not consider HOA restrictions that might limit allowed density on
+  parcels, which could reduce the impact of bill in station areas where
+  restrictive HOA's exist.
+\item
+  \textbf{Unit Limits Ignored}: The study does not account for maximum
+  unit limits that can further restrict the number of residences within
+  a given development, possibly leading to inaccurate assessments of
+  potential housing contributions.
+\item
+  \textbf{Regulatory Combinations Not Considered}: Interactions between
+  different regulations, such as maximum building height and maximum
+  FAR, are not accounted for. This omission can lead to an
+  oversimplification of the practical limits on parcel development.
+\item
+  \textbf{Additional Restrictions on Development}: The analysis does not
+  account for other significant restrictions, including those that
+  prevent development from being sited within critical areas, shoreline
+  environments, or on sites with landmark designations. Such
+  restrictions can materially impact development possibilities but are
+  not reflected in the study.
+\item
+  \textbf{Currency of Data}: The study assumes that all data used in the
+  analysis are concurrent and up-to-date. Any discrepancies in data
+  timeliness could affect the accuracy of the results.
+\end{enumerate}
+
+Understanding these limitations is crucial for interpreting the study's
+findings accurately and recognizing the potential for variance in
+real-world applications. Further research and refined methodologies
+could help address these limitations in future analyses.
 
 \begin{itemize}
 \item
@@ -532,6 +594,8 @@ summarized using the area-weight mean.\footnote{Parcels that do not
 \item
   Does not account for other restrictions on development, such as
   critical areas, shoreline environments, or landmark designation
+\item
+  Assumes all data to be concurrent
 \end{itemize}
 
 \section{Results}\label{results}

@@ -246,7 +246,7 @@ window.Quarto = {
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
+<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
 <figcaption>Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</figcaption>
 </figure>
 </div>
@@ -287,17 +287,19 @@ window.Quarto = {
 <h2 data-number="2" class="anchored" data-anchor-id="sec-data-methods"><span class="header-section-number">2</span> Data &amp; Methods</h2>
 <section id="research-design" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="research-design"><span class="header-section-number">2.1</span> Research Design</h3>
-<p>We use a quantitative method to attempt to answer its research questions. To quantify the impact of zoning changes on development capacity within transit areas, we define the area-weighted mean of net development capacity (<span class="math inline">\(AWM_{NDC}\)</span>) as follows:</p>
+<p>We use a quantitative method to attempt to answer our research questions.</p>
+<p>To quantify the impact of zoning changes on development capacity within transit areas, we define the area-weighted mean of net development capacity (<span class="math inline">\(AWM_{NDC}\)</span>) as follows:</p>
 <p><span class="math display">\[
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 \]</span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.</li>
+<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR. Where <span class="math inline">\(NDC_i &lt; 0\)</span>, we set it equal to 0 because the bill would not reduce maximum FAR.</li>
 <li><span class="math inline">\(A_i\)</span> denotes the area of parcel <span class="math inline">\(i\)</span>.</li>
 <li><span class="math inline">\(I_i\)</span> is an indicator function that equals 1 if parcel <span class="math inline">\(i\)</span> satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, <span class="math inline">\(I_i\)</span> equals 0.</li>
 </ul>
-<p>This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel’s contribution to the overall mean being proportionally weighted by its area. This method offers a precise metric for evaluating changes in development potential, reflecting the nuanced effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).</p>
+<p>This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel’s contribution to the overall mean being proportionally weighted by its area.</p>
+<p>Our method offers a precise metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).</p>
 </section>
 <section id="data-collection" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="data-collection"><span class="header-section-number">2.2</span> Data Collection</h3>
@@ -342,10 +344,23 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <section id="data-analysis" class="level3" data-number="2.3">
 <h3 data-number="2.3" class="anchored" data-anchor-id="data-analysis"><span class="header-section-number">2.3</span> Data Analysis</h3>
 <p>The study uses a combination of a relational database and statistical software to conduct its analysis. The relational database, PostgreSQL with the PostGIS extension, is used to perform spatial filters and spatial joins on the Current Parcel data set. The R programming language is used to perform aggregations and calculate summary statistics on the filtered and augmented parcel dataset. R is also also used to produce summary tables and visualizations.</p>
-<p>Data sets containing information relevant to HB 2160 are combined through spatial filtering and spatial joining to produce a data set of all parcels within the station areas. The refined parcel data are augmented with zoning and land use regulation information from the zoning districts. A maximum FAR baseline is estimated for all parcels, then the new maximum FAR that would be introduced by HB 2160 is estimated. For each parcel, the net difference between the current and new FAR is calculated. For parcels where the current zoning allows development greater than the new FAR, the effect of the bill is considered to be zero additional FAR; for parcels where the current zoning is more restrictive that the new FAR, the effect is calculated in terms of additional FAR allowed. The bill’s effect on each parcel is then aggregated by station area, jurisdiction, and region, and summarized using the area-weight mean.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
+<p>Data sets containing information relevant to HB 2160 are combined through spatial filtering and spatial joining to produce a data set of all parcels within the station areas. The refined parcel data are augmented with zoning and land use regulation information from the zoning districts. A maximum FAR baseline is estimated for all parcels, then the new maximum FAR that would be introduced by HB 2160 is estimated. For each parcel, the net difference between the current (old) and new FAR is calculated. For parcels where the current zoning allows development greater than the new FAR, the effect of the bill is considered to be zero additional FAR; for parcels where the current zoning is more restrictive that the new FAR, the effect is calculated in terms of additional FAR allowed. The bill’s effect on each parcel is then aggregated by station area, jurisdiction, and region, and summarized using the area-weight mean.<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></p>
 </section>
 <section id="limitations" class="level3" data-number="2.4">
 <h3 data-number="2.4" class="anchored" data-anchor-id="limitations"><span class="header-section-number">2.4</span> Limitations</h3>
+<p>Our method is subject to several limitations that are important to consider when interpreting our findings:</p>
+<ol type="1">
+<li><p><strong>Scope of Parcels</strong>: The study is limited to parcels where residential use is permitted. This exclusion may omit significant areas that could be relevant under different zoning changes or future development scenarios.</p></li>
+<li><p><strong>Measurement of Transit Proximity</strong>: Transit walksheds are calculated using Euclidean distance, measuring straight lines to the center of parcels, rather than using network distances that reflect actual walking paths. This method may overestimate or underestimate the true accessibility of parcels to transit services.</p></li>
+<li><p><strong>Lot Coverage Assumptions</strong>: In cases where specific regulations on maximum building footprint or FAR are not provided, the study assumes that 100% lot coverage is permissible. This assumption may not align with actual zoning regulations, potentially leading to overestimations of development capacity.</p></li>
+<li><p><strong>Omission of Development Regulations</strong>: The estimated FAR metric does not incorporate other development regulations, such as setbacks, which can significantly impact the buildable area on a parcel.</p></li>
+<li><p><strong>Homeowner Association (HOA) Restrictions</strong>: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA’s exist.</p></li>
+<li><p><strong>Unit Limits Ignored</strong>: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.</p></li>
+<li><p><strong>Regulatory Combinations Not Considered</strong>: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.</p></li>
+<li><p><strong>Additional Restrictions on Development</strong>: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.</p></li>
+<li><p><strong>Currency of Data</strong>: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.</p></li>
+</ol>
+<p>Understanding these limitations is crucial for interpreting the study’s findings accurately and recognizing the potential for variance in real-world applications. Further research and refined methodologies could help address these limitations in future analyses.</p>
 <ul>
 <li><p>Only includes parcels where residential use is allowed</p></li>
 <li><p>Walksheds calculated using Euclidean distance (“as the crow flies”) to parcel center, not network distance</p></li>
@@ -355,6 +370,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <li><p>Does not account for maximum unit limits</p></li>
 <li><p>Does not account for regulatory combinations such as max building height and max FAR</p></li>
 <li><p>Does not account for other restrictions on development, such as critical areas, shoreline environments, or landmark designation</p></li>
+<li><p>Assumes all data to be concurrent</p></li>
 </ul>
 </section>
 </section>
@@ -840,7 +856,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":false,"selector":".lightbox","closeEffect":"zoom","openEffect":"zoom","descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","descPosition":"bottom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
