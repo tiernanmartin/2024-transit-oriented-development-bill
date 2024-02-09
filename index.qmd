@@ -7,9 +7,17 @@ author:
     email: tiernan@futurewise.org
     roles:
       - Investigation
-      - Project administration
+      - Project Administration
       - Software
       - Visualization
+    affiliations:
+      - Futurewise
+  - name: Alex Brennan
+    corresponding: false
+    email: alex@futurewise.org
+    roles:
+      - Investigation
+      - Review
     affiliations:
       - Futurewise
 keywords:
@@ -32,13 +40,36 @@ number-sections: true
 
 ```{r}
 #| label: setup
-#| output: false
+#| include: false
 library(tidyverse)
 library(tidycensus)
 library(glue)
 library(scales)
+library(readxl)
+library(janitor)
+library(here)
+
 ```
 
+```{r}
+#| label: read-objects
+#| include: false
+
+pugetsound_pop_growth_2010_2023 <- readRDS(here("data_outputs/pugetsound_pop_growth_2010_2023.rds"))
+
+outside_pop_growth_2010_2023 <- readRDS(here("data_outputs/outside_pop_growth_2010_2023.rds"))
+
+pugetsound_hu_growth_2010_2023 <- readRDS(here("data_outputs/pugetsound_hu_growth_2010_2023.rds"))
+
+outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010_2023.rds"))
+
+```
+
+## About Futurewise {.unnumbered}
+
+[![](images/Futurewise Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
+
+Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at https://futurewise.org/.
 
 ## Acknowledgments {.unnumbered}
 
@@ -50,38 +81,9 @@ Thanks to Yonah Freemark from the Urban Institute for providing zoning district 
 
 ![Central Puget Sound \| Photo courtesy of [Clemens Vasters from Viersen, Germany](#0), [CC BY 2.0](#0), via Wikimedia Commons](images/seattle-aerial-wikicommons.jpg){fig-alt="An aerial photo of Mercer Island, Seattle, and Kitsap County" fig-align="center"}
 
+The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Snohomish, Pierce, and Kitsap) added more residents and housing units than the rest of Washington state combined.[^1]
 
-```{r}
-#| label: puget-sound-population
-#| output: false
-
-# Define the counties and state
-counties <- c("King", "Pierce", "Snohomish", "Kitsap")
-state <- "WA" # Washington state abbreviation
-
-# Retrieve population data for 2010 using decennial census
-pop_2010 <- get_decennial(geography = "county", variables = "P001001", 
-                          state = state, county = counties, year = 2010)
-
-# Retrieve ACS population data for 2022
-pop_2022 <- get_acs(geography = "county", variables = "B01003_001", 
-                    state = state, county = counties, year = 2022, survey = "acs1")
-
-# Calculate total population for each year
-total_pop_2010 <- sum(pop_2010$value)
-total_pop_2022 <- sum(pop_2022$estimate)
-
-# Calculate the change in population
-pop_change <- total_pop_2022 - total_pop_2010
-
-pop_change_pct <- round(digits = 2, pop_change / total_pop_2010)
-
-pop_change_text <- glue("{comma(pop_change)} people ({percent(pop_change_pct)})")
-
-```
-
-
-The Puget Sound metropolitan region attracts jobs and residents at some of the highest rates in North America. Between 2010 and 2022, the region's population grew by `r pop_change_text`.[^1]
+[^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
 
 ## Data & Methods {#sec-data-methods}
 
@@ -90,10 +92,5 @@ The Puget Sound metropolitan region attracts jobs and residents at some of the h
 ## Discussion
 
 ## Conclusion
-
-## Notes {.unnumbered}
-
-[^1]: Population statistic calculated by the author based on analysis of data from the US 2010 Decennial Census and the US 2022 American Community Survey.
-
 
 ## References {.unnumbered}
