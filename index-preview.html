@@ -57,7 +57,27 @@
       @media screen {
       pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
       }
-    </style>
+      /* CSS for citations */
+      div.csl-bib-body { }
+      div.csl-entry {
+        clear: both;
+        margin-bottom: 0em;
+      }
+      .hanging-indent div.csl-entry {
+        margin-left:2em;
+        text-indent:-2em;
+      }
+      div.csl-left-margin {
+        min-width:2em;
+        float:left;
+      }
+      div.csl-right-inline {
+        margin-left:2em;
+        padding-left:1em;
+      }
+      div.csl-indent {
+        margin-left: 2em;
+      }    </style>
 
     <style>
       body.hypothesis-enabled #quarto-embed-header {
@@ -170,7 +190,7 @@
   });
 </script>  
       <meta name="citation_title" content="Unlocking Smart Growth: The Effects of Proposed Transit-Oriented Development Laws on the Puget Sound Region">
-<meta name="citation_abstract" content="During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, HB 2160 and SB 6024, propose mandating cities to permit developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial enhancement in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and presently zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be +1.35 in terms of floor area ratio (FAR).
+<meta name="citation_abstract" content="During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, House Bill 2160 and Senate Bill 6024, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
 ">
 <meta name="citation_keywords" content="Transit-Oriented Development,Puget Sound Region,Washington State 2024 Legislative Session">
 <meta name="citation_author" content="Tiernan Martin">
@@ -184,7 +204,12 @@
 <meta name="citation_reference" content="citation_title=Regional housing strategy: 2023 monitoring report;,citation_author=undefined Puget Sound Regional Council;,citation_publication_date=2023-11;,citation_cover_date=2023-11;,citation_year=2023;,citation_fulltext_html_url=https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf;">
 <meta name="citation_reference" content="citation_title=Zoning by a thousand cuts;,citation_author=Sara C. Bronin;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_fulltext_html_url=https://heinonline.org/HOL/Page?handle=hein.journals/pepplr50&amp;amp;amp;id=744&amp;div=&amp;collection=;,citation_volume=50;,citation_journal_title=Pepperdine Law Review;">
 <meta name="citation_reference" content="citation_title=Bringing zoning into focus: A fine-grained analysis of zoning’s relationships to housing affordability, income distributions, and segregation in connecticut;,citation_author=Yonah Freemark;,citation_author=Lydia Lo;,citation_author=Bronin Sara C.;,citation_publication_date=2023-06;,citation_cover_date=2023-06;,citation_year=2023;,citation_fulltext_html_url=https://search.issuelab.org/resources/42025/42025.pdf;">
-<meta name="citation_reference" content="citation_title=Urban institute puget sound zoning atlas;,citation_author=Urban Institute;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;">
+<meta name="citation_reference" content="citation_title=Urban institute puget sound zoning atlas;,citation_author=undefined Urban Institute;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;">
+<meta name="citation_reference" content="citation_title=Community and transit-oriented housing development bill 2024: An interactive web map;,citation_author=undefined Puget Sound Regional Council;,citation_publication_date=2024-01;,citation_cover_date=2024-01;,citation_year=2024;,citation_fulltext_html_url=https://arcg.is/0SSvK10;">
+<meta name="citation_reference" content="citation_title=Draft 2050 forecast of people and jobs;,citation_author=undefined Puget Sound Regional Council;,citation_publication_date=2018-03;,citation_cover_date=2018-03;,citation_year=2018;,citation_fulltext_html_url=https://www.psrc.org/media/1749;">
+<meta name="citation_reference" content="citation_title=Reasons for living in a transit-oriented development, and associated transit use;,citation_author=H. Lund;,citation_publication_date=2006;,citation_cover_date=2006;,citation_year=2006;,citation_fulltext_html_url=https://consensus.app/papers/reasons-living-transitoriented-development-associated-lund/564e7eba9c42550cadee612a7acf2859/;,citation_doi=10.1080/01944360608976757;,citation_volume=72;,citation_journal_title=Journal of the American Planning Association;">
+<meta name="citation_reference" content="citation_title=Transit-induced gentrification: Who will stay, and who will go?;,citation_author=Casey J. Dawkins;,citation_author=R. Moeckel;,citation_publication_date=2016;,citation_cover_date=2016;,citation_year=2016;,citation_fulltext_html_url=https://consensus.app/papers/transitinduced-gentrification-will-stay-will-dawkins/1d9ea76b7d8059cea68b729d77a89507/;,citation_doi=10.1080/10511482.2016.1138986;,citation_volume=26;,citation_journal_title=Housing Policy Debate;">
+<meta name="citation_reference" content="citation_title=The growth management act (GMA) after more than 10 years: Another look &amp;amp;amp; a response to criticisms;,citation_author=Tim Trohimovich;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_fulltext_html_url=http://www.futurewise.org/assets/resources/GMA_another_look.pdf;,citation_journal_title=Growth;">
 </head>
 
   <body class="quarto-notebook">
@@ -248,7 +273,7 @@
     <div>
       <div class="abstract">
         <div class="block-title">Abstract</div>
-        <p>During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, HB 2160 and SB 6024, propose mandating cities to permit developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial enhancement in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and presently zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be +1.35 in terms of floor area ratio (FAR).</p>
+        <p>During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, House Bill 2160 and Senate Bill 6024, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).</p>
       </div>
     </div>
 
@@ -269,7 +294,11 @@
   <ul>
   <li><a href="#about-futurewise" id="toc-about-futurewise" class="nav-link active" data-scroll-target="#about-futurewise">About Futurewise</a></li>
   <li><a href="#acknowledgments" id="toc-acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a>
+  <ul class="collapse">
+  <li><a href="#the-central-puget-sound-region" id="toc-the-central-puget-sound-region" class="nav-link" data-scroll-target="#the-central-puget-sound-region"><span class="header-section-number">1.1</span> The Central Puget Sound Region</a></li>
+  <li><a href="#transit-oriented-development" id="toc-transit-oriented-development" class="nav-link" data-scroll-target="#transit-oriented-development"><span class="header-section-number">1.2</span> Transit-Oriented Development</a></li>
+  </ul></li>
   <li><a href="#sec-data-methods" id="toc-sec-data-methods" class="nav-link" data-scroll-target="#sec-data-methods"><span class="header-section-number">2</span> Data &amp; Methods</a></li>
   <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
@@ -342,22 +371,31 @@ The following objects are masked from 'package:stats':
 <p><a href="https://futurewise.org/"><img src="images/Futurewise%20Logo.png" class="img-fluid quarto-figure quarto-figure-left figure-img" style="float: left; margin-right: 20px; margin-bottom: 20px;" alt="Futurewise logo" width="150"></a></p>
 </figure>
 </div>
-<p>Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at https://futurewise.org/.</p>
+<p>Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at <a href="https://futurewise.org/" class="uri">https://futurewise.org/</a>.</p>
 </section>
 <section id="acknowledgments" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
-<p>The authors received no financial support for the research, authorship, and/or publication of this article.</p>
-<p>Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing their agency’s own <a href="https://arcg.is/0SSvK10">analysis</a> of HB 2160/SB 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.</p>
+<p>The authors received no financial support for the research, authorship, or publication of this article.</p>
+<p>Thanks to Yonah Freemark from the Urban Institute for providing zoning district data.<span class="citation" data-cites="urbaninstitute">(<a href="#ref-urbaninstitute" role="doc-biblioref">Urban Institute 2023</a>)</span> Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency’s public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024.<span class="citation" data-cites="pugetsoundregionalcouncil2024">(<a href="#ref-pugetsoundregionalcouncil2024" role="doc-biblioref">Puget Sound Regional Council 2024</a>)</span> Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.</p>
 </section>
 <section id="introduction" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
+<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
 <figcaption>Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</figcaption>
 </figure>
 </div>
-<p>The Puget Sound metropolitan region is one of North America’s major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound’s four-county region (King, Snohomish, Pierce, and Kitsap) added more residents and housing units than the rest of Washington state combined.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<section id="the-central-puget-sound-region" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="the-central-puget-sound-region"><span class="header-section-number">1.1</span> The Central Puget Sound Region</h3>
+<p>The Puget Sound metropolitan region is one of North America’s major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound’s four-county region (King, Snohomish, Pierce, and Kitsap counties) added more residents and housing units than the rest of Washington state combined.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> According to forecasts by the Puget Sound Regional Council, the region’s population is expected to grow to 5.8 million people living within 2.8 million households by 2050.<span class="citation" data-cites="pugetsoundregionalcouncil2018">(<a href="#ref-pugetsoundregionalcouncil2018" role="doc-biblioref">Puget Sound Regional Council 2018</a>)</span></p>
+<p>One challenge that the central Puget Sound region faces is high, rising housing costs. The Puget Sound Regional Council’s <em>Housing Stability Strategy: 2023 Monitoring Report</em> provides several sobering statistics about the region’s housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. By 2023, the annual income required to purchase the area’s median priced home was $160,000.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Between July 2015 and July 2023, the median rent cost increased by 50%.<span class="citation" data-cites="pugetsoundregionalcouncil2023">(<a href="#ref-pugetsoundregionalcouncil2023" role="doc-biblioref">Puget Sound Regional Council 2023</a>)</span></p>
+</section>
+<section id="transit-oriented-development" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="transit-oriented-development"><span class="header-section-number">1.2</span> Transit-Oriented Development</h3>
+<p>Transit-oriented development (TOD) is a strategy of building homes at or near public transportation stops and stations. In the United States, this strategy has had a complicated record—often leading to increased property values while simultaneously lowering household travel costs and reducing reliance on personal vehicles.<span class="citation" data-cites="lund2006">(<a href="#ref-lund2006" role="doc-biblioref">Lund 2006</a>)</span> TOD often raises concerns about the displacement of low-income residents and small businesses, leading some local and regional governments to include affordability requirements in their TOD programs.<span class="citation" data-cites="dawkins2016">(<a href="#ref-dawkins2016" role="doc-biblioref">Dawkins and Moeckel 2016</a>)</span></p>
+<p>While these concerns are valid, there is not an obvious, better alternative to TOD. Sharp increases in sprawling, low-density residential and commercial development in Washington during 1980s resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands. This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs).<span class="citation" data-cites="trohimovich2002">(<a href="#ref-trohimovich2002" role="doc-biblioref">Trohimovich 2002</a>)</span> Many of the GMA’s goals are highly aligned with TOD—particularly the first four goals of the law.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+</section>
 </section>
 <section id="sec-data-methods" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="sec-data-methods"><span class="header-section-number">2</span> Data &amp; Methods</h2>
@@ -373,6 +411,29 @@ The following objects are masked from 'package:stats':
 </section>
 <section id="references" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="references">References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-dawkins2016" class="csl-entry" role="listitem">
+Dawkins, Casey J., and R. Moeckel. 2016. <span>“Transit-Induced Gentrification: Who Will Stay, and Who Will Go?”</span> <em>Housing Policy Debate</em> 26: 801–18. <a href="https://doi.org/10.1080/10511482.2016.1138986">https://doi.org/10.1080/10511482.2016.1138986</a>.
+</div>
+<div id="ref-lund2006" class="csl-entry" role="listitem">
+Lund, H. 2006. <span>“Reasons for Living in a Transit-Oriented Development, and Associated Transit Use.”</span> <em>Journal of the American Planning Association</em> 72: 357–66. <a href="https://doi.org/10.1080/01944360608976757">https://doi.org/10.1080/01944360608976757</a>.
+</div>
+<div id="ref-pugetsoundregionalcouncil2018" class="csl-entry" role="listitem">
+Puget Sound Regional Council. 2018. <span>“Draft 2050 Forecast of People and Jobs.”</span> <a href="https://www.psrc.org/media/1749">https://www.psrc.org/media/1749</a>.
+</div>
+<div id="ref-pugetsoundregionalcouncil2023" class="csl-entry" role="listitem">
+———. 2023. <span>“Regional Housing Strategy: 2023 Monitoring Report.”</span> <a href="https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf">https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf</a>.
+</div>
+<div id="ref-pugetsoundregionalcouncil2024" class="csl-entry" role="listitem">
+———. 2024. <span>“Community and Transit-Oriented Housing Development Bill 2024: An Interactive Web Map.”</span> <a href="https://arcg.is/0SSvK10">https://arcg.is/0SSvK10</a>.
+</div>
+<div id="ref-trohimovich2002" class="csl-entry" role="listitem">
+Trohimovich, Tim. 2002. <span>“The Growth Management Act (GMA) After More Than 10 Years: Another Look &amp; a Response to Criticisms.”</span> <em>Growth</em>. <a href="http://www.futurewise.org/assets/resources/GMA_another_look.pdf">http://www.futurewise.org/assets/resources/GMA_another_look.pdf</a>.
+</div>
+<div id="ref-urbaninstitute" class="csl-entry" role="listitem">
+Urban Institute. 2023. <span>“Urban Institute Puget Sound Zoning Atlas.”</span>
+</div>
+</div>
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</span>
 </div>
@@ -381,6 +442,12 @@ The following objects are masked from 'package:stats':
 <hr>
 <ol>
 <li id="fn1"><p>The source of these statistics are the author’s analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by 414,400 people between 2010 and 2023, while the rest of the state’s population grew by 84,300 people. During the same period, 276,177 housing units were added in the this region, while 179,786 units were created elsewhere in the state.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>This estimate includes three of the four central Puget Sound counties: King, Pierce, and Snohomish.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>The first four goals of <a href="https://app.leg.wa.gov/rcw/default.aspx?cite=36.70a.020"><em>RCW 36.70A.020 Planning goals</em></a> are:</p>
+<blockquote class="blockquote">
+<p>(1) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.</p>
+</blockquote>
+<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></li>
 </ol>
 </section>
      </main>
@@ -770,7 +837,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","loop":false,"descPosition":"bottom","openEffect":"zoom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","descPosition":"bottom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
