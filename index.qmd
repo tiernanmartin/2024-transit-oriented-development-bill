@@ -65,6 +65,11 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 
 ```
 
+## About Futurewise {.unnumbered}
+
+[![](images/Futurewise Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
+
+Futurewise is a nonprofit organization that works throughout Washington State on the implementation of the Growth Management Act (GMA). We partner with local communities to support land use policies that encourage healthy, equitable and opportunity-rich communities, and that protect our most valuable farmlands, forests and water resources. We have members across the state including the central Puget Sound region. For more information about our organization, visit our website at https://futurewise.org/.
 
 ## Acknowledgments {.unnumbered}
 
@@ -79,8 +84,6 @@ Thanks to Yonah Freemark from the Urban Institute for providing zoning district 
 The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Snohomish, Pierce, and Kitsap) added more residents and housing units than the rest of Washington state combined.[^1]
 
 [^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
-
-
 
 ## Data & Methods {#sec-data-methods}
 
