@@ -1,0 +1,139 @@
+---
+title: "Central Puget Sound Data Trends (2010 - 2023)"
+author: "Tiernan Martin"
+format:
+  html:
+    code-fold: true
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| include: false
+
+library(tidyverse)
+library(tidycensus)
+library(glue)
+library(scales)
+library(readxl)
+library(janitor)
+library(here)
+
+```
+
+
+## Data 
+
+This analysis uses data from Washington State's Office of Financial Management: [Historical estimates of April 1 population and housing for the state, counties, and cities](https://ofm.wa.gov/washington-data-research/population-demographics/population-estimates/historical-estimates-april-1-population-and-housing-state-counties-and-cities)
+
+### Change in Population
+
+```{r}
+#| label: "population-change-2010-2023"
+#| include: false
+
+
+pop_fp <- here("data/ofm_april1_postcensal_estimates_pop_1960-present.xlsx")
+
+pop_df <- read_excel(pop_fp, sheet = "Population", skip = 3) |> 
+  clean_names()
+
+pop_growth <- pop_df |> 
+  filter(filter %in% "1") |> 
+  pivot_longer(cols = x_1960_census_count_of_total_population:last_col()) |> 
+  mutate(value = as.numeric(value),
+         pugetsound = case_when(
+    county %in% c("King",
+                 "Snohomish",
+                 "Kitsap",
+                 "Pierce") ~ TRUE,
+    TRUE ~ FALSE
+  )) |> 
+  filter(str_detect(name, "2010|2023")) |> 
+  filter(str_detect(name,"postcensal")) |> 
+  mutate(name = str_c("pop_", str_extract(name,"\\d{4}"))) |> 
+  pivot_wider(names_from = name,
+              values_from = value) |> 
+  group_by(pugetsound) |> 
+  summarise(pop_2010 = max(pop_2010),
+            pop_2023 = max(pop_2023),
+            pop_change = sum(pop_2023) - sum(pop_2010)) |> 
+  ungroup() |> 
+  mutate(pop_change_pct = round(digits = 2, pop_change / pop_2010))
+
+pop_growth
+
+```
+
+```{r}
+#| label: pop-change-r-objects
+#| output: false
+
+pugetsound_pop_growth_2010_2023 <- pop_growth |> filter(pugetsound) |> pluck("pop_change")
+
+saveRDS(pugetsound_pop_growth_2010_2023,
+        here("data_outputs/pugetsound_pop_growth_2010_2023.rds"))
+
+outside_pop_growth_2010_2023 <- pop_growth |> filter(!pugetsound) |> pluck("pop_change")
+
+saveRDS(outside_pop_growth_2010_2023,
+        here("data_outputs/outside_pop_growth_2010_2023.rds"))
+
+pop_change_pct <- pop_growth |> filter(pugetsound) |> pluck("pop_change_pct")
+
+pop_change_text <- glue("{comma(pugetsound_pop_growth_2010_2023)} people (a {percent(pop_change_pct)} increase)")
+```
+
+
+### Change in Housing Units
+
+```{r}
+#| label: "housing-change-2010-2023"
+#| output: true
+
+uh_fp <- here("data/ofm_april1_postcensal_estimates_housing_1980_1990-present.xlsx")
+
+hu_df <- read_excel(uh_fp, sheet = "Housing Units", skip = 3) |>  
+  clean_names()
+
+hu_growth_2010_2023 <- hu_df |> 
+  filter(filter %in% "1") |> 
+  pivot_longer(cols = x1980_census_count_of_total_housing_units:last_col()) |> 
+  mutate(value = as.numeric(value),
+         pugetsound = case_when(
+           county %in% c("King",
+                         "Snohomish",
+                         "Kitsap",
+                         "Pierce") ~ TRUE,
+           TRUE ~ FALSE
+         )) |> 
+  # filter(str_detect(name,"postcensal")) |> 
+  filter(str_detect(name,"total")) |> 
+  filter(str_detect(name, "2010|2023")) |>  
+  mutate(name = str_c("hu_", str_extract(name,"\\d{4}"))) |> 
+  pivot_wider(names_from = name,
+              values_from = value) |> 
+  group_by(pugetsound) |> 
+  summarise(hu = sum(hu_2023) - sum(hu_2010))
+
+hu_growth_2010_2023
+
+```
+
+
+```{r}
+#| label: "hu-change-r-objects"
+#| output: false
+
+pugetsound_hu_growth_2010_2023 <- hu_growth_2010_2023 |> filter(pugetsound) |> pluck("hu")
+
+saveRDS(pugetsound_hu_growth_2010_2023,
+        here("data_outputs/pugetsound_hu_growth_2010_2023.rds"))
+
+
+outside_hu_pop_growth_2010_2023 <- hu_growth_2010_2023 |> filter(!pugetsound) |> pluck("hu")
+
+saveRDS(outside_hu_pop_growth_2010_2023,
+        here("data_outputs/outside_hu_growth_2010_2023.rds"))
+```
+
