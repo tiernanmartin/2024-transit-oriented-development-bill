@@ -360,18 +360,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <li><p><strong>Additional Restrictions on Development</strong>: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.</p></li>
 <li><p><strong>Currency of Data</strong>: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.</p></li>
 </ol>
-<p>Understanding these limitations is crucial for interpreting the study’s findings accurately and recognizing the potential for variance in real-world applications. Further research and refined methodologies could help address these limitations in future analyses.</p>
-<ul>
-<li><p>Only includes parcels where residential use is allowed</p></li>
-<li><p>Walksheds calculated using Euclidean distance (“as the crow flies”) to parcel center, not network distance</p></li>
-<li><p>Assumes 100% lot coverage is allowed when no max. building footprint or max FAR</p></li>
-<li><p>Other development regulations (e.g., setbacks) are not reflected in the estimated FAR</p></li>
-<li><p>Does not account for HOA restrictions on allowed density</p></li>
-<li><p>Does not account for maximum unit limits</p></li>
-<li><p>Does not account for regulatory combinations such as max building height and max FAR</p></li>
-<li><p>Does not account for other restrictions on development, such as critical areas, shoreline environments, or landmark designation</p></li>
-<li><p>Assumes all data to be concurrent</p></li>
-</ul>
+<p>Further research, data collection, and methodological refinements could help address these limitations in future analyses.</p>
 </section>
 </section>
 <section id="results" class="level2" data-number="3">
@@ -856,7 +845,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"loop":false,"closeEffect":"zoom","selector":".lightbox","openEffect":"zoom","descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","descPosition":"bottom","loop":false,"closeEffect":"zoom","selector":".lightbox"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

@@ -198,25 +198,7 @@ Our method is subject to several limitations that are important to consider when
 
 9.  **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
 
-Understanding these limitations is crucial for interpreting the study’s findings accurately and recognizing the potential for variance in real-world applications. Further research and refined methodologies could help address these limitations in future analyses.
-
--   Only includes parcels where residential use is allowed
-
--   Walksheds calculated using Euclidean distance (“as the crow flies”) to parcel center, not network distance
-
--   Assumes 100% lot coverage is allowed when no max. building footprint or max FAR
-
--   Other development regulations (e.g., setbacks) are not reflected in the estimated FAR
-
--   Does not account for HOA restrictions on allowed density
-
--   Does not account for maximum unit limits
-
--   Does not account for regulatory combinations such as max building height and max FAR
-
--   Does not account for other restrictions on development, such as critical areas, shoreline environments, or landmark designation
-
--   Assumes all data to be concurrent
+Further research, data collection, and methodological refinements could help address these limitations in future analyses.
 
 ## Results
 
