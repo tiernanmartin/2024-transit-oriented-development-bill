@@ -7,7 +7,6 @@ author:
     email: tiernan@futurewise.org
     roles:
       - Investigation
-      - Project Administration
       - Software
       - Visualization
     affiliations:
@@ -22,10 +21,11 @@ author:
       - Futurewise
 keywords:
   - Transit-Oriented Development
-  - Puget Sound Region
+  - Growth Management Act
+  - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, two bills were introduced in both the House and the Senate aimed at promoting community and transit-oriented housing development. These bills, House Bill 2160 and Senate Bill 6024, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under these bills exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
+  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -101,11 +101,49 @@ While these concerns are valid, there is not an obvious, better alternative to T
 
     > \(1\) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.
 
+### House Bill 2160
+
+House Bill 2160 (2023-2024 Washington State Legislative Session) proposed changes to the GMA intended to promote community and transit-oriented housing development.[^4] These changes, which would apply to all cities planning under the GMA, included the following:
+
+[^4]: This study used the Second Substitute of House Bill 2160 as the basis for its analysis.
+
+-   Prohibiting cities from preventing the siting of multifamily housing on residential land within transit station areas
+
+-   Prohibiting cities from enacting maximum floor area ratio (FAR) regulation under the following thresholds: 3.5 FAR for station areas of light rail, commuter rail, or streetcars; 2.5 FAR for station areas of bus rapid transit
+
+-   Limits the ability of cities to require off-street parking of new residential or mixed-use projects
+
+-   Categorically exempting residential or mixed-use projects within station areas from the State Environmental Policy Act (SEPA)
+
+The bill also proposed several requirements of residential development built within station areas, including making at least 10% of its residential units affordable.[^5]
+
+[^5]: The bill defines "Affordable housing" as:
+
+    > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development. [@reed2024]
+
 ## Data & Methods {#sec-data-methods}
 
 ## Results
 
 ## Discussion
+
+### Limitations
+
+-   Only includes parcels where residential use is allowed
+
+-   Walksheds calculated using Euclidean distance (“as the crow flies”) to parcel center, not network distance
+
+-   Assumes 100% lot coverage is allowed when no max. building footprint or max FAR
+
+-   Other development regulations (e.g., setbacks) are not reflected in the estimated FAR
+
+-   Does not account for HOA restrictions on allowed density
+
+-   Does not account for maximum unit limits
+
+-   Does not account for regulatory combinations such as max building height and max FAR
+
+-   Does not account for other restrictions on development, such as critical areas, shoreline environments, landmark designation
 
 ## Conclusion
 
