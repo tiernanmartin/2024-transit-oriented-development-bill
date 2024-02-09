@@ -304,17 +304,17 @@ businesses, leading some local and regional governments to include
 affordability requirements in their TOD programs.(Dawkins \& Moeckel,
 2016)
 
-While these concerns are valid, there is not an obvious, better
+While these concerns are valid, there is not an obvious, superior
 alternative to TOD. Sharp increases in sprawling, low-density
 residential and commercial development in Washington during 1980s
 resulted in many unintended consequences, including ecological
 disruption, traffic congestion, urban disinvestment, and loss of
-agricultural lands. This led the Washington State Legislature to adopt
-the Growth Management Act (GMA), a law requiring cities and counties to
-plan to accommodate growth within designated areas (urban growth areas
-or UGAs).(Trohimovich, 2002) Many of the GMA's goals are highly aligned
-with TOD---particularly the first four goals of the law.\footnote{The
-  first four goals of
+agricultural lands.(Trohimovich, 2002) This led the Washington State
+Legislature to adopt the Growth Management Act (GMA), a law requiring
+cities and counties to plan to accommodate growth within designated
+areas (urban growth areas or UGAs). Many of the GMA's planning goals are
+highly aligned with TOD as a land use strategy---particularly the first
+four goals of the law.\footnote{The first four goals of
   \href{https://app.leg.wa.gov/rcw/default.aspx?cite=36.70a.020}{\emph{RCW
   36.70A.020 Planning goals}} are:
 
@@ -335,9 +335,9 @@ with TOD---particularly the first four goals of the law.\footnote{The
 
 \subsection{House Bill 2160}\label{house-bill-2160}
 
-House Bill 2160 (2023-2024 Washington State Legislative Session)
-proposed changes to the GMA intended to promote community and
-transit-oriented housing development.\footnote{This study used the
+House Bill 2160 (HB 2160) of the 2023-2024 Washington State Legislative
+Session proposed changes to the GMA intended to promote community and
+transit-oriented housing development.\footnote{This study uses the
   Second Substitute of House Bill 2160 as the basis for its analysis.}
 These changes, which would apply to all cities planning under the GMA,
 included the following:
@@ -377,11 +377,136 @@ residential units affordable.\footnote{The bill defines ``Affordable
   urban development. (Reed, 2024)
   \end{quote}}
 
+\subsection{Research Objective \&
+Questions}\label{research-objective-questions}
+
+The purpose of this study is to provide information about the effects of
+the proposed HB 2160. Specifically, we seek to answer the following
+questions:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  What are the characteristics of the current land uses of the transit
+  station areas as defined in the bill?
+\item
+  Would this bill have an effect on the allowed development capacity of
+  transit station areas?
+\item
+  What is the size of any effect this bill may have?
+\item
+  How are the bill's effects distributed between the two station area
+  types that it defines?
+\item
+  What patterns are present in the cities that would be significantly
+  impacted by the bill?
+\end{enumerate}
+
 \section{Data \& Methods}\label{sec-data-methods}
 
-\section{Results}\label{results}
+\subsection{Research Design}\label{research-design}
 
-\section{Discussion}\label{discussion}
+We use a quantitative method to attempt to answer its research
+questions. To quantify the impact of zoning changes on development
+capacity within transit areas, we define the area-weighted mean of net
+development capacity (\(AWM_{NDC}\)) as follows:
+
+\[
+AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
+\]
+
+where:
+
+\begin{itemize}
+\tightlist
+\item
+  \(NDC_i = FAR_{new,i} - FAR_{old,i}\) represents the net development
+  capacity for parcel \(i\), calculated as the difference between the
+  new Floor Area Ratio (FAR) and the old FAR.
+\item
+  \(A_i\) denotes the area of parcel \(i\).
+\item
+  \(I_i\) is an indicator function that equals 1 if parcel \(i\)
+  satisfies all of the following conditions: it is within a station
+  area, it lies within a zoning district where residential use is
+  permitted, and it is within an urban growth area; otherwise, \(I_i\)
+  equals 0.
+\end{itemize}
+
+This formula ensures that the calculation exclusively incorporates
+parcels meeting the specified criteria, with each parcel's contribution
+to the overall mean being proportionally weighted by its area. This
+method offers a precise metric for evaluating changes in development
+potential, reflecting the nuanced effects of the proposed bill. It also
+allows us to summarize the bills effect at different geographic levels,
+including station area, city, and region. We can then both describe
+individual geographies (e.g., a specific station area) and compare
+between geographies (e.g., several cities compared individually to the
+region).
+
+\subsection{Data Collection}\label{data-collection}
+
+The study uses several data sets from a variety of different sources.
+The following table summarize the study's data:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 4\tabcolsep) * \real{0.3333}}@{}}
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Data
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Citation
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Current Parcels (2023) & A statewide data set of tax parcels &
+Washington State Parcels Project (2023) \\
+Transit Stations & Transit station locations for light rail, commuter
+rail, streetcar, and existing bus rapid transit routes in the central
+Puget Sound Region & Puget Sound Regional Council (2024) \\
+Puget Sound Zoning Districts (2023) & Zoning and land use regulations
+collected from central Puget Sound local governments' land use codes and
+maps & Urban Institute (2023) \\
+Urban Growth Areas & Urban growth areas for the central Puget Sound
+region (King, Snohomish, Kitsap, and Pierce counties) & Puget Sound
+Regional Council (n.d.) \\
+\end{longtable}
+
+\subsection{Data Analysis}\label{data-analysis}
+
+The study uses a combination of a relational database and statistical
+software to conduct its analysis. The relational database, PostgreSQL
+with the PostGIS extension, is used to perform spatial filters and
+spatial joins on the Current Parcel data set. The R programming language
+is used to perform aggregations and calculate summary statistics on the
+filtered and augmented parcel dataset. R is also also used to produce
+summary tables and visualizations.
+
+Data sets containing information relevant to HB 2160 are combined
+through spatial filtering and spatial joining to produce a data set of
+all parcels within the station areas. The refined parcel data are
+augmented with zoning and land use regulation information from the
+zoning districts. A maximum FAR baseline is estimated for all parcels,
+then the new maximum FAR that would be introduced by HB 2160 is
+estimated. For each parcel, the net difference between the current and
+new FAR is calculated. For parcels where the current zoning allows
+development greater than the new FAR, the effect of the bill is
+considered to be zero additional FAR; for parcels where the current
+zoning is more restrictive that the new FAR, the effect is calculated in
+terms of additional FAR allowed. The bill's effect on each parcel is
+then aggregated by station area, jurisdiction, and region, and
+summarized using the area-weight mean.\footnote{Parcels that do not
+  allow residential uses are characterized as ``not developable'' and
+  are not included in the area-weighted mean statistic; however, these
+  parcels are included in the study's analysis for other purposes such
+  as describing and quantithe characteristics of land within each
+  station area or jurisdiction.}
 
 \subsection{Limitations}\label{limitations}
 
@@ -406,8 +531,12 @@ residential units affordable.\footnote{The bill defines ``Affordable
   height and max FAR
 \item
   Does not account for other restrictions on development, such as
-  critical areas, shoreline environments, landmark designation
+  critical areas, shoreline environments, or landmark designation
 \end{itemize}
+
+\section{Results}\label{results}
+
+\section{Discussion}\label{discussion}
 
 \section{Conclusion}\label{conclusion}
 
@@ -428,6 +557,9 @@ Lund, H. (2006). Reasons for living in a transit-oriented development,
 and associated transit use. \emph{Journal of the American Planning
 Association}, \emph{72}, 357--366.
 \url{https://doi.org/10.1080/01944360608976757}
+
+\bibitem[\citeproctext]{ref-pugetsoundregionalcouncil}
+Puget Sound Regional Council. (n.d.). PSRC data portal.
 
 \bibitem[\citeproctext]{ref-pugetsoundregionalcouncil2018}
 Puget Sound Regional Council. (2018). \emph{Draft 2050 forecast of
@@ -455,6 +587,9 @@ Retrieved from
 
 \bibitem[\citeproctext]{ref-urbaninstitute}
 Urban Institute. (2023). Urban institute puget sound zoning atlas.
+
+\bibitem[\citeproctext]{ref-washingtonstateparcelsproject}
+Washington State Parcels Project. (2023). Current parcels (2023).
 
 \end{CSLReferences}
 
