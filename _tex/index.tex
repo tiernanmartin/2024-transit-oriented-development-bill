@@ -123,6 +123,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 \usepackage{xcolor}
+\usepackage{caption}
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage{lineno}
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
@@ -700,27 +701,50 @@ Notebook}}
 
 \subsection{Case Studies}\label{case-studies}
 
-We examine the station areas of several cities to assess how the effects
-of HB 2160 may differ from place to place.
+In order to get a sense for how the effects of HB 2160 may differ from
+place to place, we examine several cities as case studies.
 
-\begin{table}
-\caption{Tbale 2:Case Studies Comparison}\tabularnewline
+\emph{Insert table with population, land area, and count of each type of
+transit station}
 
-\centering
-\begin{tabular}{l|r|r}
-\hline
-City & Parcels (n) &  Land Area (sq. miles)\\
-\hline
-Kent & 1195 & 1.0561588\\
-\hline
-Mercer Island & 550 & 0.3417186\\
-\hline
-Redmond & 1336 & 2.0944255\\
-\hline
-Shoreline & 3632 & 1.3102692\\
-\hline
-\end{tabular}
-\end{table}
+Grouping the study data by city and analysis group, we find that there
+is a significant amount of variation between the cities. The vast
+majority of parcels in Redmond and Mercer Island's station areas would
+see their development capacity increased by the bill. However, weighting
+the station areas by the amount of land affected, we find that the
+bill's impact is slightly more modest among the case study cities.
+
+\begin{longtable}{l|cc}
+\caption{Table 3: Case Studies by Analysis Group}\tabularnewline
+
+\toprule
+\multicolumn{1}{l}{} & Parcels (n) & Land Area (mi<sup>2</sup>) \\ 
+\midrule
+\multicolumn{3}{l}{Kent} \\ 
+\midrule
+Developable, Affected & 1,195 (69\%) & 1.06 (62\%) \\ 
+Developable, Not Affected & 129 (7\%) & 0.24 (14\%) \\ 
+Not Developable & 401 (23\%) & 0.42 (24\%) \\ 
+\midrule
+\multicolumn{3}{l}{Mercer Island} \\ 
+\midrule
+Developable, Affected & 550 (87\%) & 0.34 (69\%) \\ 
+Developable, Not Affected & 71 (11\%) & 0.09 (18\%) \\ 
+Not Developable & 8 (1\%) & 0.06 (12\%) \\ 
+\midrule
+\multicolumn{3}{l}{Redmond} \\ 
+\midrule
+Developable, Affected & 1,336 (90\%) & 2.09 (76\%) \\ 
+Developable, Not Affected & 39 (3\%) & 0.27 (10\%) \\ 
+Not Developable & 108 (7\%) & 0.4 (14\%) \\ 
+\midrule
+\multicolumn{3}{l}{Shoreline} \\ 
+\midrule
+Developable, Affected & 3,632 (76\%) & 1.31 (62\%) \\ 
+Developable, Not Affected & 1,149 (24\%) & 0.76 (36\%) \\ 
+Not Developable & 7 (0\%) & 0.03 (1\%) \\ 
+\bottomrule
+\end{longtable}
 
 \textsubscript{Source:
 \href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article

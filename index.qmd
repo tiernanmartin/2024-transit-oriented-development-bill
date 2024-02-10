@@ -72,6 +72,18 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 
 ```
 
+
+```{r}
+#| label: utility-functions
+#| include: false
+
+weighted_mean <- possibly(
+  .f = function(x,w,d){round(digits = d, weighted.mean(x, w, na.rm = TRUE))},
+  otherwise = NA)
+
+
+```
+
 ## About Futurewise {.unnumbered}
 
 [![](images/Futurewise%20Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
@@ -405,13 +417,21 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ### Case Studies
 
-We examine the station areas of several cities to assess how the effects of HB 2160 may differ from place to place.
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine several cities as case studies.
+
+*Insert table with population (2023), land area, and count of each type of transit station*
+
+Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
 
 ```{r}
-#| label: results-case-studies-comparison-table
-#| tbl-cap: "Tbale 2:Case Studies Comparison"
+#| label: results-case-studies-analysis-group
+#| tbl-cap: "Table 3: Case Studies by Analysis Group"
+#| tbl-cap-location: top
 
-col_names_city <- c("City", "Parcels (n)", " Land Area (sq. miles)")
+col_names_city <- c("City",
+                    "Analysis Group",
+                    "Parcels (n)", 
+                    "Land Area (sq. miles)")
 
 case_studies <- c("Shoreline",
                   "Redmond",
@@ -419,25 +439,42 @@ case_studies <- c("Shoreline",
                   "Kent"
                   )
 
-p_tbl_summary_city <- p_affected |> 
-  st_drop_geometry() |>
-  filter(zoning_juris %in% case_studies) |>
+p_cities <- p |> 
+  st_drop_geometry() |> 
+  filter(zoning_juris %in% case_studies)
+
+p_cities_affected <- p_affected |>  
+  filter(zoning_juris %in% case_studies)
+
+p_cities |> 
+  group_by(zoning_juris, analysis_type) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = 
+              round(digits = 2,
+                    sum(parcel_area_mi2, na.rm = TRUE))
+            ) |> 
   group_by(zoning_juris) |> 
-  summarize(n = n(),
-            area_mi2 = sum(parcel_area_mi2))
-
-
-format_func <- function(x){
-  # browser()
-  if(!is.numeric(x)){return(x)} 
-  
-  round(x, digits = 1) |> 
-    format(big.mark = ",", decimal.mark = ".")
-}
-
-p_tbl_summary_city |> 
-  kable(col.names = col_names_city) 
-
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(zoning_juris, analysis_type) |> 
+  summarize(
+    n = glue("{comma(n)} ({percent(n/n_total)})"),
+    area = glue("{area} ({percent(area/area_total)})")
+  ) |> 
+  ungroup() |>  
+  gt(rowname_col = "analysis_type" ,
+     groupname_col = "zoning_juris",
+     process_md = TRUE) |> 
+  cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)")
+  ) |> 
+  tab_style(
+    style = list(
+      cell_text(indent = px(20))),
+    locations = cells_stub()
+  )
 
 ```
 
