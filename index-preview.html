@@ -212,7 +212,7 @@
 <meta name="citation_reference" content="citation_title=The growth management act (GMA) after more than 10 years: Another look &amp;amp;amp; a response to criticisms;,citation_author=Tim Trohimovich;,citation_publication_date=2002;,citation_cover_date=2002;,citation_year=2002;,citation_fulltext_html_url=http://www.futurewise.org/assets/resources/GMA_another_look.pdf;,citation_journal_title=Growth;">
 <meta name="citation_reference" content="citation_title=An act relating to promoting community and transit-oriented housing development;,citation_author=Representative Julia Reed;,citation_publication_date=2024-02-02;,citation_cover_date=2024-02-02;,citation_year=2024;">
 <meta name="citation_reference" content="citation_title=Current parcels (2023);,citation_author=undefined Washington State Parcels Project;,citation_publication_date=2023;,citation_cover_date=2023;,citation_year=2023;,citation_language=en-wo;">
-<meta name="citation_reference" content="citation_title=PSRC data portal;,citation_author=undefined Puget Sound Regional Council;,citation_language=en-us;">
+<meta name="citation_reference" content="citation_title=PSRC data portal;,citation_author=undefined Puget Sound Regional Council;,citation_publication_date=2023-09;,citation_cover_date=2023-09;,citation_year=2023;,citation_language=en-us;">
 </head>
 
   <body class="quarto-notebook">
@@ -365,15 +365,23 @@ The following objects are masked from 'package:stats':
 <div class="cell-output cell-output-stderr">
 <pre><code>here() starts at C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Linking to GEOS 3.11.2, GDAL 3.7.2, PROJ 9.3.0; sf_use_s2() is TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gtsummary)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># library(kableExtra)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pugetsound_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_pop_growth_2010_2023.rds"</span>))</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>outside_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_pop_growth_2010_2023.rds"</span>))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>pugetsound_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_hu_growth_2010_2023.rds"</span>))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>outside_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_hu_growth_2010_2023.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>pugetsound_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>outside_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>pugetsound_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_hu_growth_2010_2023.rds"</span>))</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>outside_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_hu_growth_2010_2023.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <section id="about-futurewise" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="about-futurewise">About Futurewise</h2>
@@ -400,7 +408,7 @@ The following objects are masked from 'package:stats':
 <section id="the-central-puget-sound-region" class="level3" data-number="1.1">
 <h3 data-number="1.1" class="anchored" data-anchor-id="the-central-puget-sound-region"><span class="header-section-number">1.1</span> The Central Puget Sound Region</h3>
 <p>The Puget Sound metropolitan region is one of North America’s major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound’s four-county region (King, Snohomish, Pierce, and Kitsap counties) added more residents and housing units than the rest of Washington state combined.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> According to forecasts by the Puget Sound Regional Council, the region’s population is expected to grow to 5.8 million people living within 2.8 million households by 2050.<span class="citation" data-cites="pugetsoundregionalcouncil2018">(<a href="#ref-pugetsoundregionalcouncil2018" role="doc-biblioref">Puget Sound Regional Council 2018</a>)</span></p>
-<p>One challenge that the central Puget Sound region faces is high, rising housing costs. The Puget Sound Regional Council’s <em>Housing Stability Strategy: 2023 Monitoring Report</em> provides several sobering statistics about the region’s housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. By 2023, the annual income required to purchase the area’s median priced home was $160,000.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Between July 2015 and July 2023, the median rent cost increased by 50%.<span class="citation" data-cites="pugetsoundregionalcouncil2023">(<a href="#ref-pugetsoundregionalcouncil2023" role="doc-biblioref">Puget Sound Regional Council 2023</a>)</span></p>
+<p>One challenge that the central Puget Sound region faces is high, rising housing costs. The Puget Sound Regional Council’s <em>Housing Stability Strategy: 2023 Monitoring Report</em> provides several sobering statistics about the region’s housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. By 2023, the annual income required to purchase the area’s median priced home was $160,000.<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> Between July 2015 and July 2023, the median rent cost increased by 50%.<span class="citation" data-cites="pugetsoundregionalcouncil2023">(<a href="#ref-pugetsoundregionalcouncil2023" role="doc-biblioref">Puget Sound Regional Council 2023b</a>)</span></p>
 </section>
 <section id="transit-oriented-development" class="level3" data-number="1.2">
 <h3 data-number="1.2" class="anchored" data-anchor-id="transit-oriented-development"><span class="header-section-number">1.2</span> Transit-Oriented Development</h3>
@@ -483,7 +491,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <tr class="even">
 <td>Urban Growth Areas</td>
 <td>Urban growth areas for the central Puget Sound region (King, Snohomish, Kitsap, and Pierce counties)</td>
-<td><span class="citation" data-cites="pugetsoundregionalcouncil">Puget Sound Regional Council (<a href="#ref-pugetsoundregionalcouncil" role="doc-biblioref">n.d.</a>)</span></td>
+<td><span class="citation" data-cites="pugetsoundregionalcouncil">Puget Sound Regional Council (<a href="#ref-pugetsoundregionalcouncil" role="doc-biblioref">2023a</a>)</span></td>
 </tr>
 </tbody>
 </table>
@@ -502,7 +510,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <li><p><strong>Lot Coverage Assumptions</strong>: In cases where specific regulations on maximum building footprint or FAR are not provided, the study assumes that 100% lot coverage is permissible. This assumption may not align with actual zoning regulations, potentially leading to overestimations of development capacity.</p></li>
 <li><p><strong>Omission of Development Regulations</strong>: The estimated FAR metric does not incorporate other development regulations, such as setbacks, which can significantly impact the buildable area on a parcel.</p></li>
 <li><p><strong>Homeowner Association (HOA) Restrictions</strong>: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA’s exist.</p></li>
-<li><p><strong>Unit Limits Ignored</strong>: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.</p></li>
+<li><p><strong>Housing Unit Limits Ignored</strong>: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.</p></li>
 <li><p><strong>Regulatory Combinations Not Considered</strong>: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.</p></li>
 <li><p><strong>Additional Restrictions on Development</strong>: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.</p></li>
 <li><p><strong>Currency of Data</strong>: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.</p></li>
@@ -512,6 +520,152 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 </section>
 <section id="results" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="results"><span class="header-section-number">3</span> Results</h2>
+<div class="cell-container"><div class="cell-decorator"><pre>In [3]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(<span class="st">"data_outputs/2024-tod-bill.gpkg"</span>),</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">layer =</span> <span class="st">"tod-parcels"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>undev_land_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">94</span>, <span class="dv">93</span>, <span class="dv">92</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div>
+<p>The study included approximately 125,000 parcels (<span class="math inline">\(N = 124,941\)</span>), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160’s specified distance thresholds of a qualifying transit stop.</p>
+<p>We separated the study data into three analysis groups:</p>
+<ol type="1">
+<li><p><strong>Not Developable</strong><br>
+Parcels that do not meet the study’s eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></p></li>
+<li><p><strong>Developable, Not Affected</strong><br>
+Parcels that meet the study’s eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.</p></li>
+<li><p><strong>Developable, Affected</strong><br>
+Parcels that meet the study’s eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.</p></li>
+</ol>
+<div class="cell-container"><div class="cell-decorator"><pre>In [4]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Analysis Group"</span>, <span class="st">"Parcels (N)"</span>, <span class="st">" Land Area (sq. miles)"</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span> </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">analysis_type =</span> <span class="fu">case_when</span>(</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(zoning_new_max_far_additional) <span class="sc">~</span> <span class="st">"Not Developable"</span>,</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    zoning_new_max_far_additional <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Developable, Not Affected"</span>,</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Developable, Affected"</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysis_type =</span> <span class="fu">factor</span>(analysis_type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not Developable"</span>, </span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Not Affected"</span>,</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Affected"</span>))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(analysis_type) <span class="sc">|&gt;</span> </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">area_mi2 =</span> <span class="fu">sum</span>(parcel_area_mi2))</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="sc">|&gt;</span></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">adorn_totals</span>(<span class="st">"row"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>        <span class="at">col.names =</span> col_names,</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>        <span class="at">format.args =</span> <span class="fu">list</span>(<span class="at">big.mark =</span> <span class="st">','</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Study Summary Statistics: Central Puget Sound</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Analysis Group</th>
+<th style="text-align: right;">Parcels (N)</th>
+<th style="text-align: right;">Land Area (sq. miles)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Not Developable</td>
+<td style="text-align: right;">7,219</td>
+<td style="text-align: right;">16.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Developable, Not Affected</td>
+<td style="text-align: right;">20,288</td>
+<td style="text-align: right;">23.48</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Developable, Affected</td>
+<td style="text-align: right;">97,434</td>
+<td style="text-align: right;">72.77</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total</td>
+<td style="text-align: right;">124,941</td>
+<td style="text-align: right;">113.04</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></div>
+<p>We find that approximately most parcels and most land area within the station areas would be affected by the bill:</p>
+<div class="cell-container"><div class="cell-decorator"><pre>In [5]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>col_names_af <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Analysis Group"</span>, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Parcels (%)"</span>, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                  <span class="st">" Land Area (%)"</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>p_tbl_af <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n_addtl =</span> scales<span class="sc">::</span><span class="fu">percent</span>(</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>              <span class="fu">sum</span>(zoning_new_max_far_additional <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">n</span>()),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">area_addtl =</span> scales<span class="sc">::</span><span class="fu">percent</span>(</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>              <span class="fu">sum</span>(parcel_area[zoning_new_max_far_additional <span class="sc">&gt;</span> <span class="dv">0</span>],</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">/</span> <span class="fu">sum</span>(parcel_area, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(<span class="at">analysis_group =</span> <span class="st">"Developable, Affected"</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>            n_addtl,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            area_addtl)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>p_tbl_af <span class="sc">|&gt;</span>  </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>        <span class="at">col.names =</span> col_names_af)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<caption>Study Summary Statistics: Affected Parcels, Central Puget Sound</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Analysis Group</th>
+<th style="text-align: left;">Parcels (%)</th>
+<th style="text-align: left;">Land Area (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Developable, Affected</td>
+<td style="text-align: left;">78%</td>
+<td style="text-align: left;">64%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div></div>
+<div class="cell-container"><div class="cell-decorator"><pre>In [6]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> p) <span class="sc">+</span> </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> zoning_new_max_far_diff,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> parcel_area_mi2) <span class="sc">+</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey20"</span>, <span class="at">fill=</span> <span class="st">"grey80"</span>) <span class="sc">+</span> </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"tomato"</span>,<span class="at">linetype =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">15</span>,<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Effect on Maximum FAR"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">glue</span>(<span class="st">"Histogram bars represent area of land (sq. miles), n = {scales::comma(nrow(p) - 8953)} parcels"</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Land Area (sq. miles)"</span>,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Change in Maximum FAR (0.5 increments)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 8953 rows containing non-finite values (`stat_bin()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 2 rows containing missing values (`geom_bar()`).</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p class=""><a href="index_files/figure-html/results-histogram-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="HB 2160s Effect on Maximum FAR"><img src="index_files/figure-html/results-histogram-1.png" class="img-fluid figure-img" width="576" alt="HB 2160s Effect on Maximum FAR"></a></p>
+<figcaption>HB 2160s Effect on Maximum FAR</figcaption>
+</figure>
+</div>
+</div>
+</div></div>
 </section>
 <section id="discussion" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="discussion"><span class="header-section-number">4</span> Discussion</h2>
@@ -531,14 +685,14 @@ Lund, H. 2006. <span>“Reasons for Living in a Transit-Oriented Development, an
 <div id="ref-pugetsoundregionalcouncil2018" class="csl-entry" role="listitem">
 Puget Sound Regional Council. 2018. <span>“Draft 2050 Forecast of People and Jobs.”</span> <a href="https://www.psrc.org/media/1749">https://www.psrc.org/media/1749</a>.
 </div>
+<div id="ref-pugetsoundregionalcouncil" class="csl-entry" role="listitem">
+———. 2023a. <span>“PSRC Data Portal.”</span>
+</div>
 <div id="ref-pugetsoundregionalcouncil2023" class="csl-entry" role="listitem">
-———. 2023. <span>“Regional Housing Strategy: 2023 Monitoring Report.”</span> <a href="https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf">https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf</a>.
+———. 2023b. <span>“Regional Housing Strategy: 2023 Monitoring Report.”</span> <a href="https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf">https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf</a>.
 </div>
 <div id="ref-pugetsoundregionalcouncil2024" class="csl-entry" role="listitem">
 ———. 2024. <span>“Community and Transit-Oriented Housing Development Bill 2024: An Interactive Web Map.”</span> <a href="https://arcg.is/0SSvK10">https://arcg.is/0SSvK10</a>.
-</div>
-<div id="ref-pugetsoundregionalcouncil" class="csl-entry" role="listitem">
-———. n.d. <span>“PSRC Data Portal.”</span>
 </div>
 <div id="ref-reed2024" class="csl-entry" role="listitem">
 Reed, Representative Julia. 2024. <span>“An Act Relating to Promoting Community and Transit-Oriented Housing Development,”</span> February.
@@ -555,6 +709,7 @@ Washington State Parcels Project. 2023. <span>“Current Parcels (2023).”</spa
 </div>
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</span>
+<span class="glightbox-desc lightbox-desc-2">HB 2160s Effect on Maximum FAR</span>
 </div>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
@@ -574,6 +729,7 @@ Washington State Parcels Project. 2023. <span>“Current Parcels (2023).”</spa
 </blockquote>
 <a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></li>
 <li id="fn6"><p>Parcels that do not allow residential uses are characterized as “not developable” and are not included in the area-weighted mean statistic; however, these parcels are included in the study’s analysis for other purposes such as describing and quantithe characteristics of land within each station area or jurisdiction.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7"><p>For the purposes of this study, tax assessor-assigned land uses that are <em>not compatible</em> with development are: ‘Non commercial forest’, ‘Open space land classified under chapter 84.34 RCW’, and ‘Water areas’.<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section>
      </main>
@@ -963,7 +1119,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"descPosition":"bottom","closeEffect":"zoom","selector":".lightbox"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"descPosition":"bottom","closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

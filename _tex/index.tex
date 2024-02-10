@@ -216,8 +216,8 @@ near transit stops.
 
 
 
-\section*{About Futurewise}\label{about-futurewise}
-\addcontentsline{toc}{section}{About Futurewise}
+\subsection*{About Futurewise}\label{about-futurewise}
+\addcontentsline{toc}{subsection}{About Futurewise}
 
 \href{https://futurewise.org/}{\begin{center}
 \includegraphics[width=1.5625in,height=\textheight]{images/Futurewise Logo.png}
@@ -233,8 +233,8 @@ have members across the state including the central Puget Sound region.
 For more information about our organization, visit our website at
 \url{https://futurewise.org/}.
 
-\section*{Acknowledgments}\label{acknowledgments}
-\addcontentsline{toc}{section}{Acknowledgments}
+\subsection*{Acknowledgments}\label{acknowledgments}
+\addcontentsline{toc}{subsection}{Acknowledgments}
 
 The authors received no financial support for the research, authorship,
 or publication of this article.
@@ -247,7 +247,7 @@ State House Bill 2160 and Senate Bill 6024.(Puget Sound Regional
 Council, 2024) Thanks to Noha Mahgoub from the Office of Governor Jay
 Inslee for providing feedback and guidance.
 
-\section{Introduction}\label{introduction}
+\subsection{Introduction}\label{introduction}
 
 \begin{figure}[H]
 
@@ -261,7 +261,7 @@ Inslee for providing feedback and guidance.
 
 \end{figure}%
 
-\subsection{The Central Puget Sound
+\subsubsection{The Central Puget Sound
 Region}\label{the-central-puget-sound-region}
 
 The Puget Sound metropolitan region is one of North America's major
@@ -289,9 +289,9 @@ By 2023, the annual income required to purchase the area's median priced
 home was \$160,000.\footnote{This estimate includes three of the four
   central Puget Sound counties: King, Pierce, and Snohomish.} Between
 July 2015 and July 2023, the median rent cost increased by 50\%.(Puget
-Sound Regional Council, 2023)
+Sound Regional Council, 2023a)
 
-\subsection{Transit-Oriented
+\subsubsection{Transit-Oriented
 Development}\label{transit-oriented-development}
 
 Transit-oriented development (TOD) is a strategy of building homes at or
@@ -333,7 +333,7 @@ four goals of the law.\footnote{The first four goals of
   of existing housing stock.
   \end{quote}}
 
-\subsection{House Bill 2160}\label{house-bill-2160}
+\subsubsection{House Bill 2160}\label{house-bill-2160}
 
 House Bill 2160 (HB 2160) of the 2023-2024 Washington State Legislative
 Session proposed changes to the GMA intended to promote community and
@@ -377,7 +377,7 @@ residential units affordable.\footnote{The bill defines ``Affordable
   urban development. (Reed, 2024)
   \end{quote}}
 
-\subsection{Research Objective \&
+\subsubsection{Research Objective \&
 Questions}\label{research-objective-questions}
 
 The purpose of this study is to provide information about the effects of
@@ -402,9 +402,9 @@ questions:
   impacted by the bill?
 \end{enumerate}
 
-\section{Data \& Methods}\label{sec-data-methods}
+\subsection{Data \& Methods}\label{sec-data-methods}
 
-\subsection{Research Design}\label{research-design}
+\subsubsection{Research Design}\label{research-design}
 
 We use a quantitative method to attempt to answer our research
 questions.
@@ -447,7 +447,7 @@ station area, city, and region. We can then both describe individual
 geographies (e.g., a specific station area) and compare between
 geographies (e.g., several cities compared individually to the region).
 
-\subsection{Data Collection}\label{data-collection}
+\subsubsection{Data Collection}\label{data-collection}
 
 The study uses several data sets from a variety of different sources.
 The following table summarize the study's data:
@@ -478,10 +478,10 @@ collected from central Puget Sound local governments' land use codes and
 maps & Urban Institute (2023) \\
 Urban Growth Areas & Urban growth areas for the central Puget Sound
 region (King, Snohomish, Kitsap, and Pierce counties) & Puget Sound
-Regional Council (n.d.) \\
+Regional Council (2023b) \\
 \end{longtable}
 
-\subsection{Data Analysis}\label{data-analysis}
+\subsubsection{Data Analysis}\label{data-analysis}
 
 The study uses a combination of a relational database and statistical
 software to conduct its analysis. The relational database, PostgreSQL
@@ -511,7 +511,7 @@ summarized using the area-weight mean.\footnote{Parcels that do not
   as describing and quantithe characteristics of land within each
   station area or jurisdiction.}
 
-\subsection{Limitations}\label{limitations}
+\subsubsection{Limitations}\label{limitations}
 
 Our method is subject to several limitations that are important to
 consider when interpreting our findings:
@@ -545,10 +545,10 @@ consider when interpreting our findings:
   parcels, which could reduce the impact of bill in station areas where
   restrictive HOA's exist.
 \item
-  \textbf{Unit Limits Ignored}: The study does not account for maximum
-  unit limits that can further restrict the number of residences within
-  a given development, possibly leading to inaccurate assessments of
-  potential housing contributions.
+  \textbf{Housing Unit Limits Ignored}: The study does not account for
+  maximum unit limits that can further restrict the number of residences
+  within a given development, possibly leading to inaccurate assessments
+  of potential housing contributions.
 \item
   \textbf{Regulatory Combinations Not Considered}: Interactions between
   different regulations, such as maximum building height and maximum
@@ -570,14 +570,103 @@ consider when interpreting our findings:
 Further research, data collection, and methodological refinements could
 help address these limitations in future analyses.
 
-\section{Results}\label{results}
+\subsection{Results}\label{results}
 
-\section{Discussion}\label{discussion}
+The study included approximately 125,000 parcels (\(N = 124,941\)), all
+within the four central Puget Sound counties, within an Urban Growth
+Area, and within HB 2160's specified distance thresholds of a qualifying
+transit stop.
 
-\section{Conclusion}\label{conclusion}
+We separated the study data into three analysis groups:
 
-\section*{References}\label{references}
-\addcontentsline{toc}{section}{References}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  \textbf{Not Developable}\\
+  Parcels that do not meet the study's eligibility criteria. These
+  criteria include allowing residential uses and having a tax
+  assessor-assigned land use that is compatible with
+  development.\footnote{For the purposes of this study, tax
+    assessor-assigned land uses that are \emph{not compatible} with
+    development are: `Non commercial forest', `Open space land
+    classified under chapter 84.34 RCW', and `Water areas'.}
+\item
+  \textbf{Developable, Not Affected}\\
+  Parcels that meet the study's eligibility criteria but have an equal
+  or higher development capacity than the bill would allow and would,
+  therefore, not be affected by the bill.
+\item
+  \textbf{Developable, Affected}\\
+  Parcels that meet the study's eligibility criteria and have zoning
+  that is more restrictive than the maximum FAR set by the bill and
+  would, therefore, be affected.
+\end{enumerate}
+
+\begin{longtable}[]{@{}lrr@{}}
+\caption{Study Summary Statistics: Central Puget Sound}\tabularnewline
+\toprule\noalign{}
+Analysis Group & Parcels (N) & Land Area (sq. miles) \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Analysis Group & Parcels (N) & Land Area (sq. miles) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Not Developable & 7,219 & 16.80 \\
+Developable, Not Affected & 20,288 & 23.48 \\
+Developable, Affected & 97,434 & 72.77 \\
+Total & 124,941 & 113.04 \\
+\end{longtable}
+
+\textsubscript{Source:
+\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index-preview.html}{Article
+Notebook}}
+
+We find that approximately most parcels and most land area within the
+station areas would be affected by the bill:
+
+\begin{longtable}[]{@{}lll@{}}
+\caption{Study Summary Statistics: Affected Parcels, Central Puget
+Sound}\tabularnewline
+\toprule\noalign{}
+Analysis Group & Parcels (\%) & Land Area (\%) \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Analysis Group & Parcels (\%) & Land Area (\%) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Developable, Affected & 78\% & 64\% \\
+\end{longtable}
+
+\textsubscript{Source:
+\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index-preview.html}{Article
+Notebook}}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{index_files/figure-pdf/results-histogram-1.pdf}
+
+}
+
+\caption{HB 2160s Effect on Maximum FAR}
+
+\end{figure}%
+
+\textsubscript{Source:
+\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index-preview.html}{Article
+Notebook}}
+
+\subsection{Discussion}\label{discussion}
+
+\subsection{Conclusion}\label{conclusion}
+
+\subsection*{References}\label{references}
+\addcontentsline{toc}{subsection}{References}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}
@@ -594,17 +683,17 @@ and associated transit use. \emph{Journal of the American Planning
 Association}, \emph{72}, 357--366.
 \url{https://doi.org/10.1080/01944360608976757}
 
-\bibitem[\citeproctext]{ref-pugetsoundregionalcouncil}
-Puget Sound Regional Council. (n.d.). PSRC data portal.
-
 \bibitem[\citeproctext]{ref-pugetsoundregionalcouncil2018}
 Puget Sound Regional Council. (2018). \emph{Draft 2050 forecast of
 people and jobs}. Retrieved from \url{https://www.psrc.org/media/1749}
 
 \bibitem[\citeproctext]{ref-pugetsoundregionalcouncil2023}
-Puget Sound Regional Council. (2023). \emph{Regional housing strategy:
+Puget Sound Regional Council. (2023a). \emph{Regional housing strategy:
 2023 monitoring report}. Retrieved from
 \url{https://www.psrc.org/sites/default/files/2023-11/reg-housing-strategy-monitoring-rpt-2023.pdf}
+
+\bibitem[\citeproctext]{ref-pugetsoundregionalcouncil}
+Puget Sound Regional Council. (2023b, September). PSRC data portal.
 
 \bibitem[\citeproctext]{ref-pugetsoundregionalcouncil2024}
 Puget Sound Regional Council. (2024, January). Community and

@@ -48,6 +48,11 @@ library(scales)
 library(readxl)
 library(janitor)
 library(here)
+library(sf)
+library(knitr)
+library(gt)
+library(gtsummary)
+# library(kableExtra)
 
 ```
 
@@ -190,7 +195,7 @@ Our method is subject to several limitations that are important to consider when
 
 5.  **Homeowner Association (HOA) Restrictions**: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA's exist.
 
-6.  **Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
+6.  **Housing Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
 
 7.  **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
 
@@ -201,6 +206,119 @@ Our method is subject to several limitations that are important to consider when
 Further research, data collection, and methodological refinements could help address these limitations in future analyses.
 
 ## Results
+
+```{r}
+#| include: false
+
+p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+             layer = "tod-parcels",
+             quiet = TRUE)
+
+undev_land_codes <- c(94, 93, 92)
+
+```
+
+The study included approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+
+We separated the study data into three analysis groups:
+
+1.  **Not Developable**\
+    Parcels that do not meet the study's eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.[^7]
+
+2.  **Developable, Not Affected**\
+    Parcels that meet the study's eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.
+
+3.  **Developable, Affected**\
+    Parcels that meet the study's eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.
+
+[^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
+
+```{r}
+#| label: results-summary-table
+#| output: true
+#| message: false
+#| tbl-cap: "Study Summary Statistics: Central Puget Sound"
+
+
+col_names <- c("Analysis Group", "Parcels (N)", " Land Area (sq. miles)")
+
+p_tbl_summary <- p |> 
+  st_drop_geometry() |> 
+  mutate(
+    analysis_type = case_when(
+    is.na(zoning_new_max_far_additional) ~ "Not Developable",
+    zoning_new_max_far_additional == 0 ~ "Developable, Not Affected",
+    TRUE ~ "Developable, Affected"
+  ),
+  analysis_type = factor(analysis_type, levels = c("Not Developable", 
+                                                   "Developable, Not Affected",
+                                                   "Developable, Affected"))
+  ) |> 
+  group_by(analysis_type) |> 
+  summarize(n = n(),
+            area_mi2 = sum(parcel_area_mi2))
+
+
+p_tbl_summary |>
+  adorn_totals("row") |> 
+  kable(digits = 2,
+        col.names = col_names,
+        format.args = list(big.mark = ','))
+
+```
+
+We find that approximately most parcels and most land area within the station areas would be affected by the bill:
+
+```{r}
+#| label: results-summary-tbl-affected
+#| output: true
+#| message: false
+#| tbl-cap: "Study Summary Statistics: Affected Parcels, Central Puget Sound"
+
+col_names_af <- c("Analysis Group", 
+                  "Parcels (%)", 
+                  " Land Area (%)")
+
+p_tbl_af <- p |> 
+  st_drop_geometry() |> 
+  summarise(n_addtl = scales::percent(
+              sum(zoning_new_max_far_additional > 0,
+                  na.rm = TRUE) / n()),
+            area_addtl = scales::percent(
+              sum(parcel_area[zoning_new_max_far_additional > 0],
+                  na.rm = TRUE) / sum(parcel_area, na.rm = TRUE))
+  ) |> 
+  transmute(analysis_group = "Developable, Affected",
+            n_addtl,
+            area_addtl)
+
+p_tbl_af |>  
+  kable(digits = 2,
+        col.names = col_names_af)
+
+```
+
+```{r}
+#| label: results-histogram
+#| output: true
+#| message: false
+#| fig-cap: "HB 2160s Effect on Maximum FAR"
+#| fig-width: 6
+#| fig-height: 4
+
+ggplot(data = p) + 
+  aes(x = zoning_new_max_far_diff,
+      weight = parcel_area_mi2) + 
+  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") + 
+  geom_vline(xintercept = 0, color = "tomato",linetype = 2) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  xlim(-15,5) +
+  labs(title = "Effect on Maximum FAR",
+       subtitle = glue("Histogram bars represent area of land (sq. miles), n = {scales::comma(nrow(p) - 8953)} parcels"),
+       y = "Land Area (sq. miles)",
+       x = "Change in Maximum FAR (0.5 increments)") 
+
+```
 
 ## Discussion
 
