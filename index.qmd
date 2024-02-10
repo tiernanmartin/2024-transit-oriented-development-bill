@@ -320,6 +320,35 @@ ggplot(data = p) +
 
 ```
 
+Among parcels affected by the bill, we find that the area-weighted mean effect would be an additional 1.35 FAR allowed:
+
+```{r}
+#| label: results-histogram-affected
+#| output: true
+#| message: false
+#| fig-cap: "Increase in Maximum FAR for Parcels Affected by HB 2160"
+#| fig-width: 6
+#| fig-height: 4
+
+
+wt_avg <- weighted.mean(p$zoning_new_max_far_additional,
+                        w = p$parcel_area,
+                        na.rm = TRUE) |> round(digits = 2)
+p |> 
+  st_drop_geometry() |> 
+  filter(zoning_new_max_far_additional > 0) |> 
+ggplot() +  
+  aes(x = zoning_new_max_far_additional,
+      weight = parcel_area_mi2) + 
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
+  geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2) +
+  scale_y_continuous(labels = scales::label_comma()) + 
+  labs(title = "Effect on Maximum FAR",
+       subtitle = glue("Area-weighted mean effect = {wt_avg} FAR, n = {scales::comma(nrow(filter(p, zoning_new_max_far_additional > 0)))} parcels"),
+       y = "Land Area (sq. miles)",
+       x = "Increase in Maximum FAR (0.25 increments)") 
+```
+
 ## Discussion
 
 ## Conclusion

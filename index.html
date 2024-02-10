@@ -246,7 +246,7 @@ window.Quarto = {
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
+<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
 <figcaption>Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</figcaption>
 </figure>
 </div>
@@ -437,12 +437,23 @@ Parcels that meet the study’s eligibility criteria and have zoning that is mor
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="index_files/figure-html/results-histogram-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="HB 2160s Effect on Maximum FAR"><img src="index_files/figure-html/results-histogram-1.png" class="img-fluid figure-img" width="576" alt="HB 2160s Effect on Maximum FAR"></a></p>
+<p><a href="index_files/figure-html/results-histogram-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2" title="HB 2160s Effect on Maximum FAR"><img src="index_files/figure-html/results-histogram-1.png" class="img-fluid figure-img" width="576" alt="HB 2160s Effect on Maximum FAR"></a></p>
 <figcaption>HB 2160s Effect on Maximum FAR</figcaption>
 </figure>
 </div>
 </div>
 <a class="quarto-notebook-link" id="nblink-3" href="index-preview.html">Source: Article Notebook</a></div>
+<p>Among parcels affected by the bill, we find that the area-weighted mean effect would be an additional 1.35 FAR allowed:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="index_files/figure-html/results-histogram-affected-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3" title="Increase in Maximum FAR for Parcels Affected by HB 2160"><img src="index_files/figure-html/results-histogram-affected-1.png" class="img-fluid figure-img" width="576" alt="Increase in Maximum FAR for Parcels Affected by HB 2160"></a></p>
+<figcaption>Increase in Maximum FAR for Parcels Affected by HB 2160</figcaption>
+</figure>
+</div>
+</div>
+<a class="quarto-notebook-link" id="nblink-4" href="index-preview.html">Source: Article Notebook</a></div>
 </section>
 <section id="discussion" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="discussion"><span class="header-section-number">4</span> Discussion</h2>
@@ -487,6 +498,7 @@ Washington State Parcels Project. 2023. <span>“Current Parcels (2023).”</spa
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</span>
 <span class="glightbox-desc lightbox-desc-2">HB 2160s Effect on Maximum FAR</span>
+<span class="glightbox-desc lightbox-desc-3">Increase in Maximum FAR for Parcels Affected by HB 2160</span>
 </div>
 </section>
 
@@ -925,7 +937,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","descPosition":"bottom","closeEffect":"zoom","loop":false});
+<script>var lightboxQuarto = GLightbox({"selector":".lightbox","openEffect":"zoom","loop":false,"descPosition":"bottom","closeEffect":"zoom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;
