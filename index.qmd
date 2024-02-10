@@ -72,7 +72,6 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 
 ```
 
-
 ```{r}
 #| label: utility-functions
 #| include: false
@@ -80,6 +79,8 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 weighted_mean <- possibly(
   .f = function(x,w,d){round(digits = d, weighted.mean(x, w, na.rm = TRUE))},
   otherwise = NA)
+
+convert_to_mi2 <- function(x){x/27878400}
 
 
 ```
@@ -296,9 +297,9 @@ p_tbl_summary |>
 
 ```
 
-Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%). 
+Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%).
 
-Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR. 
+Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR.
 
 ```{r}
 #| label: results-histogram-affected
@@ -334,7 +335,6 @@ ggplot() +
 ```
 
 We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
-
 
 ```{r}
 #| label: results-histogram-station-areas
@@ -417,9 +417,60 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ### Case Studies
 
-In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine several cities as case studies.
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts with which we can examine the data.
 
-*Insert table with population (2023), land area, and count of each type of transit station*
+```{r}
+#| label: results-case-studies-summary
+#| message: false
+#| tbl-cap: "Table 2: Case Studies"
+
+case_studies <- c("Shoreline",
+                  "Redmond",
+                  "Mercer Island",
+                  "Kent"
+                  )
+
+ps_cities <- st_read(
+  quiet = TRUE,
+  here("data_outputs/2024-tod-bill.gpkg"),
+  layer = "ps-cities-pop-hu") |> 
+  st_transform(2926) |> 
+  mutate(area = st_area(geom),
+         area_mi2 = as.numeric(convert_to_mi2(area))
+)
+
+
+st_join(t,ps_cities) |> 
+  st_drop_geometry() |> 
+  filter(name %in% case_studies) |> 
+  group_by(name, mode) |> 
+  summarize(.groups = "drop",
+            n = n()) |> 
+  pivot_wider(names_from = mode,values_from = n,values_fill = 0L) |> 
+  mutate(SC = 0L) |> 
+  left_join(st_drop_geometry(ps_cities)) |> 
+  select(-geoid, -area) |> 
+  select(name, population, housing_units, area_mi2, everything()) |> 
+  gt(rowname_col = "name") |> 
+   tab_spanner(
+    label = "Population & Housing",
+    columns = c(population, housing_units, area_mi2)
+  ) |>
+  tab_spanner(
+    label = "Transit Station Areas",
+    columns = c(LR, CR, SC, BRT)
+  ) |> 
+  fmt_number( 
+    decimals = 0,       
+    sep_mark = ","
+  ) |> 
+  cols_label(population = "Population",
+             housing_units = "Housing Units",
+             area_mi2 = html("Land Area (mi<sup>2</sup>)"))
+
+
+
+```
 
 Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
 
@@ -432,12 +483,6 @@ col_names_city <- c("City",
                     "Analysis Group",
                     "Parcels (n)", 
                     "Land Area (sq. miles)")
-
-case_studies <- c("Shoreline",
-                  "Redmond",
-                  "Mercer Island",
-                  "Kent"
-                  )
 
 p_cities <- p |> 
   st_drop_geometry() |> 
@@ -478,6 +523,13 @@ p_cities |>
 
 ```
 
+#### Kent
+
+#### Mercer Island
+
+#### Redmond
+
+#### Shoreline
 
 ## Discussion
 
