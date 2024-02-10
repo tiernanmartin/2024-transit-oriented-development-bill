@@ -372,6 +372,7 @@ Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area rev
 #| message: false
 #| fig-height: 5
 #| fig-width: 5
+#| fig-cap: "Figure 3: Transit Station Areas, Central Puget Sound"
 
 t_join <- st_join(t,
                   filter(p, analysis_type %in% "Developable, Affected"))
@@ -402,6 +403,43 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ```
 
+### Case Studies
+
+We examine the station areas of several cities to assess how the effects of HB 2160 may differ from place to place.
+
+```{r}
+#| label: results-case-studies-comparison-table
+#| tbl-cap: "Tbale 2:Case Studies Comparison"
+
+col_names_city <- c("City", "Parcels (n)", " Land Area (sq. miles)")
+
+case_studies <- c("Shoreline",
+                  "Redmond",
+                  "Mercer Island",
+                  "Kent"
+                  )
+
+p_tbl_summary_city <- p_affected |> 
+  st_drop_geometry() |>
+  filter(zoning_juris %in% case_studies) |>
+  group_by(zoning_juris) |> 
+  summarize(n = n(),
+            area_mi2 = sum(parcel_area_mi2))
+
+
+format_func <- function(x){
+  # browser()
+  if(!is.numeric(x)){return(x)} 
+  
+  round(x, digits = 1) |> 
+    format(big.mark = ",", decimal.mark = ".")
+}
+
+p_tbl_summary_city |> 
+  kable(col.names = col_names_city) 
+
+
+```
 
 
 ## Discussion
