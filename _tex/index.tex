@@ -109,6 +109,20 @@
 \newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{\strut#1\strut}}
 \newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
 
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
 \usepackage{url} %this package should fix any errors with URLs in refs.
 \usepackage{lineno}
 \usepackage[inline]{trackchanges} %for better track changes. finalnew option will compile document with changes incorporated.
@@ -216,8 +230,8 @@ near transit stops.
 
 
 
-\subsection*{About Futurewise}\label{about-futurewise}
-\addcontentsline{toc}{subsection}{About Futurewise}
+\section*{About Futurewise}\label{about-futurewise}
+\addcontentsline{toc}{section}{About Futurewise}
 
 \href{https://futurewise.org/}{\begin{center}
 \includegraphics[width=1.5625in,height=\textheight]{images/Futurewise Logo.png}
@@ -233,8 +247,8 @@ have members across the state including the central Puget Sound region.
 For more information about our organization, visit our website at
 \url{https://futurewise.org/}.
 
-\subsection*{Acknowledgments}\label{acknowledgments}
-\addcontentsline{toc}{subsection}{Acknowledgments}
+\section*{Acknowledgments}\label{acknowledgments}
+\addcontentsline{toc}{section}{Acknowledgments}
 
 The authors received no financial support for the research, authorship,
 or publication of this article.
@@ -247,7 +261,7 @@ State House Bill 2160 and Senate Bill 6024.(Puget Sound Regional
 Council, 2024) Thanks to Noha Mahgoub from the Office of Governor Jay
 Inslee for providing feedback and guidance.
 
-\subsection{Introduction}\label{introduction}
+\section{Introduction}\label{introduction}
 
 \begin{figure}[H]
 
@@ -261,7 +275,7 @@ Inslee for providing feedback and guidance.
 
 \end{figure}%
 
-\subsubsection{The Central Puget Sound
+\subsection{The Central Puget Sound
 Region}\label{the-central-puget-sound-region}
 
 The Puget Sound metropolitan region is one of North America's major
@@ -291,7 +305,7 @@ home was \$160,000.\footnote{This estimate includes three of the four
 July 2015 and July 2023, the median rent cost increased by 50\%.(Puget
 Sound Regional Council, 2023a)
 
-\subsubsection{Transit-Oriented
+\subsection{Transit-Oriented
 Development}\label{transit-oriented-development}
 
 Transit-oriented development (TOD) is a strategy of building homes at or
@@ -333,7 +347,7 @@ four goals of the law.\footnote{The first four goals of
   of existing housing stock.
   \end{quote}}
 
-\subsubsection{House Bill 2160}\label{house-bill-2160}
+\subsection{House Bill 2160}\label{house-bill-2160}
 
 House Bill 2160 (HB 2160) of the 2023-2024 Washington State Legislative
 Session proposed changes to the GMA intended to promote community and
@@ -377,7 +391,7 @@ residential units affordable.\footnote{The bill defines ``Affordable
   urban development. (Reed, 2024)
   \end{quote}}
 
-\subsubsection{Research Objective \&
+\subsection{Research Objective \&
 Questions}\label{research-objective-questions}
 
 The purpose of this study is to provide information about the effects of
@@ -402,9 +416,9 @@ questions:
   impacted by the bill?
 \end{enumerate}
 
-\subsection{Data \& Methods}\label{sec-data-methods}
+\section{Data \& Methods}\label{sec-data-methods}
 
-\subsubsection{Research Design}\label{research-design}
+\subsection{Research Design}\label{research-design}
 
 We use a quantitative method to attempt to answer our research
 questions.
@@ -447,7 +461,7 @@ station area, city, and region. We can then both describe individual
 geographies (e.g., a specific station area) and compare between
 geographies (e.g., several cities compared individually to the region).
 
-\subsubsection{Data Collection}\label{data-collection}
+\subsection{Data Collection}\label{data-collection}
 
 The study uses several data sets from a variety of different sources.
 The following table summarize the study's data:
@@ -481,7 +495,7 @@ region (King, Snohomish, Kitsap, and Pierce counties) & Puget Sound
 Regional Council (2023b) \\
 \end{longtable}
 
-\subsubsection{Data Analysis}\label{data-analysis}
+\subsection{Data Analysis}\label{data-analysis}
 
 The study uses a combination of a relational database and statistical
 software to conduct its analysis. The relational database, PostgreSQL
@@ -511,7 +525,7 @@ summarized using the area-weight mean.\footnote{Parcels that do not
   as describing and quantithe characteristics of land within each
   station area or jurisdiction.}
 
-\subsubsection{Limitations}\label{limitations}
+\subsection{Limitations}\label{limitations}
 
 Our method is subject to several limitations that are important to
 consider when interpreting our findings:
@@ -570,14 +584,14 @@ consider when interpreting our findings:
 Further research, data collection, and methodological refinements could
 help address these limitations in future analyses.
 
-\subsection{Results}\label{results}
+\section{Results}\label{results}
 
-The study included approximately 125,000 parcels (\(N = 124,941\)), all
+The study includes approximately 125,000 parcels (\(N = 124,941\)), all
 within the four central Puget Sound counties, within an Urban Growth
 Area, and within HB 2160's specified distance thresholds of a qualifying
 transit stop.
 
-We separated the study data into three analysis groups:
+We separate the study data into three analysis groups:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
@@ -602,67 +616,37 @@ We separated the study data into three analysis groups:
   would, therefore, be affected.
 \end{enumerate}
 
-\begin{longtable}[]{@{}lrr@{}}
-\caption{Study Summary Statistics: Central Puget Sound}\tabularnewline
-\toprule\noalign{}
-Analysis Group & Parcels (N) & Land Area (sq. miles) \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Analysis Group & Parcels (N) & Land Area (sq. miles) \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Not Developable & 7,219 & 16.80 \\
-Developable, Not Affected & 20,288 & 23.48 \\
-Developable, Affected & 97,434 & 72.77 \\
-Total & 124,941 & 113.04 \\
-\end{longtable}
+\begin{table}
+\caption{Table 1: Analysis Groups, Central Puget Sound}\tabularnewline
+
+\centering
+\begin{tabular}{l|l|l}
+\hline
+Analysis Group & Parcels (n) &  Land Area (sq. miles)\\
+\hline
+Not Developable & 7,219   (6\%) & 16.8  (15\%)\\
+\hline
+Developable, Not Affected & 20,288  (16\%) & 23.5  (21\%)\\
+\hline
+Developable, Affected & 97,434  (78\%) & 72.8  (64\%)\\
+\hline
+Total & 124,941 (100\%) & 113.0 (100\%)\\
+\hline
+\end{tabular}
+\end{table}
 
 \textsubscript{Source:
-\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
+\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index-preview.html}{Article
 Notebook}}
 
-We find that approximately most parcels and most land area within the
-station areas would be affected by the bill:
+Our study focuses on the third analysis group, \textbf{Developable,
+Affected}, which are the majority of the station area parcels by both
+count (78\%) and land area (64\%).
 
-\begin{longtable}[]{@{}lll@{}}
-\caption{Study Summary Statistics: Affected Parcels, Central Puget
-Sound}\tabularnewline
-\toprule\noalign{}
-Analysis Group & Parcels (\%) & Land Area (\%) \\
-\midrule\noalign{}
-\endfirsthead
-\toprule\noalign{}
-Analysis Group & Parcels (\%) & Land Area (\%) \\
-\midrule\noalign{}
-\endhead
-\bottomrule\noalign{}
-\endlastfoot
-Developable, Affected & 78\% & 64\% \\
-\end{longtable}
-
-\textsubscript{Source:
-\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
-Notebook}}
-
-\begin{figure}[H]
-
-{\centering \includegraphics{index_files/figure-pdf/results-histogram-1.pdf}
-
-}
-
-\caption{HB 2160s Effect on Maximum FAR}
-
-\end{figure}%
-
-\textsubscript{Source:
-\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
-Notebook}}
-
-Among parcels affected by the bill, we find that the area-weighted mean
-effect would be an additional 1.35 FAR allowed:
+Plotting the distribution of area-weighted net development capacity for
+this group of parcels, we observe two modal ``peaks'' at +1.5 and +2.5
+FAR. The area-weighted mean net development capacity (\(AWM_{NDC}\)) is
++1.35 FAR.
 
 \begin{figure}[H]
 
@@ -670,20 +654,20 @@ effect would be an additional 1.35 FAR allowed:
 
 }
 
-\caption{Increase in Maximum FAR for Parcels Affected by HB 2160}
+\caption{Figure 1: HB 2160's Effect on Net Development Capacity}
 
 \end{figure}%
 
 \textsubscript{Source:
-\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
+\href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index-preview.html}{Article
 Notebook}}
 
-\subsection{Discussion}\label{discussion}
+\section{Discussion}\label{discussion}
 
-\subsection{Conclusion}\label{conclusion}
+\section{Conclusion}\label{conclusion}
 
-\subsection*{References}\label{references}
-\addcontentsline{toc}{subsection}{References}
+\section*{References}\label{references}
+\addcontentsline{toc}{section}{References}
 
 \phantomsection\label{refs}
 \begin{CSLReferences}{1}{0}

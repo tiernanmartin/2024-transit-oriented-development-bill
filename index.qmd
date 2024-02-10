@@ -52,7 +52,7 @@ library(sf)
 library(knitr)
 library(gt)
 library(gtsummary)
-# library(kableExtra)
+library(kableExtra)
 
 ```
 
@@ -218,9 +218,9 @@ undev_land_codes <- c(94, 93, 92)
 
 ```
 
-The study included approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
 
-We separated the study data into three analysis groups:
+We separate the study data into three analysis groups:
 
 1.  **Not Developable**\
     Parcels that do not meet the study's eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.[^7]
@@ -237,10 +237,10 @@ We separated the study data into three analysis groups:
 #| label: results-summary-table
 #| output: true
 #| message: false
-#| tbl-cap: "Study Summary Statistics: Central Puget Sound"
+#| tbl-cap: "Table 1: Analysis Groups, Central Puget Sound"
 
 
-col_names <- c("Analysis Group", "Parcels (N)", " Land Area (sq. miles)")
+col_names <- c("Analysis Group", "Parcels (n)", " Land Area (sq. miles)")
 
 p_tbl_summary <- p |> 
   st_drop_geometry() |> 
@@ -258,82 +258,47 @@ p_tbl_summary <- p |>
   summarize(n = n(),
             area_mi2 = sum(parcel_area_mi2))
 
+format_func <- function(x){
+  # browser()
+  if(!is.numeric(x)){return(x)} 
+  
+  round(x, digits = 1) |> 
+    format(big.mark = ",", decimal.mark = ".")
+}
 
-p_tbl_summary |>
-  adorn_totals("row") |> 
-  kable(digits = 2,
-        col.names = col_names,
-        format.args = list(big.mark = ','))
-
-```
-
-We find that approximately most parcels and most land area within the station areas would be affected by the bill:
-
-```{r}
-#| label: results-summary-tbl-affected
-#| output: true
-#| message: false
-#| tbl-cap: "Study Summary Statistics: Affected Parcels, Central Puget Sound"
-
-col_names_af <- c("Analysis Group", 
-                  "Parcels (%)", 
-                  " Land Area (%)")
-
-p_tbl_af <- p |> 
-  st_drop_geometry() |> 
-  summarise(n_addtl = scales::percent(
-              sum(zoning_new_max_far_additional > 0,
-                  na.rm = TRUE) / n()),
-            area_addtl = scales::percent(
-              sum(parcel_area[zoning_new_max_far_additional > 0],
-                  na.rm = TRUE) / sum(parcel_area, na.rm = TRUE))
-  ) |> 
-  transmute(analysis_group = "Developable, Affected",
-            n_addtl,
-            area_addtl)
-
-p_tbl_af |>  
-  kable(digits = 2,
-        col.names = col_names_af)
+p_tbl_summary |> 
+    adorn_totals() |> 
+    adorn_percentages(denominator = "col") |> 
+    adorn_pct_formatting(digits = 0) |> 
+    adorn_ns(format_func = format_func,
+             position = "front") |> 
+  kable(col.names = col_names) 
 
 ```
 
-```{r}
-#| label: results-histogram
-#| output: true
-#| message: false
-#| fig-cap: "HB 2160s Effect on Maximum FAR"
-#| fig-width: 6
-#| fig-height: 4
+Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%). 
 
-ggplot(data = p) + 
-  aes(x = zoning_new_max_far_diff,
-      weight = parcel_area_mi2) + 
-  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") + 
-  geom_vline(xintercept = 0, color = "tomato",linetype = 2) +
-  scale_y_continuous(labels = scales::label_comma()) +
-  xlim(-15,5) +
-  labs(title = "Effect on Maximum FAR",
-       subtitle = glue("Histogram bars represent area of land (sq. miles), n = {scales::comma(nrow(p) - 8953)} parcels"),
-       y = "Land Area (sq. miles)",
-       x = "Change in Maximum FAR (0.5 increments)") 
-
-```
-
-Among parcels affected by the bill, we find that the area-weighted mean effect would be an additional 1.35 FAR allowed:
+Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR. 
 
 ```{r}
 #| label: results-histogram-affected
 #| output: true
 #| message: false
-#| fig-cap: "Increase in Maximum FAR for Parcels Affected by HB 2160"
-#| fig-width: 6
+#| fig-cap: "Figure 1: HB 2160's Effect on Net Development Capacity"
 #| fig-height: 4
 
+library(latex2exp)
 
 wt_avg <- weighted.mean(p$zoning_new_max_far_additional,
                         w = p$parcel_area,
                         na.rm = TRUE) |> round(digits = 2)
+
+p_addtl_max <- max(p$zoning_new_max_far_additional, na.rm = TRUE)
+
+n_parcels <- scales::comma(nrow(filter(p, zoning_new_max_far_additional > 0)))
+
+subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.35 FAR, n = 97,434 parcels (78%)")
+
 p |> 
   st_drop_geometry() |> 
   filter(zoning_new_max_far_additional > 0) |> 
@@ -341,12 +306,13 @@ ggplot() +
   aes(x = zoning_new_max_far_additional,
       weight = parcel_area_mi2) + 
   geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
-  geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2) +
+  # geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2, size =2) +
   scale_y_continuous(labels = scales::label_comma()) + 
-  labs(title = "Effect on Maximum FAR",
-       subtitle = glue("Area-weighted mean effect = {wt_avg} FAR, n = {scales::comma(nrow(filter(p, zoning_new_max_far_additional > 0)))} parcels"),
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  labs(title = "HB 2160's Effect on Net Development Capacity",
+       subtitle = subtitle,
        y = "Land Area (sq. miles)",
-       x = "Increase in Maximum FAR (0.25 increments)") 
+       x = "Net Development Capacity (FAR)") 
 ```
 
 ## Discussion
