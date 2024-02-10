@@ -52,7 +52,9 @@ library(sf)
 library(knitr)
 library(gt)
 library(gtsummary)
-# library(kableExtra)
+library(kableExtra)
+library(latex2exp)
+library(mapview)
 
 ```
 
@@ -67,6 +69,18 @@ outside_pop_growth_2010_2023 <- readRDS(here("data_outputs/outside_pop_growth_20
 pugetsound_hu_growth_2010_2023 <- readRDS(here("data_outputs/pugetsound_hu_growth_2010_2023.rds"))
 
 outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010_2023.rds"))
+
+```
+
+
+```{r}
+#| label: utility-functions
+#| include: false
+
+weighted_mean <- possibly(
+  .f = function(x,w,d){round(digits = d, weighted.mean(x, w, na.rm = TRUE))},
+  otherwise = NA)
+
 
 ```
 
@@ -154,7 +168,7 @@ $$
 
 where:
 
--   $NDC_i = FAR_{new,i} - FAR_{old,i}$ represents the net development capacity for parcel $i$, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR. Where $NDC_i < 0$, we set it equal to 0 because the bill would not reduce maximum FAR.
+-   $NDC_i = FAR_{new,i} - FAR_{old,i}$ represents the net development capacity for parcel $i$, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.
 -   $A_i$ denotes the area of parcel $i$.
 -   $I_i$ is an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
 
@@ -214,13 +228,23 @@ p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
              layer = "tod-parcels",
              quiet = TRUE)
 
+p_affected <- p |> 
+  st_drop_geometry() |> 
+  filter(analysis_type %in% "Developable, Affected")
+
 undev_land_codes <- c(94, 93, 92)
+
+t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+         layer = "transit-station-areas",
+         quiet = TRUE)
 
 ```
 
-The study included approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+### Central Puget Sound
 
-We separated the study data into three analysis groups:
+The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+
+We separate the study data into three analysis groups:
 
 1.  **Not Developable**\
     Parcels that do not meet the study's eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.[^7]
@@ -237,88 +261,264 @@ We separated the study data into three analysis groups:
 #| label: results-summary-table
 #| output: true
 #| message: false
-#| tbl-cap: "Study Summary Statistics: Central Puget Sound"
+#| tbl-cap: "Table 1: Analysis Groups, Central Puget Sound"
 
 
-col_names <- c("Analysis Group", "Parcels (N)", " Land Area (sq. miles)")
+col_names <- c("Analysis Group", "Parcels (n)", " Land Area (sq. miles)")
 
 p_tbl_summary <- p |> 
-  st_drop_geometry() |> 
-  mutate(
-    analysis_type = case_when(
-    is.na(zoning_new_max_far_additional) ~ "Not Developable",
-    zoning_new_max_far_additional == 0 ~ "Developable, Not Affected",
-    TRUE ~ "Developable, Affected"
-  ),
-  analysis_type = factor(analysis_type, levels = c("Not Developable", 
+  st_drop_geometry() |>
+  mutate( analysis_type = factor(analysis_type, 
+                                 levels = c("Not Developable", 
                                                    "Developable, Not Affected",
-                                                   "Developable, Affected"))
-  ) |> 
+                                                   "Developable, Affected")
+                         )
+    ) |> 
   group_by(analysis_type) |> 
   summarize(n = n(),
             area_mi2 = sum(parcel_area_mi2))
 
+format_func <- function(x){
+  # browser()
+  if(!is.numeric(x)){return(x)} 
+  
+  round(x, digits = 1) |> 
+    format(big.mark = ",", decimal.mark = ".")
+}
 
-p_tbl_summary |>
-  adorn_totals("row") |> 
-  kable(digits = 2,
-        col.names = col_names,
-        format.args = list(big.mark = ','))
-
-```
-
-We find that approximately most parcels and most land area within the station areas would be affected by the bill:
-
-```{r}
-#| label: results-summary-tbl-affected
-#| output: true
-#| message: false
-#| tbl-cap: "Study Summary Statistics: Affected Parcels, Central Puget Sound"
-
-col_names_af <- c("Analysis Group", 
-                  "Parcels (%)", 
-                  " Land Area (%)")
-
-p_tbl_af <- p |> 
-  st_drop_geometry() |> 
-  summarise(n_addtl = scales::percent(
-              sum(zoning_new_max_far_additional > 0,
-                  na.rm = TRUE) / n()),
-            area_addtl = scales::percent(
-              sum(parcel_area[zoning_new_max_far_additional > 0],
-                  na.rm = TRUE) / sum(parcel_area, na.rm = TRUE))
-  ) |> 
-  transmute(analysis_group = "Developable, Affected",
-            n_addtl,
-            area_addtl)
-
-p_tbl_af |>  
-  kable(digits = 2,
-        col.names = col_names_af)
+p_tbl_summary |> 
+    adorn_totals() |> 
+    adorn_percentages(denominator = "col") |> 
+    adorn_pct_formatting(digits = 0) |> 
+    adorn_ns(format_func = format_func,
+             position = "front") |> 
+  kable(col.names = col_names) 
 
 ```
 
+Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%). 
+
+Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR. 
+
 ```{r}
-#| label: results-histogram
+#| label: results-histogram-affected
 #| output: true
 #| message: false
-#| fig-cap: "HB 2160s Effect on Maximum FAR"
-#| fig-width: 6
+#| fig-cap: "Figure 1: HB 2160's Effect on Net Development Capacity"
 #| fig-height: 4
 
-ggplot(data = p) + 
-  aes(x = zoning_new_max_far_diff,
+wt_avg <- weighted.mean(p_affected$zoning_new_max_far_additional,
+                        w = p_affected$parcel_area,
+                        na.rm = TRUE) |> round(digits = 2)
+
+p_addtl_max <- max(p_affected$zoning_new_max_far_additional, na.rm = TRUE)
+
+n_parcels <- scales::comma(nrow(p_affected))
+
+subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)")
+
+p_affected |> 
+  st_drop_geometry() |> 
+  filter(zoning_new_max_far_additional > 0) |> 
+ggplot() +  
+  aes(x = zoning_new_max_far_additional,
       weight = parcel_area_mi2) + 
-  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") + 
-  geom_vline(xintercept = 0, color = "tomato",linetype = 2) +
-  scale_y_continuous(labels = scales::label_comma()) +
-  xlim(-15,5) +
-  labs(title = "Effect on Maximum FAR",
-       subtitle = glue("Histogram bars represent area of land (sq. miles), n = {scales::comma(nrow(p) - 8953)} parcels"),
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
+  # geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2, size =2) +
+  scale_y_continuous(labels = scales::label_comma()) + 
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  labs(title = "HB 2160's Effect on Net Development Capacity",
+       subtitle = subtitle,
        y = "Land Area (sq. miles)",
-       x = "Change in Maximum FAR (0.5 increments)") 
+       x = "Net Development Capacity (FAR)") 
+```
+
+We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
+
+
+```{r}
+#| label: results-histogram-station-areas
+#| output: true
+#| message: false
+#| fig-cap: "Figure 2: Station Area Type Comparison"
+#| fig-height: 4
+
+p_station_area <- p_affected |> 
+  transmute(parcel_area_mi2,
+            zoning_new_max_far_additional,
+            analysis_station_area_types)
+
+wt_avg_station_area <- p_station_area |> 
+  group_by(analysis_station_area_types) |> 
+    summarize(
+      n = n(),
+      area = sum(parcel_area_mi2, na.rm = TRUE),
+      wt_avg = weighted.mean(zoning_new_max_far_additional, 
+                             w = parcel_area_mi2,
+                             na.rm = TRUE)
+    )
+  
+p_addtl_max <- max(p_station_area$zoning_new_max_far_additional, na.rm = TRUE)
+
+subtitle <- TeX("Large Station Area $AWM_{NDC}$ is 2.15 FAR, Small Station Area $AWM_{NDC}$ is 1.32 FAR")
+
+p_station_area |> 
+ggplot() +  
+  aes(x = zoning_new_max_far_additional,
+      weight = parcel_area_mi2,
+      group = analysis_station_area_types) + 
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +  
+  scale_y_continuous(labels = scales::label_comma()) + 
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  facet_wrap(~ analysis_station_area_types, scales = "fixed", ncol = 1) +
+  labs(title = "HB 2160's Effect on Net Development Capacity by Station Area Type",
+       subtitle = subtitle,
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)") 
+```
+
+Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
+
+```{r}
+#| label: results-puget-sound-station-map
+#| message: false
+#| fig-height: 5
+#| fig-width: 5
+#| fig-cap: "Figure 3: Transit Station Areas, Central Puget Sound"
+
+t_join <- st_join(t,
+                  filter(p, analysis_type %in% "Developable, Affected"))
+
+t_map <-  t_join |>
+  st_drop_geometry() |>
+  group_by(mode, stop_name) |>
+  summarize(.groups = "drop",
+            parcel_n = n(),
+            area_wt_old_far = round(
+              weighted.mean(zoning_est_max_far,
+                            parcel_area,
+                            na.rm = TRUE), 2),
+            parea_wt_new_far = round(
+              weighted.mean(zoning_new_max_far,
+                            parcel_area,
+                            na.rm = TRUE), 2),
+            area_wt_mean_net_dev_cap = round(
+              weighted.mean(zoning_new_max_far_additional,
+                                            parcel_area,
+                                            na.rm = TRUE), 2)) |>
+  ungroup() |>
+  left_join(t) |>
+  st_sf()
+
+mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
+        layer.name = "Mean Net Development Capacity")
 
 ```
+
+### Case Studies
+
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine several cities as case studies. 
+
+```{r}
+#| label: results-case-studies-summary
+#| message: false
+#| tbl-cap: "Table 2: Case Studies"
+
+case_studies <- c("Shoreline",
+                  "Redmond",
+                  "Mercer Island",
+                  "Kent"
+                  )
+
+ps_cities <- st_read(
+  here("data_outputs/2024-tod-bill.gpkg"),
+  layer = "ps-cities-pop-hu") |> 
+  st_transform(2926)
+
+
+st_join(t,ps_cities) |> 
+  st_drop_geometry() |> 
+  filter(name %in% case_studies) |> 
+  group_by(name, mode) |> 
+  summarize(.groups = "drop",
+            n = n()) |> 
+  pivot_wider(names_from = mode,values_from = n,values_fill = 0L) |> 
+  mutate(SC = 0L) |> 
+  left_join(st_drop_geometry(ps_cities)) |> 
+  select(-geoid) |> 
+  select(name, population, housing_units, everything()) |> 
+  gt(rowname_col = "name") |> 
+   tab_spanner(
+    label = "Population & Housing",
+    columns = c(population, housing_units)
+  ) |>
+  tab_spanner(
+    label = "Transit Station Areas",
+    columns = c(LR, CR, SC, BRT)
+  ) |> 
+  fmt_number( 
+    decimals = 0,       
+    sep_mark = ","
+  ) 
+
+
+
+```
+
+
+*Insert table with population (2023), housing units (2023), land area, and count of each type of transit station*
+
+Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
+
+```{r}
+#| label: results-case-studies-analysis-group
+#| tbl-cap: "Table 3: Case Studies by Analysis Group"
+#| tbl-cap-location: top
+
+col_names_city <- c("City",
+                    "Analysis Group",
+                    "Parcels (n)", 
+                    "Land Area (sq. miles)")
+
+p_cities <- p |> 
+  st_drop_geometry() |> 
+  filter(zoning_juris %in% case_studies)
+
+p_cities_affected <- p_affected |>  
+  filter(zoning_juris %in% case_studies)
+
+p_cities |> 
+  group_by(zoning_juris, analysis_type) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = 
+              round(digits = 2,
+                    sum(parcel_area_mi2, na.rm = TRUE))
+            ) |> 
+  group_by(zoning_juris) |> 
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(zoning_juris, analysis_type) |> 
+  summarize(
+    n = glue("{comma(n)} ({percent(n/n_total)})"),
+    area = glue("{area} ({percent(area/area_total)})")
+  ) |> 
+  ungroup() |>  
+  gt(rowname_col = "analysis_type" ,
+     groupname_col = "zoning_juris",
+     process_md = TRUE) |> 
+  cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)")
+  ) |> 
+  tab_style(
+    style = list(
+      cell_text(indent = px(20))),
+    locations = cells_stub()
+  )
+
+```
+
 
 ## Discussion
 
