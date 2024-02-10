@@ -212,7 +212,10 @@ window.Quarto = {
   <li><a href="#data-analysis" id="toc-data-analysis" class="nav-link" data-scroll-target="#data-analysis"><span class="header-section-number">2.3</span> Data Analysis</a></li>
   <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">2.4</span> Limitations</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#central-puget-sound" id="toc-central-puget-sound" class="nav-link" data-scroll-target="#central-puget-sound"><span class="header-section-number">3.1</span> Central Puget Sound</a></li>
+  </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5</span> Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -294,7 +297,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 \]</span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR. Where <span class="math inline">\(NDC_i &lt; 0\)</span>, we set it equal to 0 because the bill would not reduce maximum FAR.</li>
+<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.</li>
 <li><span class="math inline">\(A_i\)</span> denotes the area of parcel <span class="math inline">\(i\)</span>.</li>
 <li><span class="math inline">\(I_i\)</span> is an indicator function that equals 1 if parcel <span class="math inline">\(i\)</span> satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, <span class="math inline">\(I_i\)</span> equals 0.</li>
 </ul>
@@ -365,6 +368,8 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 </section>
 <section id="results" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="results"><span class="header-section-number">3</span> Results</h2>
+<section id="central-puget-sound" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="central-puget-sound"><span class="header-section-number">3.1</span> Central Puget Sound</h3>
 <p>The study includes approximately 125,000 parcels (<span class="math inline">\(N = 124,941\)</span>), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160’s specified distance thresholds of a qualifying transit stop.</p>
 <p>We separate the study data into three analysis groups:</p>
 <ol type="1">
@@ -425,6 +430,18 @@ Parcels that meet the study’s eligibility criteria and have zoning that is mor
 </div>
 </div>
 <a class="quarto-notebook-link" id="nblink-2" href="index-preview.html">Source: Article Notebook</a></div>
+<p>We also compare <span class="math inline">\(AWM_{NDC}\)</span> across the two station area types, as defined by HB 2160:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="index_files/figure-html/results-histogram-station-areas-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-3" data-gallery="quarto-lightbox-gallery-3" title="Figure 2: Station Area Type Comparison"><img src="index_files/figure-html/results-histogram-station-areas-1.png" class="img-fluid figure-img" width="672" alt="Figure 2: Station Area Type Comparison"></a></p>
+<figcaption>Figure 2: Station Area Type Comparison</figcaption>
+</figure>
+</div>
+</div>
+<a class="quarto-notebook-link" id="nblink-3" href="index-preview.html">Source: Article Notebook</a></div>
+</section>
 </section>
 <section id="discussion" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="discussion"><span class="header-section-number">4</span> Discussion</h2>
@@ -469,6 +486,7 @@ Washington State Parcels Project. 2023. <span>“Current Parcels (2023).”</spa
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</span>
 <span class="glightbox-desc lightbox-desc-2">Figure 1: HB 2160’s Effect on Net Development Capacity</span>
+<span class="glightbox-desc lightbox-desc-3">Figure 2: Station Area Type Comparison</span>
 </div>
 </section>
 
@@ -907,7 +925,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
-<script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"closeEffect":"zoom","selector":".lightbox","descPosition":"bottom"});
+<script>var lightboxQuarto = GLightbox({"descPosition":"bottom","selector":".lightbox","openEffect":"zoom","closeEffect":"zoom","loop":false});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

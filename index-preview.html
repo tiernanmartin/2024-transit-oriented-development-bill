@@ -311,7 +311,10 @@
   <li><a href="#data-analysis" id="toc-data-analysis" class="nav-link" data-scroll-target="#data-analysis"><span class="header-section-number">2.3</span> Data Analysis</a></li>
   <li><a href="#limitations" id="toc-limitations" class="nav-link" data-scroll-target="#limitations"><span class="header-section-number">2.4</span> Limitations</a></li>
   </ul></li>
-  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><span class="header-section-number">3</span> Results</a>
+  <ul class="collapse">
+  <li><a href="#central-puget-sound" id="toc-central-puget-sound" class="nav-link" data-scroll-target="#central-puget-sound"><span class="header-section-number">3.1</span> Central Puget Sound</a></li>
+  </ul></li>
   <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">4</span> Discussion</a></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><span class="header-section-number">5</span> Conclusion</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -381,15 +384,16 @@ The following object is masked from 'package:dplyr':
 
     group_rows</code></pre>
 </div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(latex2exp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <div class="cell-container"><div class="cell-decorator"><pre>In [2]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pugetsound_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_pop_growth_2010_2023.rds"</span>))</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>outside_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_pop_growth_2010_2023.rds"</span>))</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>pugetsound_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_hu_growth_2010_2023.rds"</span>))</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>outside_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_hu_growth_2010_2023.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pugetsound_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>outside_pop_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_pop_growth_2010_2023.rds"</span>))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>pugetsound_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/pugetsound_hu_growth_2010_2023.rds"</span>))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>outside_hu_growth_2010_2023 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data_outputs/outside_hu_growth_2010_2023.rds"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
 <section id="about-futurewise" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="about-futurewise">About Futurewise</h2>
@@ -409,7 +413,7 @@ The following object is masked from 'package:dplyr':
 <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-glightbox="description: .lightbox-desc-1" data-gallery="quarto-lightbox-gallery-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
+<p><a href="images/seattle-aerial-wikicommons.jpg" class="lightbox" data-gallery="quarto-lightbox-gallery-1" data-glightbox="description: .lightbox-desc-1" title="Central Puget Sound | Photo courtesy of Clemens Vasters from Viersen, Germany, CC BY 2.0, via Wikimedia Commons"><img src="images/seattle-aerial-wikicommons.jpg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="An aerial photo of Mercer Island, Seattle, and Kitsap County"></a></p>
 <figcaption>Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</figcaption>
 </figure>
 </div>
@@ -457,7 +461,7 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 \]</span></p>
 <p>where:</p>
 <ul>
-<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR. Where <span class="math inline">\(NDC_i &lt; 0\)</span>, we set it equal to 0 because the bill would not reduce maximum FAR.</li>
+<li><span class="math inline">\(NDC_i = FAR_{new,i} - FAR_{old,i}\)</span> represents the net development capacity for parcel <span class="math inline">\(i\)</span>, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.</li>
 <li><span class="math inline">\(A_i\)</span> denotes the area of parcel <span class="math inline">\(i\)</span>.</li>
 <li><span class="math inline">\(I_i\)</span> is an indicator function that equals 1 if parcel <span class="math inline">\(i\)</span> satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, <span class="math inline">\(I_i\)</span> equals 0.</li>
 </ul>
@@ -529,12 +533,18 @@ AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 <section id="results" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="results"><span class="header-section-number">3</span> Results</h2>
 <div class="cell-container"><div class="cell-decorator"><pre>In [3]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(<span class="st">"data_outputs/2024-tod-bill.gpkg"</span>),</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">layer =</span> <span class="st">"tod-parcels"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>undev_land_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">94</span>, <span class="dv">93</span>, <span class="dv">92</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="fu">here</span>(<span class="st">"data_outputs/2024-tod-bill.gpkg"</span>),</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">layer =</span> <span class="st">"tod-parcels"</span>,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">quiet =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>p_affected <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span> </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(analysis_type <span class="sc">%in%</span> <span class="st">"Developable, Affected"</span>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>undev_land_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">94</span>, <span class="dv">93</span>, <span class="dv">92</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div>
+<section id="central-puget-sound" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="central-puget-sound"><span class="header-section-number">3.1</span> Central Puget Sound</h3>
 <p>The study includes approximately 125,000 parcels (<span class="math inline">\(N = 124,941\)</span>), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160’s specified distance thresholds of a qualifying transit stop.</p>
 <p>We separate the study data into three analysis groups:</p>
 <ol type="1">
@@ -546,39 +556,35 @@ Parcels that meet the study’s eligibility criteria but have an equal or higher
 Parcels that meet the study’s eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.</p></li>
 </ol>
 <div class="cell-container"><div class="cell-decorator"><pre>In [4]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Analysis Group"</span>, <span class="st">"Parcels (n)"</span>, <span class="st">" Land Area (sq. miles)"</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">analysis_type =</span> <span class="fu">case_when</span>(</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">is.na</span>(zoning_new_max_far_additional) <span class="sc">~</span> <span class="st">"Not Developable"</span>,</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    zoning_new_max_far_additional <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"Developable, Not Affected"</span>,</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Developable, Affected"</span></span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">analysis_type =</span> <span class="fu">factor</span>(analysis_type, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not Developable"</span>, </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Not Affected"</span>,</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Affected"</span>))</span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(analysis_type) <span class="sc">|&gt;</span> </span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            <span class="at">area_mi2 =</span> <span class="fu">sum</span>(parcel_area_mi2))</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>format_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># browser()</span></span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.numeric</span>(x)){<span class="fu">return</span>(x)} </span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(x, <span class="at">digits =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format</span>(<span class="at">big.mark =</span> <span class="st">","</span>, <span class="at">decimal.mark =</span> <span class="st">"."</span>)</span>
-<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="sc">|&gt;</span> </span>
-<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_totals</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_percentages</span>(<span class="at">denominator =</span> <span class="st">"col"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_pct_formatting</span>(<span class="at">digits =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_ns</span>(<span class="at">format_func =</span> format_func,</span>
-<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="st">"front"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> col_names) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>col_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Analysis Group"</span>, <span class="st">"Parcels (n)"</span>, <span class="st">" Land Area (sq. miles)"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="ot">&lt;-</span> p <span class="sc">|&gt;</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>( <span class="at">analysis_type =</span> <span class="fu">factor</span>(analysis_type, </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>                                 <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Not Developable"</span>, </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Not Affected"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>                                                   <span class="st">"Developable, Affected"</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>                         )</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(analysis_type) <span class="sc">|&gt;</span> </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>            <span class="at">area_mi2 =</span> <span class="fu">sum</span>(parcel_area_mi2))</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>format_func <span class="ot">&lt;-</span> <span class="cf">function</span>(x){</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># browser()</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.numeric</span>(x)){<span class="fu">return</span>(x)} </span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(x, <span class="at">digits =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">format</span>(<span class="at">big.mark =</span> <span class="st">","</span>, <span class="at">decimal.mark =</span> <span class="st">"."</span>)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>p_tbl_summary <span class="sc">|&gt;</span> </span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_totals</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_percentages</span>(<span class="at">denominator =</span> <span class="st">"col"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_pct_formatting</span>(<span class="at">digits =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_ns</span>(<span class="at">format_func =</span> format_func,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>             <span class="at">position =</span> <span class="st">"front"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">kable</span>(<span class="at">col.names =</span> col_names) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table data-quarto-postprocess="true" class="table table-sm table-striped small">
 <caption>Table 1: Analysis Groups, Central Puget Sound</caption>
@@ -619,41 +625,83 @@ Parcels that meet the study’s eligibility criteria and have zoning that is mor
 <p>Our study focuses on the third analysis group, <strong>Developable, Affected</strong>, which are the majority of the station area parcels by both count (78%) and land area (64%).</p>
 <p>Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal “peaks” at +1.5 and +2.5 FAR. The area-weighted mean net development capacity (<span class="math inline">\(AWM_{NDC}\)</span>) is +1.35 FAR.</p>
 <div class="cell-container"><div class="cell-decorator"><pre>In [5]:</pre></div><div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(latex2exp)</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>wt_avg <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(p<span class="sc">$</span>zoning_new_max_far_additional,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">w =</span> p<span class="sc">$</span>parcel_area,</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>p_addtl_max <span class="ot">&lt;-</span> <span class="fu">max</span>(p<span class="sc">$</span>zoning_new_max_far_additional, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>n_parcels <span class="ot">&lt;-</span> scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">nrow</span>(<span class="fu">filter</span>(p, zoning_new_max_far_additional <span class="sc">&gt;</span> <span class="dv">0</span>)))</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>subtitle <span class="ot">&lt;-</span> <span class="fu">TeX</span>(<span class="st">"Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.35 FAR, n = 97,434 parcels (78%)"</span>)</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>p <span class="sc">|&gt;</span> </span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(zoning_new_max_far_additional <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span>  </span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> zoning_new_max_far_additional,</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> parcel_area_mi2) <span class="sc">+</span> </span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"grey20"</span>, <span class="at">fill=</span> <span class="st">"grey80"</span>) <span class="sc">+</span> </span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2, size =2) +</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span> </span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>( <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, p_addtl_max, <span class="at">by =</span> <span class="fl">0.25</span>)) <span class="sc">+</span></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HB 2160's Effect on Net Development Capacity"</span>,</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> subtitle,</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Land Area (sq. miles)"</span>,</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Net Development Capacity (FAR)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>wt_avg <span class="ot">&lt;-</span> <span class="fu">weighted.mean</span>(p_affected<span class="sc">$</span>zoning_new_max_far_additional,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">w =</span> p_affected<span class="sc">$</span>parcel_area,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>p_addtl_max <span class="ot">&lt;-</span> <span class="fu">max</span>(p_affected<span class="sc">$</span>zoning_new_max_far_additional, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>n_parcels <span class="ot">&lt;-</span> scales<span class="sc">::</span><span class="fu">comma</span>(<span class="fu">nrow</span>(p_affected))</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>subtitle <span class="ot">&lt;-</span> <span class="fu">TeX</span>(<span class="st">"Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)"</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>p_affected <span class="sc">|&gt;</span> </span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_drop_geometry</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(zoning_new_max_far_additional <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span>  </span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> zoning_new_max_far_additional,</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> parcel_area_mi2) <span class="sc">+</span> </span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"grey20"</span>, <span class="at">fill=</span> <span class="st">"grey80"</span>) <span class="sc">+</span> </span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2, size =2) +</span></span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span> </span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>( <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, p_addtl_max, <span class="at">by =</span> <span class="fl">0.25</span>)) <span class="sc">+</span></span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HB 2160's Effect on Net Development Capacity"</span>,</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> subtitle,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Land Area (sq. miles)"</span>,</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Net Development Capacity (FAR)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p class=""><a href="index_files/figure-html/results-histogram-affected-1.png" class="lightbox" data-glightbox="description: .lightbox-desc-2" data-gallery="quarto-lightbox-gallery-2" title="Figure 1: HB 2160’s Effect on Net Development Capacity"><img src="index_files/figure-html/results-histogram-affected-1.png" class="img-fluid figure-img" width="672" alt="Figure 1: HB 2160’s Effect on Net Development Capacity"></a></p>
+<p class=""><a href="index_files/figure-html/results-histogram-affected-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" data-glightbox="description: .lightbox-desc-2" title="Figure 1: HB 2160’s Effect on Net Development Capacity"><img src="index_files/figure-html/results-histogram-affected-1.png" class="img-fluid figure-img" width="672" alt="Figure 1: HB 2160’s Effect on Net Development Capacity"></a></p>
 <figcaption>Figure 1: HB 2160’s Effect on Net Development Capacity</figcaption>
 </figure>
 </div>
 </div>
 </div></div>
+<p>We also compare <span class="math inline">\(AWM_{NDC}\)</span> across the two station area types, as defined by HB 2160:</p>
+<div class="cell-container"><div class="cell-decorator"><pre>In [6]:</pre></div><div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p_station_area <span class="ot">&lt;-</span> p_affected <span class="sc">|&gt;</span> </span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(parcel_area_mi2,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>            zoning_new_max_far_additional,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>            analysis_station_area_types)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>wt_avg_station_area <span class="ot">&lt;-</span> p_station_area <span class="sc">|&gt;</span> </span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(analysis_station_area_types) <span class="sc">|&gt;</span> </span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarize</span>(</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">area =</span> <span class="fu">sum</span>(parcel_area_mi2, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">wt_avg =</span> <span class="fu">weighted.mean</span>(zoning_new_max_far_additional, </span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">w =</span> parcel_area_mi2,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>p_addtl_max <span class="ot">&lt;-</span> <span class="fu">max</span>(p_station_area<span class="sc">$</span>zoning_new_max_far_additional, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>subtitle <span class="ot">&lt;-</span> <span class="fu">TeX</span>(<span class="st">"Large Station Area $AWM_{NDC}$ is 2.15 FAR, Small Station Area $AWM_{NDC}$ is 1.32 FAR"</span>)</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>p_station_area <span class="sc">|&gt;</span> </span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>() <span class="sc">+</span>  </span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aes</span>(<span class="at">x =</span> zoning_new_max_far_additional,</span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">weight =</span> parcel_area_mi2,</span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">group =</span> analysis_station_area_types) <span class="sc">+</span> </span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="fl">0.25</span>, <span class="at">color =</span> <span class="st">"grey20"</span>, <span class="at">fill=</span> <span class="st">"grey80"</span>) <span class="sc">+</span>  </span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_comma</span>()) <span class="sc">+</span> </span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>( <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, p_addtl_max, <span class="at">by =</span> <span class="fl">0.25</span>)) <span class="sc">+</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> analysis_station_area_types, <span class="at">scales =</span> <span class="st">"fixed"</span>, <span class="at">ncol =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"HB 2160's Effect on Net Development Capacity by Station Area Type"</span>,</span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> subtitle,</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Land Area (sq. miles)"</span>,</span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Net Development Capacity (FAR)"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p class=""><a href="index_files/figure-html/results-histogram-station-areas-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" data-glightbox="description: .lightbox-desc-3" title="Figure 2: Station Area Type Comparison"><img src="index_files/figure-html/results-histogram-station-areas-1.png" class="img-fluid figure-img" width="672" alt="Figure 2: Station Area Type Comparison"></a></p>
+<figcaption>Figure 2: Station Area Type Comparison</figcaption>
+</figure>
+</div>
+</div>
+</div></div>
+</section>
 </section>
 <section id="discussion" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="discussion"><span class="header-section-number">4</span> Discussion</h2>
@@ -698,6 +746,7 @@ Washington State Parcels Project. 2023. <span>“Current Parcels (2023).”</spa
 <div class="hidden" aria-hidden="true">
 <span class="glightbox-desc lightbox-desc-1">Central Puget Sound | Photo courtesy of <a href="#0">Clemens Vasters from Viersen, Germany</a>, <a href="#0">CC BY 2.0</a>, via Wikimedia Commons</span>
 <span class="glightbox-desc lightbox-desc-2">Figure 1: HB 2160’s Effect on Net Development Capacity</span>
+<span class="glightbox-desc lightbox-desc-3">Figure 2: Station Area Type Comparison</span>
 </div>
 </section>
 <section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
@@ -1107,7 +1156,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"descPosition":"bottom","selector":".lightbox","loop":false,"openEffect":"zoom","closeEffect":"zoom"});
+</script>  </div> <!-- /content -->  <script>var lightboxQuarto = GLightbox({"selector":".lightbox","descPosition":"bottom","openEffect":"zoom","loop":false,"closeEffect":"zoom"});
 window.onload = () => {
   lightboxQuarto.on('slide_before_load', (data) => {
     const { slideIndex, slideNode, slideConfig, player, trigger } = data;

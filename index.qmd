@@ -53,6 +53,7 @@ library(knitr)
 library(gt)
 library(gtsummary)
 library(kableExtra)
+library(latex2exp)
 
 ```
 
@@ -154,7 +155,7 @@ $$
 
 where:
 
--   $NDC_i = FAR_{new,i} - FAR_{old,i}$ represents the net development capacity for parcel $i$, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR. Where $NDC_i < 0$, we set it equal to 0 because the bill would not reduce maximum FAR.
+-   $NDC_i = FAR_{new,i} - FAR_{old,i}$ represents the net development capacity for parcel $i$, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.
 -   $A_i$ denotes the area of parcel $i$.
 -   $I_i$ is an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
 
@@ -214,9 +215,15 @@ p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
              layer = "tod-parcels",
              quiet = TRUE)
 
+p_affected <- p |> 
+  st_drop_geometry() |> 
+  filter(analysis_type %in% "Developable, Affected")
+
 undev_land_codes <- c(94, 93, 92)
 
 ```
+
+### Central Puget Sound
 
 The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
 
@@ -243,17 +250,13 @@ We separate the study data into three analysis groups:
 col_names <- c("Analysis Group", "Parcels (n)", " Land Area (sq. miles)")
 
 p_tbl_summary <- p |> 
-  st_drop_geometry() |> 
-  mutate(
-    analysis_type = case_when(
-    is.na(zoning_new_max_far_additional) ~ "Not Developable",
-    zoning_new_max_far_additional == 0 ~ "Developable, Not Affected",
-    TRUE ~ "Developable, Affected"
-  ),
-  analysis_type = factor(analysis_type, levels = c("Not Developable", 
+  st_drop_geometry() |>
+  mutate( analysis_type = factor(analysis_type, 
+                                 levels = c("Not Developable", 
                                                    "Developable, Not Affected",
-                                                   "Developable, Affected"))
-  ) |> 
+                                                   "Developable, Affected")
+                         )
+    ) |> 
   group_by(analysis_type) |> 
   summarize(n = n(),
             area_mi2 = sum(parcel_area_mi2))
@@ -287,19 +290,17 @@ Plotting the distribution of area-weighted net development capacity for this gro
 #| fig-cap: "Figure 1: HB 2160's Effect on Net Development Capacity"
 #| fig-height: 4
 
-library(latex2exp)
-
-wt_avg <- weighted.mean(p$zoning_new_max_far_additional,
-                        w = p$parcel_area,
+wt_avg <- weighted.mean(p_affected$zoning_new_max_far_additional,
+                        w = p_affected$parcel_area,
                         na.rm = TRUE) |> round(digits = 2)
 
-p_addtl_max <- max(p$zoning_new_max_far_additional, na.rm = TRUE)
+p_addtl_max <- max(p_affected$zoning_new_max_far_additional, na.rm = TRUE)
 
-n_parcels <- scales::comma(nrow(filter(p, zoning_new_max_far_additional > 0)))
+n_parcels <- scales::comma(nrow(p_affected))
 
-subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.35 FAR, n = 97,434 parcels (78%)")
+subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)")
 
-p |> 
+p_affected |> 
   st_drop_geometry() |> 
   filter(zoning_new_max_far_additional > 0) |> 
 ggplot() +  
@@ -314,6 +315,51 @@ ggplot() +
        y = "Land Area (sq. miles)",
        x = "Net Development Capacity (FAR)") 
 ```
+
+We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
+
+
+```{r}
+#| label: results-histogram-station-areas
+#| output: true
+#| message: false
+#| fig-cap: "Figure 2: Station Area Type Comparison"
+#| fig-height: 4
+
+p_station_area <- p_affected |> 
+  transmute(parcel_area_mi2,
+            zoning_new_max_far_additional,
+            analysis_station_area_types)
+
+wt_avg_station_area <- p_station_area |> 
+  group_by(analysis_station_area_types) |> 
+    summarize(
+      n = n(),
+      area = sum(parcel_area_mi2, na.rm = TRUE),
+      wt_avg = weighted.mean(zoning_new_max_far_additional, 
+                             w = parcel_area_mi2,
+                             na.rm = TRUE)
+    )
+  
+p_addtl_max <- max(p_station_area$zoning_new_max_far_additional, na.rm = TRUE)
+
+subtitle <- TeX("Large Station Area $AWM_{NDC}$ is 2.15 FAR, Small Station Area $AWM_{NDC}$ is 1.32 FAR")
+
+p_station_area |> 
+ggplot() +  
+  aes(x = zoning_new_max_far_additional,
+      weight = parcel_area_mi2,
+      group = analysis_station_area_types) + 
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +  
+  scale_y_continuous(labels = scales::label_comma()) + 
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  facet_wrap(~ analysis_station_area_types, scales = "fixed", ncol = 1) +
+  labs(title = "HB 2160's Effect on Net Development Capacity by Station Area Type",
+       subtitle = subtitle,
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)") 
+```
+
 
 ## Discussion
 
