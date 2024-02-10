@@ -54,6 +54,7 @@ library(gt)
 library(gtsummary)
 library(kableExtra)
 library(latex2exp)
+library(mapview)
 
 ```
 
@@ -221,6 +222,10 @@ p_affected <- p |>
 
 undev_land_codes <- c(94, 93, 92)
 
+t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+         layer = "transit-station-areas",
+         quiet = TRUE)
+
 ```
 
 ### Central Puget Sound
@@ -359,6 +364,44 @@ ggplot() +
        y = "Land Area (sq. miles)",
        x = "Net Development Capacity (FAR)") 
 ```
+
+Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
+
+```{r}
+#| label: results-puget-sound-station-map
+#| message: false
+#| fig-height: 5
+#| fig-width: 5
+
+t_join <- st_join(t,
+                  filter(p, analysis_type %in% "Developable, Affected"))
+
+t_map <-  t_join |>
+  st_drop_geometry() |>
+  group_by(mode, stop_name) |>
+  summarize(.groups = "drop",
+            parcel_n = n(),
+            area_wt_old_far = round(
+              weighted.mean(zoning_est_max_far,
+                            parcel_area,
+                            na.rm = TRUE), 2),
+            parea_wt_new_far = round(
+              weighted.mean(zoning_new_max_far,
+                            parcel_area,
+                            na.rm = TRUE), 2),
+            area_wt_mean_net_dev_cap = round(
+              weighted.mean(zoning_new_max_far_additional,
+                                            parcel_area,
+                                            na.rm = TRUE), 2)) |>
+  ungroup() |>
+  left_join(t) |>
+  st_sf()
+
+mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
+        layer.name = "Mean Net Development Capacity")
+
+```
+
 
 
 ## Discussion
