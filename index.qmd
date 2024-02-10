@@ -55,6 +55,7 @@ library(gtsummary)
 library(kableExtra)
 library(latex2exp)
 library(mapview)
+mapviewOptions(platform = "leaflet")
 
 ```
 
@@ -524,6 +525,63 @@ p_cities |>
 ```
 
 #### Kent
+
+
+```{r}
+#| label: results-case-studies-kent-stations
+#| message: false
+#| fig-cap: "Kent Station Areas"
+
+t_kent <- st_join(t, ps_cities) |>  
+  filter(name %in% "Kent") 
+
+kent <- ps_cities |> 
+  filter(name %in% "Kent")
+
+mapview(kent,
+        col.regions = "grey",
+        legend = FALSE) + 
+  mapview(t_kent,
+          zcol = "mode",
+          legend = TRUE,
+          layer.name = "Station Area Type")
+
+```
+
+```{r}
+#| label: results-case-studies-kent-parcels
+#| message: false
+#| #| fig-cap: "Kent Station Areas Parcels"
+
+p_kent <- p |> 
+  filter(zoning_juris %in% "Kent") |> 
+  select(zoning_new_max_far_additional)
+
+p_kent_bbox <- st_bbox(p_kent)
+
+kent <- ps_cities |> 
+  filter(name %in% "Kent")
+
+
+map_kent_p <- mapview(kent,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE) + 
+  mapview(t_kent,
+        col.regions = "tomato",
+        alpha.regions = 0.2,
+        color = "grey20",
+        legend = FALSE) +
+  mapview(p_kent,
+          zcol = "zoning_new_max_far_additional",
+          legend = TRUE,
+          layer.name = "Change in FAR",
+          popup = "zoning_new_max_far_additional") 
+
+
+map_kent_p
+
+```
 
 #### Mercer Island
 
