@@ -160,9 +160,19 @@ The purpose of this study is to provide information about the effects of the pro
 
 ### Research Design
 
-We use a quantitative method to attempt to answer our research questions.
+We use a quantitative methodology to attempt to answer our research questions. We then assess House Bill 2160's impact across the entire study area, the central Puget Sound region, before examining several individual cities as case studies.
 
-To quantify the impact of zoning changes on development capacity within transit areas, we define the area-weighted mean of net development capacity ($AWM_{NDC}$) as follows:
+We use net development capacity (${NDC}$) to represent the effect of the bill on development capacity at the scale of individual tax parcels. We define ${NDC}$ as follows:
+
+$$
+NDC_i = FAR_{new,i} - FAR_{old,i}
+$$
+where:
+
+-   $FAR_{old,i}$ is parcel $i$'s current maximum development capacity in terms of Floor Area Ratio (FAR).
+-   $FAR_{new,i}$ is the maximum development capacity (in FAR) that would apply to parcel $i$ if HB 2160 became law.
+
+To quantify the impact of the proposed bill within a geography larger than an individual parcel, we calculate the area-weighted mean of net development capacity ($AWM_{NDC}$). We define ($AWM_{NDC}$) as follows:
 
 $$
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
@@ -176,7 +186,7 @@ where:
 
 This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel's contribution to the overall mean being proportionally weighted by its area.
 
-Our method offers a precise metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
+Our method offers a metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
 
 ### Data Collection
 
@@ -560,9 +570,18 @@ mapview(kent,
 ```
 
 ```{r}
-#| label: results-case-studies-kent-parcels
+#| label: results-case-studies-kent-zoning
 #| message: false
-#| #| fig-cap: "Kent Station Areas Parcels"
+#| fig-cap: "Zoning Districts Within Kent Station Areas"
+```
+
+
+```{r}
+#| label: results-case-studies-kent-parcels
+#| eval: true
+#| message: false
+#| fig-cap: "Net Development Capacity Within Kent Station Areas"
+
 
 p_kent <- p |> 
   filter(zoning_juris %in% "Kent") |> 
