@@ -607,7 +607,6 @@ p_affected_kent <- p |>
 
 ```
 
-
 ![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
@@ -618,7 +617,9 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's
 
 ```{r}
 #| label: fig-results-case-studies-kent-histogram
-#| message: false
+#| output: true
+#| message: false 
+#| fig-height: 4
 #| fig-cap: "Kent Case Study: Net Development Capacity"
 
 kent_hist_subtitle <- TeX("$AWM_{NDC}$ is 2.07 FAR, n = 1,195 (69%)")
@@ -633,9 +634,8 @@ ggplot() +
   labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
        subtitle = kent_hist_subtitle,
        y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)") 
+       x = "Net Development Capacity (FAR)")
 ```
-
 
 ```{r}
 #| label: fig-results-case-studies-kent-maps
