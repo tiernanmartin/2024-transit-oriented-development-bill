@@ -55,6 +55,7 @@ library(gtsummary)
 library(kableExtra)
 library(latex2exp)
 library(mapview)
+library(RColorBrewer)
 mapviewOptions(platform = "leaflet")
 
 ```
@@ -166,7 +167,7 @@ We use net development capacity (${NDC}$) to represent the effect of the bill on
 
 $$
 NDC_i = FAR_{new,i} - FAR_{old,i}
-$$
+$$ {#eq-ndc}
 where:
 
 -   $FAR_{old,i}$ is parcel $i$'s current maximum development capacity in terms of Floor Area Ratio (FAR).
@@ -176,7 +177,7 @@ To quantify the impact of the proposed bill within a geography larger than an in
 
 $$
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
-$$
+$$ {#eq-awm-ndc}
 
 where:
 
@@ -248,6 +249,10 @@ undev_land_codes <- c(94, 93, 92)
 
 t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
          layer = "transit-station-areas",
+         quiet = TRUE)
+
+zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+         layer = "tod-zoning-districts",
          quiet = TRUE)
 
 ```
@@ -554,18 +559,43 @@ p_cities |>
 #| fig-cap: "Kent Station Areas"
 
 t_kent <- st_join(t, ps_cities) |>  
-  filter(name %in% "Kent") 
+  filter(name %in% "Kent") |> 
+  transmute(
+    mode,
+    stop_name = glue("{mode}: {stop_name}")
+  )
 
 kent <- ps_cities |> 
   filter(name %in% "Kent")
 
-mapview(kent,
+map_kent <- mapview(kent,
         col.regions = "grey",
-        legend = FALSE) + 
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+map_kent_stations_baselayer <- mapview(t_kent,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "gray",
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE) 
+
+map_kent_stations <- map_kent + 
   mapview(t_kent,
           zcol = "mode",
+          col.regions = brewer.pal(3, "Set2"),
           legend = TRUE,
-          layer.name = "Station Area Type")
+          layer.name = "Station Area Type",
+          popup = FALSE,
+          label = "stop_name")
+
+map_kent_stations
 
 ```
 
@@ -573,6 +603,31 @@ mapview(kent,
 #| label: results-case-studies-kent-zoning
 #| message: false
 #| fig-cap: "Zoning Districts Within Kent Station Areas"
+
+
+zd_kent <- zd |> 
+  filter(juris %in% "Kent") |> 
+  select(district_name,
+         zone,
+         allow_residential:min_parking
+         )
+
+zd_kent |> 
+  st_drop_geometry() |> 
+  filter(!is.na(zone)) |> 
+  pluck("district_name") |> 
+  unique()
+
+map_kent_zoning_districts <- map_kent + 
+  mapview(zd_kent,
+          zcol = "zone",
+          col.regions = c(brewer.pal(12, "Set3"),
+                          brewer.pal(8, "Set2")),
+          popup = TRUE,
+          layer.name = "Zoning Districts")
+
+map_kent_zoning_districts
+
 ```
 
 
@@ -585,31 +640,17 @@ mapview(kent,
 
 p_kent <- p |> 
   filter(zoning_juris %in% "Kent") |> 
-  select(zoning_new_max_far_additional)
+  select(net_dev_capacity = zoning_new_max_far_additional)
 
-p_kent_bbox <- st_bbox(p_kent)
-
-kent <- ps_cities |> 
-  filter(name %in% "Kent")
-
-
-map_kent_p <- mapview(kent,
-        col.regions = "grey",
-        alpha.regions = .10,
-        legend = FALSE) + 
-  mapview(t_kent,
-        col.regions = "tomato",
-        alpha.regions = 0.2,
-        color = "grey20",
-        legend = FALSE) +
+map_kent_parcels <- map_kent +  
+  map_kent_stations_baselayer +
   mapview(p_kent,
-          zcol = "zoning_new_max_far_additional",
+          zcol = "net_dev_capacity",
           legend = TRUE,
-          layer.name = "Change in FAR",
-          popup = "zoning_new_max_far_additional") 
+          layer.name = "Net FAR",
+          popup = "net_dev_capacity") 
 
-
-map_kent_p
+map_kent_parcels
 
 ```
 

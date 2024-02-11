@@ -429,9 +429,9 @@ We use net development capacity (\({NDC}\)) to represent the effect of
 the bill on development capacity at the scale of individual tax parcels.
 We define \({NDC}\) as follows:
 
-\[
+\begin{equation}\phantomsection\label{eq-ndc}{
 NDC_i = FAR_{new,i} - FAR_{old,i}
-\] where:
+}\end{equation} where:
 
 \begin{itemize}
 \tightlist
@@ -448,9 +448,9 @@ than an individual parcel, we calculate the area-weighted mean of net
 development capacity (\(AWM_{NDC}\)). We define (\(AWM_{NDC}\)) as
 follows:
 
-\[
+\begin{equation}\phantomsection\label{eq-awm-ndc}{
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
-\]
+}\end{equation}
 
 where:
 
@@ -805,6 +805,38 @@ Notebook}}
 \textsubscript{Source:
 \href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
 Notebook}}
+
+\begin{verbatim}
+ [1] "Community Commercial"                                 
+ [2] "Midway Transit Community-2"                           
+ [3] "Midway Commercial/Residential"                        
+ [4] "Single-Family"                                        
+ [5] "Mobile Home Park Combining"                           
+ [6] "Midway Transit Community-1"                           
+ [7] "Medium Density Multifamily Residential"               
+ [8] "Neighborhood Convenience Commercial"                  
+ [9] "Residential Agricultural"                             
+[10] "Multifamily Residential Townhouse"                    
+[11] "Commercial Manufacturing"                             
+[12] "General Commercial"                                   
+[13] "Mixed Industrial"                                     
+[14] "Low Density Multifamily Residential"                  
+[15] "High Density Multifamily Residential"                 
+[16] "Downtown Commercial Enterprise - Transitional Overlay"
+[17] "Duplex Multifamily"                                   
+[18] "Downtown Commercial"                                  
+[19] "Downtown Commercial Enterprise"                       
+\end{verbatim}
+
+\begin{figure}[H]
+
+{\centering \includegraphics{index_files/figure-pdf/results-case-studies-kent-zoning-1.pdf}
+
+}
+
+\caption{Zoning Districts Within Kent Station Areas}
+
+\end{figure}%
 
 \textsubscript{Source:
 \href{https://tiernanmartin.github.io/2024-transit-oriented-development-bill/index.qmd.html}{Article
