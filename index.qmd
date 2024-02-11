@@ -193,7 +193,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------------|------------------------|------------------------|
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -607,7 +607,7 @@ p_affected_kent <- p |>
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.See Table @ref(\@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See (@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
 
 We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
 
@@ -691,7 +691,9 @@ map_kent_parcels
 #### Kent
 
 ```{r}
-#| label: tbl-appendix-case-studies-kent-stations-table 
+#| label: tbl-appendix-case-studies-kent-stations-table
+#| tbl-cap: "Kent Case Study: Transit Stations/Stops"
+#| tbl-cap-location: top 
 
 t_kent |> 
   st_drop_geometry() |> 
