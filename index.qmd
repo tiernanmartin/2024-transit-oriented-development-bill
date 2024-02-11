@@ -167,8 +167,7 @@ We use net development capacity (${NDC}$) to represent the effect of the bill on
 
 $$
 NDC_i = FAR_{new,i} - FAR_{old,i}
-$$ {#eq-ndc}
-where:
+$$ {#eq-ndc} where:
 
 -   $FAR_{old,i}$ is parcel $i$'s current maximum development capacity in terms of Floor Area Ratio (FAR).
 -   $FAR_{new,i}$ is the maximum development capacity (in FAR) that would apply to parcel $i$ if HB 2160 became law.
@@ -551,15 +550,42 @@ p_cities |>
 
 ```
 
+```{r}
+#| label: results-case-studies-awmndc
+#| include: false
+
+city_awmndc <- p_affected |> 
+  st_drop_geometry() |> 
+  mutate(analysis_area_weight = parcel_area_mi2 / max(parcel_area_mi2, na.rm = TRUE)) |> 
+  group_by(zoning_juris) |> 
+  summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
+    zoning_new_max_far_additional,
+    w = analysis_area_weight
+  ))
+
+case_studies_awmndc <- city_awmndc |> 
+  filter(zoning_juris %in% case_studies)
+
+kent_awmndc <- case_studies_awmndc |> 
+  filter(zoning_juris %in% "Kent") |> 
+  pluck("analysis_awmndc") |> 
+  round(digits = 2)
+
+
+```
+
 #### Kent
 
+![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
 
+Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
+
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.[^8] We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR .
+
+[^8]: See @ref(appendix-case-studies-kent-stations-table) for a complete list of the station areas.
 
 ```{r}
-#| label: results-case-studies-kent-parcels
-#| eval: true
-#| message: false
-#| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
+#| label: results-case-studies-kent-objects
 
 t_kent <- st_join(t, ps_cities) |>  
   filter(name %in% "Kent") |> 
@@ -571,6 +597,19 @@ t_kent <- st_join(t, ps_cities) |>
 kent <- ps_cities |> 
   filter(name %in% "Kent")
 
+p_kent <- p |> 
+  filter(zoning_juris %in% "Kent") |> 
+  select(net_dev_capacity = zoning_new_max_far_additional)
+
+```
+
+```{r}
+#| label: results-case-studies-kent-maps
+#| eval: true
+#| message: false
+#| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
+
+
 map_kent <- mapview(kent,
         col.regions = "grey",
         alpha.regions = .10,
@@ -578,10 +617,6 @@ map_kent <- mapview(kent,
         popup = FALSE,
         highlight = FALSE,
         label = FALSE)
-
-p_kent <- p |> 
-  filter(zoning_juris %in% "Kent") |> 
-  select(net_dev_capacity = zoning_new_max_far_additional)
 
 map_kent_stations_baselayer <- mapview(t_kent,
         zcol = "mode",
@@ -622,7 +657,24 @@ map_kent_parcels
 #### Kent
 
 ```{r}
-#| label: appendix-case-studies-kent-stations
+#| label: appendix-case-studies-kent-stations-table
+#| 
+
+t_kent |> 
+  st_drop_geometry() |> 
+  gt(rowname_col = "mode") |> 
+  cols_label(
+    stop_name = "Transit Stop/Station") |> 
+  tab_style(
+    style = list(
+      cell_text(align = "left")),
+    locations = cells_body()
+  )
+
+```
+
+```{r}
+#| label: appendix-case-studies-kent-stations-map
 #| message: false
 #| fig-cap: "Appendix Maps: Kent Station Areas"
 
@@ -692,7 +744,6 @@ map_kent_zoning_districts <- map_kent +
 map_kent_zoning_districts
 
 ```
-
 
 ```{r}
 #| label: appendix-case-studies-kent-parcels
