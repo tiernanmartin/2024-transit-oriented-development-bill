@@ -9,8 +9,6 @@ format:
     toc: true
     comments:
       hypothesis: true
-  docx: default
-  agu-pdf: default
 
 
 

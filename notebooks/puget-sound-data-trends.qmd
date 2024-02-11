@@ -18,6 +18,7 @@ library(scales)
 library(readxl)
 library(janitor)
 library(here)
+library(sf)
 
 ```
 
@@ -95,7 +96,7 @@ ps_data_cities_ready <- ps_data_cities |>
 
 st_write(ps_data_cities_ready,
          here("data_outputs/2024-tod-bill.gpkg"),
-         layer = "ps-cities-pop-hu")
+         layer = "ps-cities-pop-hu",delete_layer = TRUE)
 
 
 ```

@@ -25,7 +25,7 @@ keywords:
   - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
+  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.79 floor area ratio (FAR).
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -55,6 +55,8 @@ library(gtsummary)
 library(kableExtra)
 library(latex2exp)
 library(mapview)
+library(RColorBrewer)
+mapviewOptions(platform = "leaflet")
 
 ```
 
@@ -72,7 +74,6 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 
 ```
 
-
 ```{r}
 #| label: utility-functions
 #| include: false
@@ -80,6 +81,8 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 weighted_mean <- possibly(
   .f = function(x,w,d){round(digits = d, weighted.mean(x, w, na.rm = TRUE))},
   otherwise = NA)
+
+convert_to_mi2 <- function(x){x/27878400}
 
 
 ```
@@ -94,7 +97,7 @@ Futurewise is a nonprofit organization that works throughout Washington State on
 
 The authors received no financial support for the research, authorship, or publication of this article.
 
-Thanks to Yonah Freemark from the Urban Institute for providing zoning district data.[@urbaninstitute] Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024.[@pugetsoundregionalcouncil2024] Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
+Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
 
 ## Introduction
 
@@ -158,13 +161,22 @@ The purpose of this study is to provide information about the effects of the pro
 
 ### Research Design
 
-We use a quantitative method to attempt to answer our research questions.
+We use a quantitative methodology to attempt to answer our research questions. We then assess House Bill 2160's impact across the entire study area, the central Puget Sound region, before examining several individual cities as case studies.
 
-To quantify the impact of zoning changes on development capacity within transit areas, we define the area-weighted mean of net development capacity ($AWM_{NDC}$) as follows:
+We use net development capacity (${NDC}$) to represent the effect of the bill on development capacity at the scale of individual tax parcels. We define ${NDC}$ as follows:
+
+$$
+NDC_i = FAR_{new,i} - FAR_{old,i}
+$$ {#eq-ndc} where:
+
+-   $FAR_{old,i}$ is parcel $i$'s current maximum development capacity in terms of Floor Area Ratio (FAR).
+-   $FAR_{new,i}$ is the maximum development capacity (in FAR) that would apply to parcel $i$ if HB 2160 became law.
+
+To quantify the impact of the proposed bill within a geography larger than an individual parcel, we calculate the area-weighted mean of net development capacity ($AWM_{NDC}$). We define ($AWM_{NDC}$) as follows:
 
 $$
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
-$$
+$$ {#eq-awm-ndc}
 
 where:
 
@@ -174,14 +186,14 @@ where:
 
 This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel's contribution to the overall mean being proportionally weighted by its area.
 
-Our method offers a precise metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
+Our method offers a metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
 
 ### Data Collection
 
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------------|------------------------|------------------------|
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -222,6 +234,7 @@ Further research, data collection, and methodological refinements could help add
 ## Results
 
 ```{r}
+#| label: results-objects
 #| include: false
 
 p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
@@ -236,6 +249,10 @@ undev_land_codes <- c(94, 93, 92)
 
 t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
          layer = "transit-station-areas",
+         quiet = TRUE)
+
+zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+         layer = "tod-zoning-districts",
          quiet = TRUE)
 
 ```
@@ -258,10 +275,10 @@ We separate the study data into three analysis groups:
 [^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
 
 ```{r}
-#| label: results-summary-table
+#| label: tbl-results-summary-table
 #| output: true
 #| message: false
-#| tbl-cap: "Table 1: Analysis Groups, Central Puget Sound"
+#| tbl-cap: "Analysis Groups, Central Puget Sound"
 
 
 col_names <- c("Analysis Group", "Parcels (n)", " Land Area (sq. miles)")
@@ -292,19 +309,29 @@ p_tbl_summary |>
     adorn_pct_formatting(digits = 0) |> 
     adorn_ns(format_func = format_func,
              position = "front") |> 
-  kable(col.names = col_names) 
+  as_tibble() |> 
+  gt(rowname_col = "analysis_type") |> 
+  #tab_row_group(label = "Total", rows = 4) |>
+  tab_row_group(label = "Analysis Groups", rows = 1:3) |>  
+  cols_label(n = "Parcels (n)",
+             area_mi2 = html("Land Area (mi<sup>2</sup>)")) |> 
+  tab_style(
+    style = list(
+      cell_text(align = "left", indent = px(20))),
+    locations = cells_stub()
+  )
 
 ```
 
-Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%). 
+Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%).
 
-Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR. 
+Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.79 FAR.
 
 ```{r}
-#| label: results-histogram-affected
+#| label: fig-results-histogram-affected
 #| output: true
 #| message: false
-#| fig-cap: "Figure 1: HB 2160's Effect on Net Development Capacity"
+#| fig-cap: "HB 2160's Effect on Net Development Capacity"
 #| fig-height: 4
 
 wt_avg <- weighted.mean(p_affected$zoning_new_max_far_additional,
@@ -318,8 +345,7 @@ n_parcels <- scales::comma(nrow(p_affected))
 subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)")
 
 p_affected |> 
-  st_drop_geometry() |> 
-  filter(zoning_new_max_far_additional > 0) |> 
+  st_drop_geometry() |>  
 ggplot() +  
   aes(x = zoning_new_max_far_additional,
       weight = parcel_area_mi2) + 
@@ -335,12 +361,11 @@ ggplot() +
 
 We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
 
-
 ```{r}
-#| label: results-histogram-station-areas
+#| label: fig-results-histogram-station-areas
 #| output: true
 #| message: false
-#| fig-cap: "Figure 2: Station Area Type Comparison"
+#| fig-cap: "Station Area Type Comparison"
 #| fig-height: 4
 
 p_station_area <- p_affected |> 
@@ -382,9 +407,9 @@ Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area rev
 ```{r}
 #| label: results-puget-sound-station-map
 #| message: false
-#| fig-height: 5
 #| fig-width: 5
-#| fig-cap: "Figure 3: Transit Station Areas, Central Puget Sound"
+#| fig-asp: 1
+#| fig-cap: "Transit Station Areas, Central Puget Sound"
 
 t_join <- st_join(t,
                   filter(p, analysis_type %in% "Developable, Affected"))
@@ -417,12 +442,12 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ### Case Studies
 
-In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine several cities as case studies. 
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts under which we can examine the effects of the proposed bill.
 
 ```{r}
-#| label: results-case-studies-summary
+#| label: tbl-results-case-studies-summary
 #| message: false
-#| tbl-cap: "Table 2: Case Studies"
+#| tbl-cap: "Case Studies"
 
 case_studies <- c("Shoreline",
                   "Redmond",
@@ -431,9 +456,13 @@ case_studies <- c("Shoreline",
                   )
 
 ps_cities <- st_read(
+  quiet = TRUE,
   here("data_outputs/2024-tod-bill.gpkg"),
   layer = "ps-cities-pop-hu") |> 
-  st_transform(2926)
+  st_transform(2926) |> 
+  mutate(area = st_area(geom),
+         area_mi2 = as.numeric(convert_to_mi2(area))
+)
 
 
 st_join(t,ps_cities) |> 
@@ -445,12 +474,12 @@ st_join(t,ps_cities) |>
   pivot_wider(names_from = mode,values_from = n,values_fill = 0L) |> 
   mutate(SC = 0L) |> 
   left_join(st_drop_geometry(ps_cities)) |> 
-  select(-geoid) |> 
-  select(name, population, housing_units, everything()) |> 
+  select(-geoid, -area) |> 
+  select(name, population, housing_units, area_mi2, everything()) |> 
   gt(rowname_col = "name") |> 
    tab_spanner(
     label = "Population & Housing",
-    columns = c(population, housing_units)
+    columns = c(population, housing_units, area_mi2)
   ) |>
   tab_spanner(
     label = "Transit Station Areas",
@@ -459,20 +488,23 @@ st_join(t,ps_cities) |>
   fmt_number( 
     decimals = 0,       
     sep_mark = ","
-  ) 
+  ) |> 
+  cols_label(population = "Population",
+             housing_units = "Housing Units",
+             area_mi2 = html("Land Area (mi<sup>2</sup>)")) |> 
+   tab_source_note(
+    source_note = md("Sources: American Community Survey, 2022 ACS 5-Year Estimates; authors' analysis of transit stop data from [Puget Sound Regional Council 2024](#ref-pugetsoundregionalcouncil2024)")
+    )
 
 
 
 ```
 
-
-*Insert table with population (2023), housing units (2023), land area, and count of each type of transit station*
-
 Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
 
 ```{r}
-#| label: results-case-studies-analysis-group
-#| tbl-cap: "Table 3: Case Studies by Analysis Group"
+#| label: tbl-results-case-studies-analysis-group
+#| tbl-cap: "Case Studies by Analysis Group"
 #| tbl-cap-location: top
 
 col_names_city <- c("City",
@@ -519,10 +551,260 @@ p_cities |>
 
 ```
 
+```{r}
+#| label: results-case-studies-awmndc
+#| include: false
+
+city_awmndc <- p_affected |> 
+  st_drop_geometry() |> 
+  mutate(analysis_area_weight = parcel_area_mi2 / max(parcel_area_mi2, na.rm = TRUE)) |> 
+  group_by(zoning_juris) |> 
+  summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
+    zoning_new_max_far_additional,
+    w = analysis_area_weight
+  ))
+
+case_studies_awmndc <- city_awmndc |> 
+  filter(zoning_juris %in% case_studies)
+
+kent_awmndc <- case_studies_awmndc |> 
+  filter(zoning_juris %in% "Kent") |> 
+  pluck("analysis_awmndc") |> 
+  round(digits = 2)
+
+
+```
+
+#### Kent
+
+```{r}
+#| label: results-case-studies-kent-objects
+
+t_kent <- st_join(t, ps_cities) |>  
+  filter(name %in% "Kent") |> 
+  transmute(
+    mode,
+    stop_name = glue("{mode}: {stop_name}")
+  )
+
+kent <- ps_cities |> 
+  filter(name %in% "Kent")
+
+p_kent <- p |> 
+  filter(zoning_juris %in% "Kent") |>   
+  select(parcel_area_mi2,
+         net_dev_capacity = zoning_new_max_far_additional)
+
+p_affected_kent <- p |>  
+  filter(analysis_type %in% "Developable, Affected") |> 
+  filter(zoning_juris %in% "Kent") |>   
+  select(parcel_area_mi2,
+         net_dev_capacity = zoning_new_max_far_additional) 
+
+```
+
+![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
+
+Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
+
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See (@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
+
+```{r}
+#| label: "fig-1"
+#| output: true
+#| message: false 
+#| fig-height: 4
+#| fig-cap: "Kent Case Study: Net Development Capacity"
+
+ggplot(diamonds, aes(carat)) +
+  geom_histogram()
+# kent_hist_subtitle <- TeX("$AWM_{NDC}$ is 2.07 FAR, n = 1,195 (69%)")
+# 
+# p_affected_kent |>
+# ggplot() +  
+#   aes(x = net_dev_capacity,
+#       weight = parcel_area_mi2) + 
+#   geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
+#   scale_y_continuous(labels = scales::label_comma()) + 
+#   scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+#   labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+#        subtitle = kent_hist_subtitle,
+#        y = "Land Area (sq. miles)",
+#        x = "Net Development Capacity (FAR)")
+```
+
+Map of parcels within Kent's station areas:
+
+```{r}
+#| label: fig-results-case-studies-kent-maps
+#| eval: true
+#| message: false
+#| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
+
+
+map_kent <- mapview(kent,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+map_kent_stations_baselayer <- mapview(t_kent,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "gray",
+        legend = TRUE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE,
+        layer.name = "Stations") 
+
+map_kent_parcels <- map_kent_stations_baselayer +
+  mapview(p_kent,
+          zcol = "net_dev_capacity",
+          legend = TRUE,
+          layer.name = "Net FAR",
+          popup = "net_dev_capacity") 
+
+map_kent_parcels
+
+```
+
+#### Mercer Island
+
+#### Redmond
+
+#### Shoreline
 
 ## Discussion
 
 ## Conclusion
+
+## Appendices {.unnumbered}
+
+### Case Study Tables & Maps
+
+#### Kent
+
+```{r}
+#| label: tbl-appendix-case-studies-kent-stations-table
+#| tbl-cap: "Kent Case Study: Transit Stations/Stops"
+#| tbl-cap-location: top 
+
+t_kent |> 
+  st_drop_geometry() |> 
+  gt(rowname_col = "mode") |> 
+  cols_label(
+    stop_name = "Transit Stop/Station") |> 
+  tab_style(
+    style = list(
+      cell_text(align = "left")),
+    locations = cells_body()
+  )
+
+```
+
+```{r}
+#| label: appendix-case-studies-kent-stations-map
+#| include: false
+#| message: false
+#| fig-cap: "Appendix Maps: Kent Station Areas"
+
+t_kent <- st_join(t, ps_cities) |>  
+  filter(name %in% "Kent") |> 
+  transmute(
+    mode,
+    stop_name = glue("{mode}: {stop_name}")
+  )
+
+kent <- ps_cities |> 
+  filter(name %in% "Kent")
+
+map_kent <- mapview(kent,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+map_kent_stations_baselayer <- mapview(t_kent,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "gray",
+        legend = TRUE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE,
+        layer.name = "Stations") 
+
+map_kent_stations <- map_kent + 
+  mapview(t_kent,
+          zcol = "mode",
+          col.regions = brewer.pal(3, "Set2"),
+          legend = TRUE,
+          layer.name = "Station Area Type",
+          popup = FALSE,
+          label = "stop_name")
+
+map_kent_stations
+
+```
+
+```{r}
+#| label: appendix-case-studies-kent-zoning
+#| include: false
+#| message: false
+#| fig-cap: "Appendix Maps: Zoning Districts Within Kent Station Areas"
+
+
+zd_kent <- zd |> 
+  filter(juris %in% "Kent") |> 
+  select(district_name,
+         zone,
+         allow_residential:min_parking
+         )
+
+map_kent_zoning_districts <- map_kent + 
+  mapview(zd_kent,
+          zcol = "zone",
+          col.regions = c(brewer.pal(12, "Set3"),
+                          brewer.pal(8, "Set2")),
+          popup = TRUE,
+          layer.name = "Zoning Districts")
+
+map_kent_zoning_districts
+
+```
+
+```{r}
+#| label: appendix-case-studies-kent-parcels
+#| include: false
+#| eval: true
+#| message: false
+#| fig-cap: "Appendix Maps: Net Development Capacity Within Kent Station Areas"
+
+
+p_kent <- p |> 
+  filter(zoning_juris %in% "Kent") |> 
+  select(net_dev_capacity = zoning_new_max_far_additional)
+
+map_kent_parcels <- map_kent +  
+  map_kent_stations_baselayer +
+  mapview(p_kent,
+          zcol = "net_dev_capacity",
+          legend = TRUE,
+          layer.name = "Net FAR",
+          popup = "net_dev_capacity") 
+
+map_kent_parcels
+
+```
 
 ## References {.unnumbered}
 
