@@ -612,16 +612,16 @@ p_affected_kent <- p |>
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.[^8] We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.See Table \@ref(tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
 
-[^8]: See Table \@ref(tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
 
 ```{r}
 #| label: fig-results-case-studies-kent-histogram
 #| message: false
 #| fig-cap: "Kent Case Study: Net Development Capacity"
 
-kent_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 2.07 FAR, n = 1,195 (69%)")
+kent_hist_subtitle <- TeX("$AWM_{NDC}$ is 2.07 FAR, n = 1,195 (69%)")
 
 p_affected_kent |>
 ggplot() +  
