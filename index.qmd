@@ -553,10 +553,78 @@ p_cities |>
 
 #### Kent
 
+
+
 ```{r}
-#| label: results-case-studies-kent-stations
+#| label: results-case-studies-kent-parcels
+#| eval: true
 #| message: false
-#| fig-cap: "Kent Station Areas"
+#| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
+
+t_kent <- st_join(t, ps_cities) |>  
+  filter(name %in% "Kent") |> 
+  transmute(
+    mode,
+    stop_name = glue("{mode}: {stop_name}")
+  )
+
+kent <- ps_cities |> 
+  filter(name %in% "Kent")
+
+map_kent <- mapview(kent,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+p_kent <- p |> 
+  filter(zoning_juris %in% "Kent") |> 
+  select(net_dev_capacity = zoning_new_max_far_additional)
+
+map_kent_stations_baselayer <- mapview(t_kent,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "gray",
+        legend = TRUE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE,
+        layer.name = "Stations") 
+
+map_kent_parcels <- map_kent_stations_baselayer +
+  mapview(p_kent,
+          zcol = "net_dev_capacity",
+          legend = TRUE,
+          layer.name = "Net FAR",
+          popup = "net_dev_capacity") 
+
+map_kent_parcels
+
+```
+
+#### Mercer Island
+
+#### Redmond
+
+#### Shoreline
+
+## Discussion
+
+## Conclusion
+
+## Appendices {.unnumbered}
+
+### Case Study Maps
+
+#### Kent
+
+```{r}
+#| label: appendix-case-studies-kent-stations
+#| message: false
+#| fig-cap: "Appendix Maps: Kent Station Areas"
 
 t_kent <- st_join(t, ps_cities) |>  
   filter(name %in% "Kent") |> 
@@ -581,10 +649,11 @@ map_kent_stations_baselayer <- mapview(t_kent,
         col.regions = brewer.pal(3, "Set2"),
         alpha.regions = 0.2,
         color = "gray",
-        legend = FALSE,
+        legend = TRUE,
         popup = FALSE,
         highlight = FALSE,
-        label = FALSE) 
+        label = FALSE,
+        layer.name = "Stations") 
 
 map_kent_stations <- map_kent + 
   mapview(t_kent,
@@ -600,9 +669,9 @@ map_kent_stations
 ```
 
 ```{r}
-#| label: results-case-studies-kent-zoning
+#| label: appendix-case-studies-kent-zoning
 #| message: false
-#| fig-cap: "Zoning Districts Within Kent Station Areas"
+#| fig-cap: "Appendix Maps: Zoning Districts Within Kent Station Areas"
 
 
 zd_kent <- zd |> 
@@ -611,12 +680,6 @@ zd_kent <- zd |>
          zone,
          allow_residential:min_parking
          )
-
-zd_kent |> 
-  st_drop_geometry() |> 
-  filter(!is.na(zone)) |> 
-  pluck("district_name") |> 
-  unique()
 
 map_kent_zoning_districts <- map_kent + 
   mapview(zd_kent,
@@ -632,10 +695,10 @@ map_kent_zoning_districts
 
 
 ```{r}
-#| label: results-case-studies-kent-parcels
+#| label: appendix-case-studies-kent-parcels
 #| eval: true
 #| message: false
-#| fig-cap: "Net Development Capacity Within Kent Station Areas"
+#| fig-cap: "Appendix Maps: Net Development Capacity Within Kent Station Areas"
 
 
 p_kent <- p |> 
@@ -653,16 +716,6 @@ map_kent_parcels <- map_kent +
 map_kent_parcels
 
 ```
-
-#### Mercer Island
-
-#### Redmond
-
-#### Shoreline
-
-## Discussion
-
-## Conclusion
 
 ## References {.unnumbered}
 
