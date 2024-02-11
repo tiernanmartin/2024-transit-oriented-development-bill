@@ -193,7 +193,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+|------------------|-------------------------------------|------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -402,7 +402,7 @@ ggplot() +
        x = "Net Development Capacity (FAR)") 
 ```
 
-Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
+Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
 
 ```{r}
 #| label: results-puget-sound-station-map
@@ -557,11 +557,10 @@ p_cities |>
 
 city_awmndc <- p_affected |> 
   st_drop_geometry() |> 
-  mutate(analysis_area_weight = parcel_area_mi2 / max(parcel_area_mi2, na.rm = TRUE)) |> 
   group_by(zoning_juris) |> 
   summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
     zoning_new_max_far_additional,
-    w = analysis_area_weight
+    w = parcel_area_mi2
   ))
 
 case_studies_awmndc <- city_awmndc |> 
@@ -572,6 +571,21 @@ kent_awmndc <- case_studies_awmndc |>
   pluck("analysis_awmndc") |> 
   round(digits = 2)
 
+case_studies_by_stationarea_type <- p |> 
+  st_drop_geometry() |> 
+  filter(zoning_juris %in% case_studies) |> 
+  group_by(zoning_juris, 
+           analysis_station_area_types,
+           analysis_type) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = round(digits = 2, sum(parcel_area_mi2,na.rm = TRUE)),
+            net_dev_cap = weighted.mean(na.rm = TRUE,
+                                        zoning_new_max_far_additional,
+                                        w = parcel_area_mi2
+                                        )
+            ) |> 
+  mutate(net_dev_cap = if_else(is.nan(net_dev_cap),NA,net_dev_cap))
 
 ```
 
@@ -599,7 +613,12 @@ p_affected_kent <- p |>
   filter(analysis_type %in% "Developable, Affected") |> 
   filter(zoning_juris %in% "Kent") |>   
   select(parcel_area_mi2,
+         analysis_station_area_types,
          net_dev_capacity = zoning_new_max_far_additional) 
+
+kent_by_stationarea_type <- 
+  case_studies_by_stationarea_type |> 
+  filter(zoning_juris %in% "Kent")
 
 ```
 
@@ -607,7 +626,7 @@ p_affected_kent <- p |>
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See (@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See @tbl-appendix-case-studies-kent-stations-table in the appendix for a complete list of the station areas in Kent.
 
 We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
 
@@ -619,7 +638,7 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's
 #| fig-cap: "Kent Case Study: Net Development Capacity"
 
 
-kent_hist_subtitle <- TeX("$AWM_{NDC}$ is 2.07 FAR, n = 1,195 (69%)")
+kent_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 2.07 FAR, n = 1,195 (69%)")
 
 p_affected_kent |>
 ggplot() +
@@ -634,7 +653,36 @@ ggplot() +
        x = "Net Development Capacity (FAR)")
 ```
 
-Map of parcels within Kent's station areas:
+Examining the data grouped by station area type, we observe two patterns. First, there are a significant number of *Not Developable* parcels in the half-mile station areas. Second, the *Developable, Affected* parcels in both types of station areas would be substantially affected by HB 2160, as indicated by the relatively large $AWM_{NDC}$ values in @tbl-results-case-studies-kent-station-areas.
+
+```{r}
+#| label: tbl-results-case-studies-kent-station-areas
+#| message: false
+#| tbl-cap: "Kent Case Study: Station Area Type Summary"
+
+kent_by_stationarea_type |> 
+  select(-zoning_juris) |> 
+  gt(rowname_col = "analysis_type",
+     groupname_col = "analysis_station_area_types") |> 
+  cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+  ) |> 
+  tab_style(
+    style = list(cell_text(indent = px(20))),
+    locations = cells_stub()
+  ) |> 
+  fmt_number( 
+    columns = c(4,5),
+    decimals = 2,       
+    sep_mark = ","
+  )
+  
+
+```
+
+Displaying the *Net Development Capacity* of individual parcels reveals a more nuanced pattern around Kent's station areas, as shown in @fig-results-case-studies-kent-maps.
 
 ```{r}
 #| label: fig-results-case-studies-kent-maps
