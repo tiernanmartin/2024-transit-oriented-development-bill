@@ -582,7 +582,7 @@ Kent is a city located in King County, Washington. The city has approximate 135,
 
 HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.[^8] We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR .
 
-[^8]: See @ref(appendix-case-studies-kent-stations-table) for a complete list of the station areas.
+[^8]: See @tbl-appendix-case-studies-kent-stations-table in the appendix for a complete list of the station areas in Kent.
 
 ```{r}
 #| label: results-case-studies-kent-objects
@@ -652,13 +652,12 @@ map_kent_parcels
 
 ## Appendices {.unnumbered}
 
-### Case Study Maps
+### Case Study Tables & Maps
 
 #### Kent
 
 ```{r}
-#| label: appendix-case-studies-kent-stations-table
-#| 
+#| label: tbl-appendix-case-studies-kent-stations-table 
 
 t_kent |> 
   st_drop_geometry() |> 
@@ -769,6 +768,3 @@ map_kent_parcels
 ```
 
 ## References {.unnumbered}
-
-::: {#refs}
-:::
