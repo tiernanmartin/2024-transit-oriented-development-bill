@@ -639,6 +639,7 @@ ggplot(diamonds, aes(carat)) +
 #        x = "Net Development Capacity (FAR)")
 ```
 
+Map of parcels within Kent's station areas:
 ```{r}
 #| label: fig-results-case-studies-kent-maps
 #| eval: true
