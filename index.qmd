@@ -25,7 +25,7 @@ keywords:
   - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.35 floor area ratio (FAR).
+  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.79 floor area ratio (FAR).
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -96,7 +96,7 @@ Futurewise is a nonprofit organization that works throughout Washington State on
 
 The authors received no financial support for the research, authorship, or publication of this article.
 
-Thanks to Yonah Freemark from the Urban Institute for providing zoning district data.[@urbaninstitute] Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024.[@pugetsoundregionalcouncil2024] Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
+Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
 
 ## Introduction
 
@@ -300,7 +300,7 @@ p_tbl_summary |>
 
 Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%).
 
-Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.35 FAR.
+Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.79 FAR.
 
 ```{r}
 #| label: results-histogram-affected
@@ -320,8 +320,7 @@ n_parcels <- scales::comma(nrow(p_affected))
 subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)")
 
 p_affected |> 
-  st_drop_geometry() |> 
-  filter(zoning_new_max_far_additional > 0) |> 
+  st_drop_geometry() |>  
 ggplot() +  
   aes(x = zoning_new_max_far_additional,
       weight = parcel_area_mi2) + 
@@ -383,8 +382,8 @@ Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area rev
 ```{r}
 #| label: results-puget-sound-station-map
 #| message: false
-#| fig-height: 5
 #| fig-width: 5
+#| fig-asp: 1
 #| fig-cap: "Figure 3: Transit Station Areas, Central Puget Sound"
 
 t_join <- st_join(t,
@@ -418,7 +417,7 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ### Case Studies
 
-In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts with which we can examine the data.
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts under which we can examine the effects of the proposed bill.
 
 ```{r}
 #| label: results-case-studies-summary
@@ -467,7 +466,10 @@ st_join(t,ps_cities) |>
   ) |> 
   cols_label(population = "Population",
              housing_units = "Housing Units",
-             area_mi2 = html("Land Area (mi<sup>2</sup>)"))
+             area_mi2 = html("Land Area (mi<sup>2</sup>)")) |> 
+   tab_source_note(
+    source_note = md("Sources: American Community Survey, 2022 ACS 5-Year Estimates; authors' analysis of transit stop data from [Puget Sound Regional Council 2024](#ref-pugetsoundregionalcouncil2024)")
+    )
 
 
 
@@ -525,7 +527,6 @@ p_cities |>
 ```
 
 #### Kent
-
 
 ```{r}
 #| label: results-case-studies-kent-stations
