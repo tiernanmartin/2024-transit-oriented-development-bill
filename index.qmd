@@ -576,6 +576,15 @@ mercerisland_awmndc <- case_studies_awmndc |>
   pluck("analysis_awmndc") |> 
   round(digits = 2)
 
+redmond_awmndc <- case_studies_awmndc |> 
+  filter(zoning_juris %in% "Redmond") |> 
+  pluck("analysis_awmndc") |> 
+  round(digits = 2)
+
+shoreline_awmndc <- case_studies_awmndc |> 
+  filter(zoning_juris %in% "Shoreline") |> 
+  pluck("analysis_awmndc") |> 
+  round(digits = 2)
 
 case_studies_by_stationarea_type <- p |> 
   st_drop_geometry() |> 
@@ -604,7 +613,7 @@ t_kent <- st_join(t, ps_cities) |>
   filter(name %in% "Kent") |> 
   transmute(
     mode,
-    stop_name = glue("{mode}: {stop_name}")
+    stop_name
   )
 
 kent <- ps_cities |> 
@@ -738,7 +747,7 @@ t_mercerisland <- st_join(t, ps_cities) |>
   filter(name %in% "Mercer Island") |> 
   transmute(
     mode,
-    stop_name = glue("{mode}: {stop_name}")
+    stop_name
   )
 
 mercerisland <- ps_cities |> 
@@ -842,7 +851,164 @@ map_mercerisland_parcels
 
 #### Redmond
 
-![Redmond, WA\| Photo courtesy of [Spicypepper999](https://commons.wikimedia.org/wiki/File:Redmond_aerial,_April_2023.png), CC0, via Wikimedia Commons](images/redmond-aerial.png){fig-alt="An aerial photo of Redmond, Washington"}
+![Redmond, WA \| Photo courtesy of [Spicypepper999](https://commons.wikimedia.org/wiki/File:Redmond_aerial,_April_2023.png), CC0, via Wikimedia Commons](images/redmond-aerial.png){fig-alt="An aerial photo of Redmond, Washington"}
+
+```{r}
+#| label: results-case-studies-redmond-objects
+
+t_redmond <- st_join(t, ps_cities) |>  
+  filter(name %in% "Redmond") |> 
+  transmute(
+    mode,
+    stop_name
+  )
+
+redmond <- ps_cities |> 
+  filter(name %in% "Redmond")
+
+p_redmond <- p |> 
+  filter(zoning_juris %in% "Redmond") |>   
+  select(parcel_area_mi2,
+         zoning_district_name,
+         net_dev_capacity = zoning_new_max_far_additional)
+
+p_affected_redmond <- p |>  
+  filter(analysis_type %in% "Developable, Affected") |> 
+  filter(zoning_juris %in% "Redmond") |>   
+  select(parcel_area_mi2,
+         zoning_district_name,
+         analysis_station_area_types,
+         net_dev_capacity = zoning_new_max_far_additional) 
+
+redmond_by_stationarea_type <- 
+  case_studies_by_stationarea_type |> 
+  filter(zoning_juris %in% "Redmond")
+
+```
+
+Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3%.[@pugetsoundregionalcouncil2021]
+
+HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^8] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
+
+[^8]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
+
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be 1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
+
+```{r}
+#| label: fig-results-case-studies-redmond-histogram
+#| output: true
+#| message: false 
+#| fig-height: 4
+#| fig-cap: "Redmond Case Study: Net Development Capacity"
+
+
+redmond_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
+
+p_affected_redmond |>
+ggplot() +
+  aes(x = net_dev_capacity,
+      weight = parcel_area_mi2) +
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  labs(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
+       subtitle = redmond_hist_subtitle,
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)")
+```
+
+```{r}
+#| label: fig-results-case-studies-redmond-histogram-filled
+#| output: true
+#| message: false 
+#| fig-height: 4
+#| fig-cap: "Redmond Case Study: oning District by Net Development Capacity"
+p_affected_redmond |>
+ggplot() +
+  aes(x = net_dev_capacity,
+      weight = parcel_area_mi2,
+      fill = fct_lump_n(zoning_district_name,5)) +
+geom_histogram(binwidth = .5, 
+               position = "stack", 
+               alpha = 1) +
+  theme(legend.title = element_blank()) +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.5)) +
+  labs(title = "Zoning District by Net Development Capacity",
+       subtitle = "Redmond, Washington",
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)")
+```
+
+
+Examining the data grouped by station area type, we observe X patterns.
+
+```{r}
+#| label: tbl-results-case-studies-redmond-station-areas
+#| message: false
+#| tbl-cap: "Redmond Case Study: Station Area Type Summary"
+
+redmond_by_stationarea_type |> 
+  select(-zoning_juris) |> 
+  gt(rowname_col = "analysis_type",
+     groupname_col = "analysis_station_area_types") |> 
+  cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+  ) |> 
+  tab_style(
+    style = list(cell_text(indent = px(20))),
+    locations = cells_stub()
+  ) |> 
+  fmt_number( 
+    columns = c(4,5),
+    decimals = 2,       
+    sep_mark = ","
+  )
+  
+
+```
+
+Displaying the net development capacity of individual parcels reveals a more nuanced pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps.
+
+```{r}
+#| label: fig-results-case-studies-redmond-maps
+#| eval: true
+#| message: false
+#| fig-cap: "Redmond Case Study: Net Development Capacity Within Redmond Station Areas"
+
+
+map_redmond <- mapview(redmond,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+map_redmond_stations_baselayer <- mapview(t_redmond,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "white",
+        legend = TRUE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE,
+        layer.name = "Stations") 
+
+map_redmond_parcels <- map_redmond_stations_baselayer +
+  mapview(p_redmond,
+          zcol = "net_dev_capacity",
+          legend = TRUE,
+          layer.name = "Net FAR",
+          popup = "zoning_district_name"
+            )
+
+map_redmond_parcels
+
+```
 
 #### Shoreline
 
@@ -886,7 +1052,7 @@ t_kent <- st_join(t, ps_cities) |>
   filter(name %in% "Kent") |> 
   transmute(
     mode,
-    stop_name = glue("{mode}: {stop_name}")
+    stop_name
   )
 
 kent <- ps_cities |> 
@@ -971,6 +1137,26 @@ map_kent_parcels <- map_kent +
           popup = "net_dev_capacity") 
 
 map_kent_parcels
+
+```
+
+#### Redmond
+
+```{r}
+#| label: tbl-appendix-case-studies-redmond-stations-table
+#| tbl-cap: "Redmond Case Study: Transit Stations/Stops"
+#| tbl-cap-location: top 
+
+t_redmond |> 
+  st_drop_geometry() |> 
+  gt(rowname_col = "mode") |> 
+  cols_label(
+    stop_name = "Transit Stop/Station") |> 
+  tab_style(
+    style = list(
+      cell_text(align = "left")),
+    locations = cells_body()
+  )
 
 ```
 
