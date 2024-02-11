@@ -36,6 +36,10 @@ bibliography: references.bib
 citation:
   container-title: Futurewise
 number-sections: true
+crossref:
+  fig-prefix: Figure   # (default is "Figure")
+  tbl-prefix: Table    # (default is "Table")
+  ref-hyperlink: true # (default is true)
 ---
 
 ```{r}
@@ -234,6 +238,7 @@ Further research, data collection, and methodological refinements could help add
 ## Results
 
 ```{r}
+#| label: results-objects
 #| include: false
 
 p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
@@ -274,7 +279,7 @@ We separate the study data into three analysis groups:
 [^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
 
 ```{r}
-#| label: results-summary-table
+#| label: tbl-results-summary-table
 #| output: true
 #| message: false
 #| tbl-cap: "Table 1: Analysis Groups, Central Puget Sound"
@@ -327,7 +332,7 @@ Our study focuses on the third analysis group, **Developable, Affected**, which 
 Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.79 FAR.
 
 ```{r}
-#| label: results-histogram-affected
+#| label: fig-results-histogram-affected
 #| output: true
 #| message: false
 #| fig-cap: "Figure 1: HB 2160's Effect on Net Development Capacity"
@@ -361,7 +366,7 @@ ggplot() +
 We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
 
 ```{r}
-#| label: results-histogram-station-areas
+#| label: fig-results-histogram-station-areas
 #| output: true
 #| message: false
 #| fig-cap: "Figure 2: Station Area Type Comparison"
@@ -408,7 +413,7 @@ Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area rev
 #| message: false
 #| fig-width: 5
 #| fig-asp: 1
-#| fig-cap: "Figure 3: Transit Station Areas, Central Puget Sound"
+#| fig-cap: "Transit Station Areas, Central Puget Sound"
 
 t_join <- st_join(t,
                   filter(p, analysis_type %in% "Developable, Affected"))
@@ -444,9 +449,9 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts under which we can examine the effects of the proposed bill.
 
 ```{r}
-#| label: results-case-studies-summary
+#| label: tbl-results-case-studies-summary
 #| message: false
-#| tbl-cap: "Table 2: Case Studies"
+#| tbl-cap: "Case Studies"
 
 case_studies <- c("Shoreline",
                   "Redmond",
@@ -502,7 +507,7 @@ st_join(t,ps_cities) |>
 Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
 
 ```{r}
-#| label: results-case-studies-analysis-group
+#| label: tbl-results-case-studies-analysis-group
 #| tbl-cap: "Table 3: Case Studies by Analysis Group"
 #| tbl-cap-location: top
 
@@ -576,14 +581,6 @@ kent_awmndc <- case_studies_awmndc |>
 
 #### Kent
 
-![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
-
-Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
-
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.[^8] We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR .
-
-[^8]: See @tbl-appendix-case-studies-kent-stations-table in the appendix for a complete list of the station areas in Kent.
-
 ```{r}
 #| label: results-case-studies-kent-objects
 
@@ -598,13 +595,49 @@ kent <- ps_cities |>
   filter(name %in% "Kent")
 
 p_kent <- p |> 
-  filter(zoning_juris %in% "Kent") |> 
-  select(net_dev_capacity = zoning_new_max_far_additional)
+  filter(zoning_juris %in% "Kent") |>   
+  select(parcel_area_mi2,
+         net_dev_capacity = zoning_new_max_far_additional)
+
+p_affected_kent <- p |>  
+  filter(analysis_type %in% "Developable, Affected") |> 
+  filter(zoning_juris %in% "Kent") |>   
+  select(parcel_area_mi2,
+         net_dev_capacity = zoning_new_max_far_additional) 
 
 ```
 
+
+![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
+
+Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
+
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.[^8] We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
+
+[^8]: See Table \@ref(tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+
 ```{r}
-#| label: results-case-studies-kent-maps
+#| label: fig-results-case-studies-kent-histogram
+#| message: false
+#| fig-cap: "Kent Case Study: Net Development Capacity"
+
+
+p_affected_kent |>
+ggplot() +  
+  aes(x = net_dev_capacity,
+      weight = parcel_area_mi2) + 
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
+  scale_y_continuous(labels = scales::label_comma()) + 
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  labs(title = "HB 2160's Effect on Net Development Capacity",
+       subtitle = "Kent, Washington",
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)") 
+```
+
+
+```{r}
+#| label: fig-results-case-studies-kent-maps
 #| eval: true
 #| message: false
 #| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
@@ -768,3 +801,6 @@ map_kent_parcels
 ```
 
 ## References {.unnumbered}
+
+::: {#refs}
+:::
