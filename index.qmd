@@ -629,7 +629,7 @@ kent_by_stationarea_type <-
 
 ```
 
-![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
+![Kent, WA \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
@@ -731,7 +731,6 @@ map_kent_parcels
 
 #### Mercer Island
 
-
 ```{r}
 #| label: results-case-studies-mercerisland-objects
 
@@ -764,15 +763,13 @@ mercerisland_by_stationarea_type <-
 
 ```
 
-
-![Mercer Island \| Photo courtest of [Dllu](https://commons.wikimedia.org/wiki/File:Aerial_photo_of_Mercer_Island,_Washington.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/mercer-island-aerial.jpg){fig-alt="An aerial photograph of Mercer Island"}
+![Mercer Island, WA \| Photo courtest of [Dllu](https://commons.wikimedia.org/wiki/File:Aerial_photo_of_Mercer_Island,_Washington.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/mercer-island-aerial.jpg){fig-alt="An aerial photograph of Mercer Island"}
 
 Mercer Island is a city located in King County, Washington. The city has approximate 25,000 residents. Between 2010 and 2020, the city's population increased by 13.4% [@pugetsoundregionalcouncil2021]
 
 HB 2160 would affect only one station area within the city boundary: the Mercer Island Light Rail station. Only three other cities share Mercer Island's situation by having a single transit station area that meets HB 2160's criteria; they are Mukilteo, DuPont, and University Place.
 
 We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer Island's light rail station area to be 3.01 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station area, which includes 87% of the station area parcels and 69% of the station area land.
-
 
 ```{r}
 #| label: fig-results-case-studies-mercerisland-histogram
@@ -845,7 +842,11 @@ map_mercerisland_parcels
 
 #### Redmond
 
+![Redmond, WA\| Photo courtesy of [Spicypepper999](https://commons.wikimedia.org/wiki/File:Redmond_aerial,_April_2023.png), CC0, via Wikimedia Commons](images/redmond-aerial.png){fig-alt="An aerial photo of Redmond, Washington"}
+
 #### Shoreline
+
+![City of Shoreline, WA \| Photo courtesy of [Haruo](https://commons.wikimedia.org/wiki/File:City_of_Shoreline_sign_at_145th_and_Aurora.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/city-of-shoreline-sign.jpg)
 
 ## Discussion
 
