@@ -36,10 +36,6 @@ bibliography: references.bib
 citation:
   container-title: Futurewise
 number-sections: true
-crossref:
-  fig-prefix: Figure   # (default is "Figure")
-  tbl-prefix: Table    # (default is "Table")
-  ref-hyperlink: true # (default is true)
 ---
 
 ```{r}
@@ -611,7 +607,7 @@ p_affected_kent <- p |>
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.See Table @ref(tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations.See Table @ref(\@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
 
 We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
 
