@@ -294,7 +294,17 @@ p_tbl_summary |>
     adorn_pct_formatting(digits = 0) |> 
     adorn_ns(format_func = format_func,
              position = "front") |> 
-  kable(col.names = col_names) 
+  as_tibble() |> 
+  gt(rowname_col = "analysis_type") |> 
+  #tab_row_group(label = "Total", rows = 4) |>
+  tab_row_group(label = "Analysis Groups", rows = 1:3) |>  
+  cols_label(n = "Parcels (n)",
+             area_mi2 = html("Land Area (mi<sup>2</sup>)")) |> 
+  tab_style(
+    style = list(
+      cell_text(align = "left", indent = px(20))),
+    locations = cells_stub()
+  )
 
 ```
 
