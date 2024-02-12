@@ -977,7 +977,25 @@ redmond_by_stationarea_type |>
 
 ```
 
-Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. Zoning districts such as East Hill and Anderson Park would see substantial increases to their development capacity (+2.5 FAR and +2.25 FAR, respectively).
+Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. The Overlake Mixed-Use zoning district would see substantial increase to its total development capacity (+1.54 mi^2^).
+
+```{r}
+#| label: results-case-studies-redmond-by-district
+#| include: false
+#| eval: false
+
+p_affected_redmond |> 
+  st_drop_geometry() |> 
+  group_by(zoning_district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(parcel_area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = net_dev_capacity,
+                                  w = parcel_area_mi2)) |> 
+  mutate(area_ndc = poss_multiply(area, awm_ndc)) |> 
+  arrange(desc(area_ndc))
+
+```
 
 ```{r}
 #| label: fig-results-case-studies-redmond-maps
