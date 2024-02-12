@@ -169,14 +169,36 @@ The purpose of this study is to provide information about the effects of the pro
 
 We use a quantitative methodology to attempt to answer our research questions. We then assess House Bill 2160's impact across the entire study area, the central Puget Sound region, before examining several individual cities as case studies.
 
+### Methods
+
+HB 2160 would increase community and housing development capacity by requiring cities to adopt maximum FAR requirements no more restrictive than those specified in the bill. While some cities use maximum FAR to regulate development, many cities use other measures, the most common of which is a combination of maximum building height and maximum lot coverage. In order to accurately compare development capacity across the study area, we create a standardized measurement of development capacity which we define as follows:
+
+$$
+\text{SDC}_i = 
+\begin{cases} 
+\text{FAR}_i & \text{if parcel } i \text{ uses FAR} \\
+(\text{MBF}_i \times \text{MLC%}_i) & \text{if parcel } i \text{ does not use FAR}
+\end{cases}
+$$ {#eq-sdc}
+
+Where:
+
+-   $\text{SDC}_i$: Standardized Development Capacity for parcel $i$
+
+-   $\text{FAR}_i$: Floor Area Ratio for parcel $i$
+
+-   $\text{MBF}_i$: Maximum Building Floors for parcel $i$
+
+-   $\text{MLC%}_i$: Maximum Lot Coverage Percentage for parcel $i$
+
 We use net development capacity (${NDC}$) to represent the effect of the bill on development capacity at the scale of individual tax parcels. We define ${NDC}$ as follows:
 
 $$
-NDC_i = FAR_{new,i} - FAR_{old,i}
-$$ {#eq-ndc} where:
+NDC_i = SDC_{new,i} - SDC_{old,i}
+$$ {#eq-ndc} Where:
 
--   $FAR_{old,i}$ is parcel $i$'s current maximum development capacity in terms of Floor Area Ratio (FAR).
--   $FAR_{new,i}$ is the maximum development capacity (in FAR) that would apply to parcel $i$ if HB 2160 became law.
+-   $SDC_{old,i}$: parcel $i$'s current (standarized) maximum development capacity.
+-   $SDC_{new,i}$: the (standardized) maximum development capacity that would apply to parcel $i$ if HB 2160 became law.
 
 To quantify the impact of the proposed bill within a geography larger than an individual parcel, we calculate the area-weighted mean of net development capacity ($AWM_{NDC}$). We define ($AWM_{NDC}$) as follows:
 
@@ -184,11 +206,11 @@ $$
 AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
 $$ {#eq-awm-ndc}
 
-where:
+Where:
 
--   $NDC_i = FAR_{new,i} - FAR_{old,i}$ represents the net development capacity for parcel $i$, calculated as the difference between the new Floor Area Ratio (FAR) and the old FAR.
--   $A_i$ denotes the area of parcel $i$.
--   $I_i$ is an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
+-   $NDC_i$: the net development capacity for parcel $i$.
+-   $A_i$: the geometric area of parcel $i$.
+-   $I_i$: an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
 
 This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel's contribution to the overall mean being proportionally weighted by its area.
 
