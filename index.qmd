@@ -103,25 +103,33 @@ Thanks to Yonah Freemark from the Urban Institute for providing zoning district 
 
 ![Central Puget Sound \| Photo courtesy of [Clemens Vasters from Viersen, Germany](#0), [CC BY 2.0](#0), via Wikimedia Commons](images/seattle-aerial-wikicommons.jpg){fig-alt="An aerial photo of Mercer Island, Seattle, and Kitsap County" fig-align="center"}
 
-### The Central Puget Sound Region
+### Growth in the Central Puget Sound Region
 
-The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Snohomish, Pierce, and Kitsap counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050.[@pugetsoundregionalcouncil2018]
+The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Kitsap, Pierce, and Snohomish counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050.[@pugetsoundregionalcouncil2018]
 
 [^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
 
-One challenge that the central Puget Sound region faces is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. By 2023, the annual income required to purchase the area's median priced home was \$160,000.[^2] Between July 2015 and July 2023, the median rent cost increased by 50%.[@pugetsoundregionalcouncil2023]
+As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000.[@pugetsoundregionalcouncil2023] In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate.[@allhome2020]
 
 [^2]: This estimate includes three of the four central Puget Sound counties: King, Pierce, and Snohomish.
 
+Another challenge that the central Puget Sound region faces is climate change. In 2009, the Climate Impacts Group at the University of Washington developed a climate model that projected several series climate-related impacts over the coming decades. Those impacts include water shortages in the Yakima Basin, loss of salmon habitat due to elevated stream temperatures, increased wildfire risk, and more human deaths caused by heat events and poor air quality.[@climateimpactsgroup2009]
+
 ### Transit-Oriented Development
 
-Transit-oriented development (TOD) is a strategy of building homes at or near public transportation stops and stations. In the United States, this strategy has had a complicated record—often leading to increased property values while simultaneously lowering household travel costs and reducing reliance on personal vehicles.[@lund2006] TOD often raises concerns about the displacement of low-income residents and small businesses, leading some local and regional governments to include affordability requirements in their TOD programs.[@dawkins2016]
-
-While these concerns are valid, there is not an obvious, superior alternative to TOD. Sharp increases in sprawling, low-density residential and commercial development in Washington during 1980s resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands.[@trohimovich2002] This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs). Many of the GMA's planning goals are highly aligned with TOD as a land use strategy—particularly the first four goals of the law.[^3]
+One potential solution to the Puget Sound region's challenges is to concentrate urban growth in existing urban areas while investing in climate-friendly forms of transportation. During the 1980s, sharp increases in sprawling, low-density residential and commercial development in Washington State resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands.[@trohimovich2002] This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs). Many of the GMA's planning goals align with a transit-oriented development (TOD) strategy to accommodating population growth within existing urban places.[^3]
 
 [^3]: The first four goals of [*RCW 36.70A.020 Planning goals*](https://app.leg.wa.gov/rcw/default.aspx?cite=36.70a.020) are:
 
     > \(1\) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.
+
+The region's metropolitan planning organization, the [Puget Sound Regional Council](https://www.psrc.org/) (PSRC), incorporates TOD into its regional growth strategy. VISION 2050 defines regional growth centers—the places where most of the region's growth should occur—as compact, walkable, mixed use communities centered around high-quality transit systems. This plan also adopts greenhouse gas emission reduction goals set by the [Puget Sound Clean Air Agency](https://pscleanair.gov/):
+
+-   Reduce to 50% below 1990 levels by 2030
+
+-   Reduce to 80% below 1990 levels by 2050
+
+PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development.[@pugetsoundregionalcouncil2023a, @pugetsoundregionalcouncil2022]
 
 ### House Bill 2160
 
@@ -132,8 +140,6 @@ House Bill 2160 (HB 2160) of the 2023-2024 Washington State Legislative Session 
 -   Prohibiting cities from preventing the siting of multifamily housing on residential land within transit station areas
 
 -   Prohibiting cities from enacting maximum floor area ratio (FAR) regulation under the following thresholds: 3.5 FAR for station areas of light rail, commuter rail, or streetcars; 2.5 FAR for station areas of bus rapid transit
-
--   Limits the ability of cities to require off-street parking of new residential or mixed-use projects
 
 -   Categorically exempting residential or mixed-use projects within station areas from the State Environmental Policy Act (SEPA)
 
@@ -193,7 +199,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------|------------------------------------|------------------|
+|-------------------|----------------------------------|-------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -228,6 +234,8 @@ Our method is subject to several limitations that are important to consider when
 8.  **Additional Restrictions on Development**: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.
 
 9.  **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
+
+10. **Changing Development Regulations:** The study uses zoning and land use data collected in 2023. While Puget Sound jurisdictions will be required to update their development regulations to comply with [recent changes](https://www.commerce.wa.gov/serving-communities/growth-management/growth-management-topics/planning-for-middle-housing/) to the GMA by mid-2025, the study focuses on current development regulations.
 
 Further research, data collection, and methodological refinements could help address these limitations in future analyses.
 
@@ -264,7 +272,7 @@ The study includes approximately 125,000 parcels ($N = 124,941$), all within the
 We separate the study data into three analysis groups:
 
 1.  *Not Developable*\
-    Parcels that do not meet the study's eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.[^7]
+    Parcels that do not meet HB 2160's eligibility criteria. The study implements these criteria by selecting parcels that which: a) are located within a zoning district that allows residential uses; and b) have a current land use that is compatible with transit-oriented development. For the current land use criterion, we use tax assessor-assigned land use codes[^7] to screen out non-compatible uses such as parks, open space, forest lands, and water areas.
 
 2.  *Developable, Not Affected*\
     Parcels that meet the study's eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.
@@ -272,7 +280,7 @@ We separate the study data into three analysis groups:
 3.  *Developable, Affected*\
     Parcels that meet the study's eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.
 
-[^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
+[^7]: The general framework for tax assessor land use codes is defined in [WAC 458-53-030](https://apps.leg.wa.gov/wac/default.aspx?cite=458-53-030).
 
 We also divide the parcel data by the type of station area it is within:
 
@@ -381,7 +389,6 @@ ggplot() +
        y = "Land Area (sq. miles)",
        x = "Net Development Capacity (FAR)") 
 ```
-
 
 In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is 2.15 FAR and $AWM_{NDC}$ for the *Small* station areas is 1.32 FAR.
 
@@ -916,7 +923,7 @@ HB 2160 would affect several station areas within Redmond's city boundary, inclu
 
 [^10]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be 1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be +1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
 
 ```{r}
 #| label: fig-results-case-studies-redmond-histogram
@@ -941,7 +948,7 @@ ggplot() +
        x = "Net Development Capacity (FAR)")
 ```
 
-Examining the data grouped by station area type, we observe X patterns.
+Examining the data grouped by station area type, we observe that while both station area types contain a similar number of *Developable, Affected* parcels, the *Large* station areas include substantially more land area that would be affected by the bill. Additionally, the $AWM_{NDC}$ of Redmond's *Large* station areas is substantially higher than the *Small* station areas (+1.92 FAR and + 1.14 FAR, respectively).
 
 ```{r}
 #| label: tbl-results-case-studies-redmond-station-areas
