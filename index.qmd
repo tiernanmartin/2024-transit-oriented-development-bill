@@ -193,7 +193,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------|------------------------------------|------------------|
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -257,19 +257,19 @@ zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
 
 ```
 
-### Entire Study Area
+### Central Puget Sound
 
 The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
 
 We separate the study data into three analysis groups:
 
-1.  *Not Developable*\
+1.  **Not Developable**\
     Parcels that do not meet the study's eligibility criteria. These criteria include allowing residential uses and having a tax assessor-assigned land use that is compatible with development.[^7]
 
-2.  *Developable, Not Affected*\
+2.  **Developable, Not Affected**\
     Parcels that meet the study's eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.
 
-3.  *Developable, Affected*\
+3.  **Developable, Affected**\
     Parcels that meet the study's eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.
 
 [^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
@@ -323,7 +323,7 @@ p_tbl_summary |>
 
 ```
 
-Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%).
+Our study focuses on the third analysis group, **Developable, Affected**, which are the majority of the station area parcels by both count (78%) and land area (64%).
 
 Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.79 FAR.
 
@@ -402,7 +402,7 @@ ggplot() +
        x = "Net Development Capacity (FAR)") 
 ```
 
-Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
+Summarizing $AWM_{NDC}$ of **Developable, Affected** parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
 
 ```{r}
 #| label: results-puget-sound-station-map
@@ -442,7 +442,7 @@ mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
 
 ### Case Studies
 
-In order to better understand how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts under which we can examine the effects of the proposed bill.
+In order to get a sense for how the effects of HB 2160 may differ from place to place, we examine four cities as case studies: Kent, Mercer Island, Redmond, and Shoreline. These cities provide a range different contexts under which we can examine the effects of the proposed bill.
 
 ```{r}
 #| label: tbl-results-case-studies-summary
@@ -500,7 +500,7 @@ st_join(t,ps_cities) |>
 
 ```
 
-Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, by weighting the station areas by the area of land affected, we find that the bill's impact is slightly more modest among the case study cities.
+Grouping the study data by city and analysis group, we find that there is a significant amount of variation between the cities. The vast majority of parcels in Redmond and Mercer Island's station areas would see their development capacity increased by the bill. However, weighting the station areas by the amount of land affected, we find that the bill's impact is slightly more modest among the case study cities.
 
 ```{r}
 #| label: tbl-results-case-studies-analysis-group
@@ -557,10 +557,11 @@ p_cities |>
 
 city_awmndc <- p_affected |> 
   st_drop_geometry() |> 
+  mutate(analysis_area_weight = parcel_area_mi2 / max(parcel_area_mi2, na.rm = TRUE)) |> 
   group_by(zoning_juris) |> 
   summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
     zoning_new_max_far_additional,
-    w = parcel_area_mi2
+    w = analysis_area_weight
   ))
 
 case_studies_awmndc <- city_awmndc |> 
@@ -571,36 +572,6 @@ kent_awmndc <- case_studies_awmndc |>
   pluck("analysis_awmndc") |> 
   round(digits = 2)
 
-mercerisland_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Mercer Island") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-redmond_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Redmond") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-shoreline_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Shoreline") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-case_studies_by_stationarea_type <- p |> 
-  st_drop_geometry() |> 
-  filter(zoning_juris %in% case_studies) |> 
-  group_by(zoning_juris, 
-           analysis_station_area_types,
-           analysis_type) |> 
-  summarize(.groups = "drop",
-            n = n(),
-            area = round(digits = 2, sum(parcel_area_mi2,na.rm = TRUE)),
-            net_dev_cap = weighted.mean(na.rm = TRUE,
-                                        zoning_new_max_far_additional,
-                                        w = parcel_area_mi2
-                                        )
-            ) |> 
-  mutate(net_dev_cap = if_else(is.nan(net_dev_cap),NA,net_dev_cap))
 
 ```
 
@@ -613,7 +584,7 @@ t_kent <- st_join(t, ps_cities) |>
   filter(name %in% "Kent") |> 
   transmute(
     mode,
-    stop_name
+    stop_name = glue("{mode}: {stop_name}")
   )
 
 kent <- ps_cities |> 
@@ -622,83 +593,49 @@ kent <- ps_cities |>
 p_kent <- p |> 
   filter(zoning_juris %in% "Kent") |>   
   select(parcel_area_mi2,
-         zoning_district_name,
          net_dev_capacity = zoning_new_max_far_additional)
 
 p_affected_kent <- p |>  
   filter(analysis_type %in% "Developable, Affected") |> 
   filter(zoning_juris %in% "Kent") |>   
   select(parcel_area_mi2,
-         analysis_station_area_types,
          net_dev_capacity = zoning_new_max_far_additional) 
-
-kent_by_stationarea_type <- 
-  case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Kent")
 
 ```
 
-![Kent, WA \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
+![Kent, Washington \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
 
 Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See @tbl-appendix-case-studies-kent-stations-table in the appendix for a complete list of the station areas in Kent.
+HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See (@tbl-appendix-case-studies-kent-stations-table) in the appendix for a complete list of the station areas in Kent.
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 69% of the station area parcels and 62% of the station area land.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR.
 
 ```{r}
-#| label: fig-results-case-studies-kent-histogram
+#| label: "fig-1"
 #| output: true
 #| message: false 
 #| fig-height: 4
 #| fig-cap: "Kent Case Study: Net Development Capacity"
 
-
-kent_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 2.07 FAR, n = 1,195 (69%)")
-
-p_affected_kent |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
-       subtitle = kent_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
+ggplot(diamonds, aes(carat)) +
+  geom_histogram()
+# kent_hist_subtitle <- TeX("$AWM_{NDC}$ is 2.07 FAR, n = 1,195 (69%)")
+# 
+# p_affected_kent |>
+# ggplot() +  
+#   aes(x = net_dev_capacity,
+#       weight = parcel_area_mi2) + 
+#   geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
+#   scale_y_continuous(labels = scales::label_comma()) + 
+#   scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+#   labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+#        subtitle = kent_hist_subtitle,
+#        y = "Land Area (sq. miles)",
+#        x = "Net Development Capacity (FAR)")
 ```
 
-Examining the data grouped by station area type, we observe two patterns. First, there are a significant number of *Not Developable* parcels in the half-mile station areas. Second, the *Developable, Affected* parcels in both types of station areas would be substantially affected by HB 2160, as indicated by the relatively large $AWM_{NDC}$ values in @tbl-results-case-studies-kent-station-areas.
-
-```{r}
-#| label: tbl-results-case-studies-kent-station-areas
-#| message: false
-#| tbl-cap: "Kent Case Study: Station Area Type Summary"
-
-kent_by_stationarea_type |> 
-  select(-zoning_juris) |> 
-  gt(rowname_col = "analysis_type",
-     groupname_col = "analysis_station_area_types") |> 
-  cols_label(
-    n = "Parcels (n)",
-    area = html("Land Area (mi<sup>2</sup>)"),
-    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
-  ) |> 
-  tab_style(
-    style = list(cell_text(indent = px(20))),
-    locations = cells_stub()
-  ) |> 
-  fmt_number( 
-    columns = c(4,5),
-    decimals = 2,       
-    sep_mark = ","
-  )
-  
-
-```
-
-Displaying the net development capacity of individual parcels reveals a more nuanced pattern around Kent's station areas, as shown in @fig-results-case-studies-kent-maps.
+Map of parcels within Kent's station areas:
 
 ```{r}
 #| label: fig-results-case-studies-kent-maps
@@ -719,7 +656,7 @@ map_kent_stations_baselayer <- mapview(t_kent,
         zcol = "mode",
         col.regions = brewer.pal(3, "Set2"),
         alpha.regions = 0.2,
-        color = "white",
+        color = "gray",
         legend = TRUE,
         popup = FALSE,
         highlight = FALSE,
@@ -731,8 +668,7 @@ map_kent_parcels <- map_kent_stations_baselayer +
           zcol = "net_dev_capacity",
           legend = TRUE,
           layer.name = "Net FAR",
-          popup = "zoning_district_name"
-            )
+          popup = "net_dev_capacity") 
 
 map_kent_parcels
 
@@ -740,279 +676,9 @@ map_kent_parcels
 
 #### Mercer Island
 
-```{r}
-#| label: results-case-studies-mercerisland-objects
-
-t_mercerisland <- st_join(t, ps_cities) |>  
-  filter(name %in% "Mercer Island") |> 
-  transmute(
-    mode,
-    stop_name
-  )
-
-mercerisland <- ps_cities |> 
-  filter(name %in% "Mercer Island")
-
-p_mercerisland <- p |> 
-  filter(zoning_juris %in% "Mercer Island") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
-
-p_affected_mercerisland <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Mercer Island") |>   
-  select(parcel_area_mi2,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
-
-mercerisland_by_stationarea_type <- 
-  case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Mercer Island")
-
-```
-
-![Mercer Island, WA \| Photo courtest of [Dllu](https://commons.wikimedia.org/wiki/File:Aerial_photo_of_Mercer_Island,_Washington.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/mercer-island-aerial.jpg){fig-alt="An aerial photograph of Mercer Island"}
-
-Mercer Island is a city located in King County, Washington. The city has approximate 25,000 residents. Between 2010 and 2020, the city's population increased by 13.4% [@pugetsoundregionalcouncil2021]
-
-HB 2160 would affect only one station area within the city boundary: the Mercer Island Light Rail station. Only three other cities share Mercer Island's situation by having a single transit station area that meets HB 2160's criteria; they are Mukilteo, DuPont, and University Place.
-
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer Island's light rail station area to be 3.01 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station area, which includes 87% of the station area parcels and 69% of the station area land.
-
-```{r}
-#| label: fig-results-case-studies-mercerisland-histogram
-#| output: true
-#| message: false 
-#| fig-height: 4
-#| fig-cap: "Mercer Island Case Study: Net Development Capacity"
-
-
-mercerisland_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 3.01 FAR, n = 550 parcels (87%)")
-
-p_affected_mercerisland |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
-       subtitle = mercerisland_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
-```
-
-Displaying the net development capacity of individual parcels reveals a clear pattern around Mercer Island's light rail station area, as shown in @fig-results-case-studies-mercerisland-maps. Aside from the Town Center zoning district, which already allows buildings with up to 4 FAR, the station area parcels have an area-weighted average FAR of 0.49—significantly lower than the maximum FAR that HB 2160 would introduce.
-
-```{r}
-#| label: fig-results-case-studies-mercerisland-maps
-#| eval: true
-#| message: false
-#| fig-cap: "Mercer Island Case Study: Net Development Capacity Within Mercer Island Light Rail Station Area"
-
-mercerisland_mean_current_far <- p |> 
-  filter(zoning_juris == "Mercer Island") |>
-  filter(analysis_type == "Developable, Affected") |> 
-  summarize(mean = weighted.mean(zoning_est_max_far,
-                                 parcel_area, 
-                                 na.rm = TRUE))
-
-map_mercerisland <- mapview(mercerisland,
-        col.regions = "grey",
-        alpha.regions = .10,
-        legend = FALSE,
-        popup = FALSE,
-        highlight = FALSE,
-        label = FALSE)
-
-map_mercerisland_stations_baselayer <- mapview(t_mercerisland,
-        zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
-        alpha.regions = 0.2,
-        color = "white",
-        legend = TRUE,
-        popup = FALSE,
-        highlight = FALSE,
-        label = FALSE,
-        layer.name = "Stations") 
-
-map_mercerisland_parcels <- map_mercerisland_stations_baselayer +
-  mapview(p_mercerisland,
-          zcol = "net_dev_capacity",
-          legend = TRUE,
-          layer.name = "Net FAR",
-          popup = "zoning_district_name"
-            )
-
-map_mercerisland_parcels
-
-```
-
 #### Redmond
 
-![Redmond, WA \| Photo courtesy of [Spicypepper999](https://commons.wikimedia.org/wiki/File:Redmond_aerial,_April_2023.png), CC0, via Wikimedia Commons](images/redmond-aerial.png){fig-alt="An aerial photo of Redmond, Washington"}
-
-```{r}
-#| label: results-case-studies-redmond-objects
-
-t_redmond <- st_join(t, ps_cities) |>  
-  filter(name %in% "Redmond") |> 
-  transmute(
-    mode,
-    stop_name
-  )
-
-redmond <- ps_cities |> 
-  filter(name %in% "Redmond")
-
-p_redmond <- p |> 
-  filter(zoning_juris %in% "Redmond") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
-
-p_affected_redmond <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Redmond") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
-
-redmond_by_stationarea_type <- 
-  case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Redmond")
-
-```
-
-Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3%.[@pugetsoundregionalcouncil2021]
-
-HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^8] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
-
-[^8]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
-
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be 1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
-
-```{r}
-#| label: fig-results-case-studies-redmond-histogram
-#| output: true
-#| message: false 
-#| fig-height: 4
-#| fig-cap: "Redmond Case Study: Net Development Capacity"
-
-
-redmond_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
-
-p_affected_redmond |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
-       subtitle = redmond_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
-```
-
-```{r}
-#| label: fig-results-case-studies-redmond-histogram-filled
-#| output: true
-#| message: false 
-#| fig-height: 4
-#| fig-cap: "Redmond Case Study: oning District by Net Development Capacity"
-p_affected_redmond |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2,
-      fill = fct_lump_n(zoning_district_name,5)) +
-geom_histogram(binwidth = .5, 
-               position = "stack", 
-               alpha = 1) +
-  theme(legend.title = element_blank()) +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.5)) +
-  labs(title = "Zoning District by Net Development Capacity",
-       subtitle = "Redmond, Washington",
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
-```
-
-
-Examining the data grouped by station area type, we observe X patterns.
-
-```{r}
-#| label: tbl-results-case-studies-redmond-station-areas
-#| message: false
-#| tbl-cap: "Redmond Case Study: Station Area Type Summary"
-
-redmond_by_stationarea_type |> 
-  select(-zoning_juris) |> 
-  gt(rowname_col = "analysis_type",
-     groupname_col = "analysis_station_area_types") |> 
-  cols_label(
-    n = "Parcels (n)",
-    area = html("Land Area (mi<sup>2</sup>)"),
-    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
-  ) |> 
-  tab_style(
-    style = list(cell_text(indent = px(20))),
-    locations = cells_stub()
-  ) |> 
-  fmt_number( 
-    columns = c(4,5),
-    decimals = 2,       
-    sep_mark = ","
-  )
-  
-
-```
-
-Displaying the net development capacity of individual parcels reveals a more nuanced pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps.
-
-```{r}
-#| label: fig-results-case-studies-redmond-maps
-#| eval: true
-#| message: false
-#| fig-cap: "Redmond Case Study: Net Development Capacity Within Redmond Station Areas"
-
-
-map_redmond <- mapview(redmond,
-        col.regions = "grey",
-        alpha.regions = .10,
-        legend = FALSE,
-        popup = FALSE,
-        highlight = FALSE,
-        label = FALSE)
-
-map_redmond_stations_baselayer <- mapview(t_redmond,
-        zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
-        alpha.regions = 0.2,
-        color = "white",
-        legend = TRUE,
-        popup = FALSE,
-        highlight = FALSE,
-        label = FALSE,
-        layer.name = "Stations") 
-
-map_redmond_parcels <- map_redmond_stations_baselayer +
-  mapview(p_redmond,
-          zcol = "net_dev_capacity",
-          legend = TRUE,
-          layer.name = "Net FAR",
-          popup = "zoning_district_name"
-            )
-
-map_redmond_parcels
-
-```
-
 #### Shoreline
-
-![City of Shoreline, WA \| Photo courtesy of [Haruo](https://commons.wikimedia.org/wiki/File:City_of_Shoreline_sign_at_145th_and_Aurora.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/city-of-shoreline-sign.jpg)
 
 ## Discussion
 
@@ -1044,7 +710,7 @@ t_kent |>
 
 ```{r}
 #| label: appendix-case-studies-kent-stations-map
-#| include: true
+#| include: false
 #| message: false
 #| fig-cap: "Appendix Maps: Kent Station Areas"
 
@@ -1052,7 +718,7 @@ t_kent <- st_join(t, ps_cities) |>
   filter(name %in% "Kent") |> 
   transmute(
     mode,
-    stop_name
+    stop_name = glue("{mode}: {stop_name}")
   )
 
 kent <- ps_cities |> 
@@ -1137,26 +803,6 @@ map_kent_parcels <- map_kent +
           popup = "net_dev_capacity") 
 
 map_kent_parcels
-
-```
-
-#### Redmond
-
-```{r}
-#| label: tbl-appendix-case-studies-redmond-stations-table
-#| tbl-cap: "Redmond Case Study: Transit Stations/Stops"
-#| tbl-cap-location: top 
-
-t_redmond |> 
-  st_drop_geometry() |> 
-  gt(rowname_col = "mode") |> 
-  cols_label(
-    stop_name = "Transit Stop/Station") |> 
-  tab_style(
-    style = list(
-      cell_text(align = "left")),
-    locations = cells_body()
-  )
 
 ```
 
