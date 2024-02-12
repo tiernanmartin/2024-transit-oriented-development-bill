@@ -129,7 +129,7 @@ The region's metropolitan planning organization, the [Puget Sound Regional Counc
 
 -   Reduce to 80% below 1990 levels by 2050
 
-PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development.[@pugetsoundregionalcouncil2023a, @pugetsoundregionalcouncil2022]
+PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development.[@pugetsoundregionalcouncil2023a; @pugetsoundregionalcouncil2022]
 
 ### House Bill 2160
 
@@ -148,6 +148,12 @@ The bill also proposed several requirements of residential development built wit
 [^5]: The bill defines "Affordable housing" as:
 
     > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development. [@reed2024]
+
+### Floor Area Ratio (FAR)
+
+HB 2160 defines floor area ratio (FAR) as "a measure of development intensity equal to building square footage divided by the developable property square footage".[@reed2024] The metric combines two commonly-used regulatory tools (maximum building height and maximum lot coverage) into a single ratio, providing developers with design flexibility while allowing local government to set a maximum amount of development intensity within a zoning district. See @fig-far-diagram for an illustration of FAR's flexibility.
+
+![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far-diagram}
 
 ### Research Objective & Questions
 
@@ -253,11 +259,13 @@ Our method is subject to several limitations that are important to consider when
 
 7.  **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
 
-8.  **Additional Restrictions on Development**: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.
+8.  **Additional Restrictions on Development**: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.[^7]
 
 9.  **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
 
 10. **Changing Development Regulations:** The study uses zoning and land use data collected in 2023. While Puget Sound jurisdictions will be required to update their development regulations to comply with [recent changes](https://www.commerce.wa.gov/serving-communities/growth-management/growth-management-topics/planning-for-middle-housing/) to the GMA by mid-2025, the study focuses on current development regulations.
+
+[^7]: HB 2160 would exclude "public facilities and portions of lots with critical areas and critical area buffers as designated in RCW 36.70A.060, except for critical aquifer recharge areas where a single-family detached house is an allowed use provided that any requirements to maintain aquifer recharge are met." [@reed2024]
 
 Further research, data collection, and methodological refinements could help address these limitations in future analyses.
 
@@ -294,7 +302,7 @@ The study includes approximately 125,000 parcels ($N = 124,941$), all within the
 We separate the study data into three analysis groups:
 
 1.  *Not Developable*\
-    Parcels that do not meet HB 2160's eligibility criteria. The study implements these criteria by selecting parcels that which: a) are located within a zoning district that allows residential uses; and b) have a current land use that is compatible with transit-oriented development. For the current land use criterion, we use tax assessor-assigned land use codes[^7] to screen out non-compatible uses such as parks, open space, forest lands, and water areas.
+    Parcels that do not meet HB 2160's eligibility criteria. The study implements these criteria by selecting parcels that which: a) are located within a zoning district that allows residential uses; and b) have a current land use that is compatible with transit-oriented development. For the current land use criterion, we use tax assessor-assigned land use codes[^8] to screen out non-compatible uses such as parks, open space, forest lands, and water areas.
 
 2.  *Developable, Not Affected*\
     Parcels that meet the study's eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.
@@ -302,7 +310,7 @@ We separate the study data into three analysis groups:
 3.  *Developable, Affected*\
     Parcels that meet the study's eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.
 
-[^7]: The general framework for tax assessor land use codes is defined in [WAC 458-53-030](https://apps.leg.wa.gov/wac/default.aspx?cite=458-53-030).
+[^8]: The general framework for tax assessor land use codes is defined in [WAC 458-53-030](https://apps.leg.wa.gov/wac/default.aspx?cite=458-53-030).
 
 We also divide the parcel data by the type of station area it is within:
 
@@ -312,13 +320,13 @@ We also divide the parcel data by the type of station area it is within:
 2.  *Small (0.25 Mile)\
     *Parcels within a quarter mile of a bus rapid transit stop and not within a *Large* station area
 
-Using HB 2160's definition of station areas, we create two station area types and assign one type to every parcel. Parcels that are within both *Large* and *Small* station area types as classified as part of a *Large* station area.[^8]
+Using HB 2160's definition of station areas, we create two station area types and assign one type to every parcel. Parcels that are within both *Large* and *Small* station area types as classified as part of a *Large* station area.[^9]
 
-[^8]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
+[^9]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
 
-Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%). We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately 3.6 billion ft^2^.[^9]
+Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%). We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately 3.6 billion ft^2^.[^10]
 
-[^9]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
+[^10]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
 
 Our findings suggest that the *Large (0.5 mile)* station areas would account for the majority of the parcels (64%), land area (59%), and added development capacity (68%) associated with HB 2160. See @tbl-results-summary-table below.
 
@@ -1058,9 +1066,9 @@ redmond_by_stationarea_type <-
 
 Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^10] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
+HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^11] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
 
-[^10]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
+[^11]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
 
 ```{r}
 #| label: fig-case-studies-redmond-stations-map 
@@ -1253,9 +1261,9 @@ shoreline_by_stationarea_type <-
 
 Shoreline is a city located in King County, Washington. The city has approximate 58,700 residents. Between 2010 and 2020, the city's population increased by 10.6%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Shoreline's city boundary, including two light rail stations and approximately 30 bus rapid transit stations.[^11]
+HB 2160 would affect several station areas within Shoreline's city boundary, including two light rail stations and approximately 30 bus rapid transit stations.[^12]
 
-[^11]: While most of the bus rapid transit station areas are spatially distinct, the Aurora Village Transit Center constitutes two stations (Bay 10 and Bay 3) in the study data set even though they have (approximately) the same station area.
+[^12]: While most of the bus rapid transit station areas are spatially distinct, the Aurora Village Transit Center constitutes two stations (Bay 10 and Bay 3) in the study data set even though they have (approximately) the same station area.
 
 ```{r}
 #| label: fig-case-studies-shoreline-stations-map 
@@ -1409,9 +1417,9 @@ map_shoreline_parcels
 
 ```
 
-## Discussion
-
 ## Conclusion
+
+House Bill 2160 aims to significantly increase development capacity near transit stops in the Puget Sound region, marking a meaninful move towards transit-oriented development. While this study indicates a substantial potential for new development capacity, it's important to consider these figures as estimates due to data and methodological limitations. Future refinements in data and methodology could enhance certainty about the bill's capacity impact. Despite these limitations, the bill is projected to have a considerable effect on the region's housing production, vehicle miles traveled, and development landscape.
 
 ## Appendices {.unnumbered}
 
