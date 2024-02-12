@@ -25,7 +25,7 @@ keywords:
   - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, members of the House of Representatives introduced a bill aimed at promoting community and transit-oriented housing development. This, House Bill 2160, proposed mandating cities to allow developments of a specific scale within certain distances from high-capacity transit stops. This study evaluates the extent to which the proposed increases in development capacity under this bill exceed current allowances. The findings indicate a substantial increase in development potential for the majority of areas within walking distance of transit stops. Specifically, for land that is developable and zoned for lower development capacity than what the bills propose, the average increase in capacity is projected to be an additional 1.79 floor area ratio (FAR).
+  During the 2024 legislative session in Washington State, House of Representatives members introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would require cities to permit developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the development capacity increases proposed by the bill compare to existing allowances. The results show a significant potential increase in development for most areas within walking distance of transit stops. Specifically, for developable land currently zoned for lower development capacity than the bill suggests, the projected average capacity increase is an additional 1.79 floor area ratio (FAR). The bill could increase the development capacity of land near the region's public transit network by approximately 3.6 billion square feet.
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -977,7 +977,27 @@ redmond_by_stationarea_type |>
 
 ```
 
-Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. Zoning districts such as East Hill and Anderson Park would see substantial increases to their development capacity (+2.5 FAR and +2.25 FAR, respectively).
+Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. The Overlake Mixed-Use zoning district would see substantial increase to its total development capacity (+43M ft^2^).
+
+```{r}
+#| label: results-case-studies-redmond-by-district
+#| include: false 
+
+p_affected_redmond |> 
+  st_drop_geometry() |> 
+  group_by(zoning_district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(parcel_area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = net_dev_capacity,
+                                  w = parcel_area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+  arrange(desc(area_ndc_mi2))
+
+
+
+```
 
 ```{r}
 #| label: fig-results-case-studies-redmond-maps
