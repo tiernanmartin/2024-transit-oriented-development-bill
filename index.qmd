@@ -1,6 +1,6 @@
 ---
-title: "Unlocking Smart Growth: The Effects of Proposed Transit-Oriented Development Laws on the Puget Sound Region"
-subtitle: "Exploring the Impact of the Community and Transit-Oriented Housing Development Bills HB 2160 and SB 6024 Across Washington State's Central Puget Sound Region"
+title: "Unlocking Smart Growth: The Effects of a Proposed Transit-Oriented Development Law on the Puget Sound Region"
+subtitle: "Exploring the Impact of the Community and Transit-Oriented Housing Development Bill HB 2160 Across Washington State's Central Puget Sound Region"
 author:
   - name: Tiernan Martin
     corresponding: true
@@ -1040,6 +1040,161 @@ map_redmond_parcels
 #### Shoreline
 
 ![City of Shoreline, WA \| Photo courtesy of [Haruo](https://commons.wikimedia.org/wiki/File:City_of_Shoreline_sign_at_145th_and_Aurora.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/city-of-shoreline-sign.jpg)
+
+
+```{r}
+#| label: results-case-studies-shoreline-objects
+
+t_shoreline <- st_join(t, ps_cities) |>  
+  filter(name %in% "Shoreline") |> 
+  transmute(
+    mode,
+    stop_name
+  )
+
+shoreline <- ps_cities |> 
+  filter(name %in% "Shoreline")
+
+p_shoreline <- p |> 
+  filter(zoning_juris %in% "Shoreline") |>   
+  select(parcel_area_mi2,
+         zoning_district_name,
+         net_dev_capacity = zoning_new_max_far_additional)
+
+p_affected_shoreline <- p |>  
+  filter(analysis_type %in% "Developable, Affected") |> 
+  filter(zoning_juris %in% "Shoreline") |>   
+  select(parcel_area_mi2,
+         zoning_district_name,
+         analysis_station_area_types,
+         net_dev_capacity = zoning_new_max_far_additional) 
+
+shoreline_by_stationarea_type <- 
+  case_studies_by_stationarea_type |> 
+  filter(zoning_juris %in% "Shoreline")
+
+```
+
+Shoreline is a city located in King County, Washington. The city has approximate 58,700 residents. Between 2010 and 2020, the city's population increased by 10.6%.[@pugetsoundregionalcouncil2021]
+
+HB 2160 would affect several station areas within Shoreline's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^10] See @tbl-appendix-case-studies-shoreline-stations-table in the appendix for a complete list of the station areas in Shoreline.
+
+[^10]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Shoreline Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
+
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Shoreline's station areas to be +1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
+
+```{r}
+#| label: fig-results-case-studies-shoreline-histogram
+#| output: true
+#| message: false 
+#| fig-height: 4
+#| fig-cap: "Shoreline Case Study: Net Development Capacity"
+
+
+shoreline_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
+
+p_affected_shoreline |>
+ggplot() +
+  aes(x = net_dev_capacity,
+      weight = parcel_area_mi2) +
+  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
+  scale_y_continuous(labels = scales::label_comma()) +
+  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  labs(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
+       subtitle = shoreline_hist_subtitle,
+       y = "Land Area (sq. miles)",
+       x = "Net Development Capacity (FAR)")
+```
+
+Examining the data grouped by station area type, we observe that while both station area types contain a similar number of *Developable, Affected* parcels, the *Large* station areas include substantially more land area that would be affected by the bill. Additionally, the $AWM_{NDC}$ of Shoreline's *Large* station areas is substantially higher than the *Small* station areas (+1.92 FAR and + 1.14 FAR, respectively).
+
+```{r}
+#| label: tbl-results-case-studies-shoreline-station-areas
+#| message: false
+#| tbl-cap: "Shoreline Case Study: Station Area Type Summary"
+
+shoreline_by_stationarea_type |> 
+  select(-zoning_juris) |> 
+  gt(rowname_col = "analysis_type",
+     groupname_col = "analysis_station_area_types") |> 
+  cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+  ) |> 
+  tab_style(
+    style = list(cell_text(indent = px(20))),
+    locations = cells_stub()
+  ) |> 
+  fmt_number( 
+    columns = c(4,5),
+    decimals = 2,       
+    sep_mark = ","
+  )
+  
+
+```
+
+Displaying the net development capacity of individual parcels reveals a complicated pattern around Shoreline's station areas, as shown in @fig-results-case-studies-shoreline-maps. While there are a few neighborhoods that would not be affected, such as Shoreline Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. The Overlake Mixed-Use zoning district would see substantial increase to its total development capacity (+43M ft^2^).
+
+```{r}
+#| label: results-case-studies-shoreline-by-district
+#| include: false 
+
+p_affected_shoreline |> 
+  st_drop_geometry() |> 
+  group_by(zoning_district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(parcel_area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = net_dev_capacity,
+                                  w = parcel_area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+  arrange(desc(area_ndc_mi2))
+
+
+
+```
+
+```{r}
+#| label: fig-results-case-studies-shoreline-maps
+#| eval: true
+#| message: false
+#| fig-cap: "Shoreline Case Study: Net Development Capacity Within Shoreline Station Areas"
+
+
+map_shoreline <- mapview(shoreline,
+        col.regions = "grey",
+        alpha.regions = .10,
+        legend = FALSE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE)
+
+map_shoreline_stations_baselayer <- mapview(t_shoreline,
+        zcol = "mode",
+        col.regions = brewer.pal(3, "Set2"),
+        alpha.regions = 0.2,
+        color = "white",
+        legend = TRUE,
+        popup = FALSE,
+        highlight = FALSE,
+        label = FALSE,
+        layer.name = "Stations") 
+
+map_shoreline_parcels <- map_shoreline_stations_baselayer +
+  mapview(p_shoreline,
+          zcol = "net_dev_capacity",
+          legend = TRUE,
+          layer.name = "Net FAR",
+          popup = "zoning_district_name"
+            )
+
+map_shoreline_parcels
+
+```
+
 
 ## Discussion
 
