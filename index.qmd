@@ -458,7 +458,7 @@ ggplot() +
 Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area reveals a more detailed picture of the effects of HB 2160 across the central Puget Sound region:
 
 ```{r}
-#| label: results-puget-sound-station-map
+#| label: fig-results-puget-sound-station-map
 #| message: false
 #| fig-width: 5
 #| fig-asp: 1
@@ -783,7 +783,7 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's
 #| output: true
 #| message: false 
 #| fig-height: 4
-#| fig-cap: "Kent Case Study: Net Development Capacity"
+#| fig-cap: "Net Development Capacity, Kent"
 
 
 kent_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 2.07 FAR, n = 1,195 (69%)")
@@ -806,7 +806,7 @@ Examining the data grouped by station area type, we observe two patterns. First,
 ```{r}
 #| label: tbl-results-case-studies-kent-station-areas
 #| message: false
-#| tbl-cap: "Kent Case Study: Station Area Type Summary"
+#| tbl-cap: "Station Area Type Summary, Kent"
 
 kent_by_stationarea_type |> 
   select(-zoning_juris) |> 
@@ -836,7 +836,7 @@ Displaying the net development capacity of individual parcels reveals a more nua
 #| label: fig-results-case-studies-kent-maps
 #| eval: true
 #| message: false
-#| fig-cap: "Kent Case Study: Net Development Capacity Within Kent Station Areas"
+#| fig-cap: "Net Development Capacity, Kent Station Areas"
 
 
 map_kent <- mapview(kent,
@@ -955,7 +955,7 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer
 #| output: true
 #| message: false 
 #| fig-height: 4
-#| fig-cap: "Mercer Island Case Study: Net Development Capacity"
+#| fig-cap: "Net Development Capacity, Mercer Island"
 
 
 mercerisland_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 3.01 FAR, n = 550 parcels (87%)")
@@ -979,7 +979,7 @@ Displaying the net development capacity of individual parcels reveals a clear pa
 #| label: fig-results-case-studies-mercerisland-maps
 #| eval: true
 #| message: false
-#| fig-cap: "Mercer Island Case Study: Net Development Capacity Within Mercer Island Light Rail Station Area"
+#| fig-cap: "Net Development Capacity, Mercer Island Light Rail Station Area"
 
 mercerisland_mean_current_far <- p |> 
   filter(zoning_juris == "Mercer Island") |>
@@ -1107,7 +1107,7 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmon
 #| output: true
 #| message: false 
 #| fig-height: 4
-#| fig-cap: "Redmond Case Study: Net Development Capacity"
+#| fig-cap: "Net Development Capacity, Redmond"
 
 
 redmond_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
@@ -1130,7 +1130,7 @@ Examining the data grouped by station area type, we observe that while both stat
 ```{r}
 #| label: tbl-results-case-studies-redmond-station-areas
 #| message: false
-#| tbl-cap: "Redmond Case Study: Station Area Type Summary"
+#| tbl-cap: "Station Area Type Summary, Redmond"
 
 redmond_by_stationarea_type |> 
   select(-zoning_juris) |> 
@@ -1180,7 +1180,7 @@ summarise(.groups = "drop",
 #| label: fig-results-case-studies-redmond-maps
 #| eval: true
 #| message: false
-#| fig-cap: "Redmond Case Study: Net Development Capacity Within Redmond Station Areas"
+#| fig-cap: "Net Development Capacity, Redmond Station Areas"
 
 
 map_redmond <- mapview(redmond,
@@ -1302,7 +1302,7 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Shorel
 #| output: true
 #| message: false 
 #| fig-height: 4
-#| fig-cap: "Shoreline Case Study: Net Development Capacity"
+#| fig-cap: "Net Development Capacity, Shoreline"
 
 
 shoreline_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
@@ -1325,7 +1325,7 @@ Examining the data grouped by station area type, we observe that in Shoreline th
 ```{r}
 #| label: tbl-results-case-studies-shoreline-station-areas
 #| message: false
-#| tbl-cap: "Shoreline Case Study: Station Area Type Summary"
+#| tbl-cap: "Station Area Type Summary, Shoreline"
 
 shoreline_by_stationarea_type |> 
   select(-zoning_juris) |> 
@@ -1375,7 +1375,7 @@ summarise(.groups = "drop",
 #| label: fig-results-case-studies-shoreline-maps
 #| eval: true
 #| message: false
-#| fig-cap: "Shoreline Case Study: Net Development Capacity Within Shoreline Station Areas"
+#| fig-cap: "Net Development Capacity, Shoreline Station Areas"
 
 
 map_shoreline <- mapview(shoreline,
@@ -1421,7 +1421,7 @@ map_shoreline_parcels
 
 ```{r}
 #| label: tbl-appendix-case-studies-kent-stations-table
-#| tbl-cap: "Kent Case Study: Transit Stations/Stops"
+#| tbl-cap: "Transit Stations/Stops, Kent (Appendix)"
 #| tbl-cap-location: top 
 
 t_kent |> 
@@ -1438,10 +1438,10 @@ t_kent |>
 ```
 
 ```{r}
-#| label: appendix-case-studies-kent-zoning
+#| label: fig-appendix-case-studies-kent-zoning
 #| include: false
 #| message: false
-#| fig-cap: "Appendix Maps: Zoning Districts Within Kent Station Areas"
+#| fig-cap: "Zoning Districts, Kent Station Areas (Appendix)"
 
 
 zd_kent <- zd |> 
@@ -1464,11 +1464,11 @@ map_kent_zoning_districts
 ```
 
 ```{r}
-#| label: appendix-case-studies-kent-parcels
+#| label: fig-appendix-case-studies-kent-parcels
 #| include: false
 #| eval: true
 #| message: false
-#| fig-cap: "Appendix Maps: Net Development Capacity Within Kent Station Areas"
+#| fig-cap: "Net Development Capacity, Kent Station Areas (Appendix)"
 
 
 p_kent <- p |> 
@@ -1491,7 +1491,7 @@ map_kent_parcels
 
 ```{r}
 #| label: tbl-appendix-case-studies-redmond-stations-table
-#| tbl-cap: "Redmond Case Study: Transit Stations/Stops"
+#| tbl-cap: "Transit Stations/Stops, Redmond (Appendix)"
 #| tbl-cap-location: top 
 
 t_redmond |> 
