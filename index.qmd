@@ -274,58 +274,81 @@ We separate the study data into three analysis groups:
 
 [^7]: For the purposes of this study, tax assessor-assigned land uses that are *not compatible* with development are: 'Non commercial forest', 'Open space land classified under chapter 84.34 RCW', and 'Water areas'.
 
+We also divide the parcel data by the type of station area it is within:
+
+1.  *Large (0.5 Mile)\
+    *Parcels within a half mile of a light rail station, commuter rail station, or streetcar stop.
+
+2.  *Small (0.25 Mile)\
+    *Parcels within a quarter mile of a bus rapid transit stop and not within a *Large* station area
+
+Using HB 2160's definition of station areas, we create two station area types and assign one type to every parcel. Parcels that are within both *Large* and *Small* station area types as classified as part of a *Large* station area.[^8]
+
+[^8]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
+
+Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%). We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately 3.6 billion ft^2^.[^9]
+
+[^9]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
+
+Our findings suggest that the *Large (0.5 mile)* station areas would account for the majority of the parcels (64%), land area (59%), and added development capacity (68%) associated with HB 2160. See @tbl-results-summary-table below.
+
 ```{r}
 #| label: tbl-results-summary-table
 #| output: true
 #| message: false
-#| tbl-cap: "Analysis Groups, Central Puget Sound"
+#| tbl-cap: "Summary of Study Data"
 
+poss_multiply <- possibly(function(x,y) x*y, otherwise = NA,quiet = TRUE)
 
-col_names <- c("Analysis Group", "Parcels (n)", " Land Area (sq. miles)")
-
-p_tbl_summary <- p |> 
+p_both_summaries_tbl <- p |> 
   st_drop_geometry() |>
   mutate( analysis_type = factor(analysis_type, 
                                  levels = c("Not Developable", 
-                                                   "Developable, Not Affected",
-                                                   "Developable, Affected")
-                         )
-    ) |> 
-  group_by(analysis_type) |> 
+                                            "Developable, Not Affected",
+                                            "Developable, Affected")
+  ),
+  dev_capacity_added = poss_multiply(zoning_new_max_far_additional, parcel_area)
+  ) |> 
+  pivot_longer(cols = c(analysis_type, analysis_station_area_types)) |> 
+  group_by(name, value) |> 
   summarize(n = n(),
-            area_mi2 = sum(parcel_area_mi2))
+            area_mi2 = sum(parcel_area_mi2),
+            dev_capacity_added = sum(dev_capacity_added, na.rm = TRUE)) |> 
+  mutate(n_pct = n / sum(n),
+         area_pct = area_mi2 / sum(area_mi2),
+         dev_cap_pct = dev_capacity_added / sum(dev_capacity_added, na.rm = TRUE)) |> 
+  ungroup() |> 
+  transmute(
+    name,
+    value,
+    n_tbl = glue("{comma(n)} ({percent(n_pct)})"),
+    area_tbl = glue("{comma(area_mi2)} ({percent(area_pct, accuracy = 1)})"),
+    devcap_tbl = glue("{comma(dev_capacity_added)} ({percent(dev_cap_pct)})")
+  )
 
-format_func <- function(x){
-  # browser()
-  if(!is.numeric(x)){return(x)} 
-  
-  round(x, digits = 1) |> 
-    format(big.mark = ",", decimal.mark = ".")
-}
 
-p_tbl_summary |> 
-    adorn_totals() |> 
-    adorn_percentages(denominator = "col") |> 
-    adorn_pct_formatting(digits = 0) |> 
-    adorn_ns(format_func = format_func,
-             position = "front") |> 
-  as_tibble() |> 
-  gt(rowname_col = "analysis_type") |> 
-  #tab_row_group(label = "Total", rows = 4) |>
-  tab_row_group(label = "Analysis Groups", rows = 1:3) |>  
-  cols_label(n = "Parcels (n)",
-             area_mi2 = html("Land Area (mi<sup>2</sup>)")) |> 
+p_both_summaries_tbl |> 
+  gt(groupname_col = "name",
+     rowname_col = "value") |> 
+  tab_row_group(label = "Station Area Types", rows = 1:2) |> 
+  tab_row_group(label = "Analysis Groups", rows = 3:5) |> 
+  cols_label(n_tbl = "Parcels (n)",
+             area_tbl = html("Land Area (mi<sup>2</sup>)"),
+             devcap_tbl = html("Added Dev. Capacity (ft<sup>2</sup>)")) |> 
   tab_style(
     style = list(
       cell_text(align = "left", indent = px(20))),
     locations = cells_stub()
+  ) |> 
+  tab_style(
+    style = list(
+      cell_text(align = "right")),
+    locations = cells_body()
   )
 
 ```
 
-Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%).
-
-Plotting the distribution of area-weighted net development capacity for this group of parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. The area-weighted mean net development capacity ($AWM_{NDC}$) is +1.79 FAR.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +1.79 FAR. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. See @fig-results-histogram-affected below.
 
 ```{r}
 #| label: fig-results-histogram-affected
@@ -359,7 +382,8 @@ ggplot() +
        x = "Net Development Capacity (FAR)") 
 ```
 
-We also compare $AWM_{NDC}$ across the two station area types, as defined by HB 2160:
+
+In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is 2.15 FAR and $AWM_{NDC}$ for the *Small* station areas is 1.32 FAR.
 
 ```{r}
 #| label: fig-results-histogram-station-areas
@@ -402,7 +426,7 @@ ggplot() +
        x = "Net Development Capacity (FAR)") 
 ```
 
-Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area reveals the effects of HB 2160 across the central Puget Sound region:
+Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area reveals a more detailed picture of the effects of HB 2160 across the central Puget Sound region:
 
 ```{r}
 #| label: results-puget-sound-station-map
@@ -888,9 +912,9 @@ redmond_by_stationarea_type <-
 
 Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3%.[@pugetsoundregionalcouncil2021]
 
-HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^8] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
+HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^10] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
 
-[^8]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
+[^10]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
 
 We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be 1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
 
@@ -916,32 +940,6 @@ ggplot() +
        y = "Land Area (sq. miles)",
        x = "Net Development Capacity (FAR)")
 ```
-
-```{r}
-#| label: fig-results-case-studies-redmond-histogram-filled
-#| include: false
-#| output: true
-#| message: false 
-#| fig-height: 4
-#| fig-cap: "Redmond Case Study: oning District by Net Development Capacity"
-
-p_affected_redmond |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2,
-      fill = fct_lump_n(zoning_district_name,3)) +
-geom_histogram(binwidth = .5, 
-               position = "stack", 
-               alpha = 1) +
-  theme(legend.title = element_blank()) +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.5)) +
-  labs(title = "Zoning District by Net Development Capacity",
-       subtitle = "Redmond, Washington",
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
-```
-
 
 Examining the data grouped by station area type, we observe X patterns.
 
