@@ -151,9 +151,9 @@ The bill also proposed several requirements of residential development built wit
 
 ### Floor Area Ratio (FAR)
 
-HB 2160 defines floor area ratio (FAR) as "a measure of development intensity equal to building square footage divided by the developable property square footage".[@reed2024] The metric combines two commonly-used regulatory tools (maximum building height and maximum lot coverage) into a single ratio, providing developers with design flexibility while allowing local government to set a maximum amount of development intensity within a zoning district. See @fig-far-diagram for an illustration of FAR's flexibility.
+HB 2160 defines floor area ratio (FAR) as "a measure of development intensity equal to building square footage divided by the developable property square footage".[@reed2024] The metric combines two commonly-used regulatory tools (maximum building height and maximum lot coverage) into a single ratio, providing developers with design flexibility while allowing local government to set a maximum amount of development intensity within a zoning district. See @fig-far for an illustration of FAR's flexibility.
 
-![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far-diagram}
+![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="A diagram showing different ways that a development could arrange 1.0 FAR on a lot: 1 story, 2 stories, 3 stories" fig-align="left" width="600"}
 
 ### Research Objective & Questions
 
