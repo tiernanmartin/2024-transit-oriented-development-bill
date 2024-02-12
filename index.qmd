@@ -919,10 +919,12 @@ ggplot() +
 
 ```{r}
 #| label: fig-results-case-studies-redmond-histogram-filled
+#| include: false
 #| output: true
 #| message: false 
 #| fig-height: 4
 #| fig-cap: "Redmond Case Study: oning District by Net Development Capacity"
+
 p_affected_redmond |>
 ggplot() +
   aes(x = net_dev_capacity,
