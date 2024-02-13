@@ -722,8 +722,16 @@ t_kent <- st_join(t, ps_cities) |>
     stop_name
   )
 
+# Kent has several non-contiguous parts of the city.
+# These will be dropped in order to allow the leaflet map
+# to focus on the majority of the city
+
 kent <- ps_cities |> 
-  filter(name %in% "Kent")
+  filter(name %in% "Kent") |> 
+  st_cast("POLYGON") |> 
+  mutate(area_polygon = st_area(geom)) |> 
+  filter(area_polygon == max(area_polygon)) |> # keep only the main part of Kent
+  select(-area_polygon)
 
 p_kent <- p |> 
   filter(zoning_juris %in% "Kent") |>   
