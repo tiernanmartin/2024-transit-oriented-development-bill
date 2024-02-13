@@ -151,7 +151,11 @@ The bill also proposed several requirements of residential development built wit
 
     > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development [@reed2024].
 
+<<<<<<< HEAD
 HB 2160 defines the floor area ratio (FAR) as "a measure of development intensity equal to the building square footage divided by the developable property square footage" [@reed2024]. This metric merges two commonly used regulatory tools—maximum building height and maximum lot coverage—into a single ratio. It offers developers design flexibility and allows local governments to establish a maximum level of development intensity within a zoning district. See @fig-far for an illustration of how this tool permits various development configurations while ensuring a consistent amount of building floor area.
+=======
+HB 2160 defines the floor area ratio (FAR) as "a measure of development intensity equal to the building square footage divided by the developable property square footage" [@reed2024]. This metric merges two commonly used regulatory tools—maximum building height and maximum lot coverage—into a single ratio. It offers developers design flexibility and allows local governments to establish a maximum level of development intensity within a zoning district. Refer to @fig-far for an illustration of how this tool permits various development configurations while ensuring a consistent amount of building floor area.
+>>>>>>> de3f02933aa93d321dd315b787a90f789be754e5
 
 ![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far fig-alt="A diagram showing different ways that a development could arrange 1.0 FAR on a lot: 1 story, 2 stories, 3 stories" fig-align="left" width="400"}
 
