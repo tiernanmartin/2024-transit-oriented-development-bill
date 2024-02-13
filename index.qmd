@@ -99,7 +99,7 @@ The authors wish to express their gratitude for the support received during the 
 
 No financial assistance was provided for the research, authorship, or publication of this work.
 
-Thanks to Yonah Freemark of the Urban Institute for the provision of zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for their generosity in sharing the agency's public transit data and for their analysis of Washington State House Bill 2160. We are grateful to Noha Mahgoub from the Office of Governor Jay Inslee for her valuable feedback and guidance. Additionally, our thanks to Dan Bertolet of the Sightline Institute for his review and feedback on the manuscript.
+Thanks to Yonah Freemark of the Urban Institute for the provision of zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for their generosity in sharing the agency's public transit data and for their analysis of Washington State House Bill 2160. We are grateful to Noha Mahgoub from the Office of Governor Jay Inslee for her valuable feedback and guidance. Additionally, our thanks to Dan Bertolet of the Sightline Institute for his review and feedback on our manuscript.
 
 ## Introduction
 
@@ -227,7 +227,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|----------------|----------------------------------------|----------------|
+|-----------------|--------------------------------------|-----------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
