@@ -95,9 +95,11 @@ Futurewise is a nonprofit organization that works throughout Washington State on
 
 ## Acknowledgments {.unnumbered}
 
-The authors received no financial support for the research, authorship, or publication of this article.
+The authors wish to express their gratitude for the support received during the preparation of this article.
 
-Thanks to Yonah Freemark from the Urban Institute for providing zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for sharing the agency's public transit data and analysis of Washington State House Bill 2160 and Senate Bill 6024. Thanks to Noha Mahgoub from the Office of Governor Jay Inslee for providing feedback and guidance.
+No financial assistance was provided for the research, authorship, or publication of this work.
+
+Thanks to Yonah Freemark of the Urban Institute for the provision of zoning district data. Thanks to Lauren Engel, Carol Naito, and Robin Koskey from the Puget Sound Regional Council for their generosity in sharing the agency's public transit data and for their analysis of Washington State House Bill 2160. We are grateful to Noha Mahgoub from the Office of Governor Jay Inslee for her valuable feedback and guidance. Additionally, our thanks to Dan Bertolet of the Sightline Institute for his review and feedback on our manuscript.
 
 ## Introduction
 
@@ -123,7 +125,7 @@ One potential solution to the Puget Sound region's challenges is to concentrate 
 
     > \(1\) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.
 
-The region's metropolitan planning organization, the [Puget Sound Regional Council](https://www.psrc.org/) (PSRC), incorporates TOD into its regional growth strategy. VISION 2050 defines regional growth centers—the places where most of the region's growth should occur—as compact, walkable, mixed use communities centered around high-quality transit systems. This plan also adopts greenhouse gas emission reduction goals set by the [Puget Sound Clean Air Agency](https://pscleanair.gov/):
+The region's metropolitan planning organization, the [Puget Sound Regional Council](https://www.psrc.org/) (PSRC), incorporates TOD into its regional growth strategy. *VISION 2050* defines regional growth centers—the places where most of the region's growth should occur—as compact, walkable, mixed use communities centered around high-quality transit systems. This plan also adopts greenhouse gas emission reduction goals set by the [Puget Sound Clean Air Agency](https://pscleanair.gov/):
 
 -   Reduce to 50% below 1990 levels by 2030
 
@@ -149,7 +151,7 @@ The bill also proposed several requirements of residential development built wit
 
     > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development [@reed2024].
 
-HB 2160 defines the floor area ratio (FAR) as "a measure of development intensity equal to the building square footage divided by the developable property square footage" [@reed2024]. This metric merges two commonly used regulatory tools—maximum building height and maximum lot coverage—into a single ratio. It offers developers design flexibility and allows local governments to establish a maximum level of development intensity within a zoning district. See @fig-far for an illustration of how this tool permits various development configurations while ensuring a consistent amount of building floor area.
+HB 2160 defines the floor area ratio (FAR) as "a measure of development intensity equal to the building square footage divided by the developable property square footage" [@reed2024]. This metric merges two commonly used regulatory tools—maximum building height and maximum lot coverage—into a single ratio. It offers developers design flexibility and allows local governments to establish a maximum level of development intensity within a zoning district. Refer to @fig-far for an illustration of how this tool permits various development configurations while ensuring a consistent amount of building floor area.
 
 ![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far fig-alt="A diagram showing different ways that a development could arrange 1.0 FAR on a lot: 1 story, 2 stories, 3 stories" fig-align="left" width="400"}
 
@@ -225,7 +227,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|-------------------|----------------------------------|-------------------|
+|-----------------|--------------------------------------|-----------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
