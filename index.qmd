@@ -105,19 +105,19 @@ Thanks to Yonah Freemark from the Urban Institute for providing zoning district 
 
 ### Growth in the Central Puget Sound Region
 
-The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Kitsap, Pierce, and Snohomish counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050.[@pugetsoundregionalcouncil2018]
+The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Kitsap, Pierce, and Snohomish counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050 [@pugetsoundregionalcouncil2018].
 
 [^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
 
-As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000.[@pugetsoundregionalcouncil2023] In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate.[@allhome2020]
+As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000 [@pugetsoundregionalcouncil2023]. In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate [@allhome2020].
 
 [^2]: This estimate includes three of the four central Puget Sound counties: King, Pierce, and Snohomish.
 
-Another challenge that the central Puget Sound region faces is climate change. In 2009, the Climate Impacts Group at the University of Washington developed a climate model that projected several series climate-related impacts over the coming decades. Those impacts include water shortages in the Yakima Basin, loss of salmon habitat due to elevated stream temperatures, increased wildfire risk, and more human deaths caused by heat events and poor air quality.[@climateimpactsgroup2009]
+Another challenge that the central Puget Sound region faces is climate change. In 2009, the Climate Impacts Group at the University of Washington developed a climate model that projected several series climate-related impacts over the coming decades. Those impacts include water shortages in the Yakima Basin, loss of salmon habitat due to elevated stream temperatures, increased wildfire risk, and more human deaths caused by heat events and poor air quality [@climateimpactsgroup2009].
 
 ### Transit-Oriented Development
 
-One potential solution to the Puget Sound region's challenges is to concentrate urban growth in existing urban areas while investing in climate-friendly forms of transportation. During the 1980s, sharp increases in sprawling, low-density residential and commercial development in Washington State resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands.[@trohimovich2002] This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs). Many of the GMA's planning goals align with a transit-oriented development (TOD) strategy to accommodating population growth within existing urban places.[^3]
+One potential solution to the Puget Sound region's challenges is to concentrate urban growth in existing urban areas while investing in climate-friendly forms of transportation. During the 1980s, sharp increases in sprawling, low-density residential and commercial development in Washington State resulted in many unintended consequences, including ecological disruption, traffic congestion, urban disinvestment, and loss of agricultural lands [@trohimovich2002]. This led the Washington State Legislature to adopt the Growth Management Act (GMA), a law requiring cities and counties to plan to accommodate growth within designated areas (urban growth areas or UGAs). Many of the GMA's planning goals align with a transit-oriented development (TOD) strategy to accommodating population growth within existing urban places.[^3]
 
 [^3]: The first four goals of [*RCW 36.70A.020 Planning goals*](https://app.leg.wa.gov/rcw/default.aspx?cite=36.70a.020) are:
 
@@ -129,7 +129,7 @@ The region's metropolitan planning organization, the [Puget Sound Regional Counc
 
 -   Reduce to 80% below 1990 levels by 2050
 
-PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development.[@pugetsoundregionalcouncil2023a; @pugetsoundregionalcouncil2022]
+PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development [@pugetsoundregionalcouncil2023a; @pugetsoundregionalcouncil2022].
 
 ### House Bill 2160
 
@@ -147,13 +147,11 @@ The bill also proposed several requirements of residential development built wit
 
 [^5]: The bill defines "Affordable housing" as:
 
-    > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development. [@reed2024]
+    > \[R\]esidential housing whose monthly costs, including utilities other than telephone, do not exceed 30 percent of the monthly income of a household whose income is: (a) For rental housing, 60 percent of the median household income-adjusted for household size, for the county where the household is located, as reported by the United States department of housing and 5urban development; or (b) For owner-occupied housing, 80 percent of the median household income adjusted for household size, for the county where 8the household is located, as reported by the United States department of housing and urban development [@reed2024].
 
-### Floor Area Ratio (FAR)
+HB 2160 defines the floor area ratio (FAR) as "a measure of development intensity equal to the building square footage divided by the developable property square footage" [@reed2024]. This metric merges two commonly used regulatory tools—maximum building height and maximum lot coverage—into a single ratio. It offers developers design flexibility and allows local governments to establish a maximum level of development intensity within a zoning district. See @fig-far for an illustration of how this tool permits various development configurations while ensuring a consistent amount of building floor area.
 
-![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far fig-alt="A diagram showing different ways that a development could arrange 1.0 FAR on a lot: 1 story, 2 stories, 3 stories" fig-align="left" width="300"}
-
-HB 2160 defines floor area ratio (FAR) as "a measure of development intensity equal to building square footage divided by the developable property square footage".[@reed2024] The metric combines two commonly-used regulatory tools (maximum building height and maximum lot coverage) into a single ratio, providing developers with design flexibility while allowing local government to set a maximum amount of development intensity within a zoning district. See @fig-far for an illustration of FAR's flexibility.
+![Illustrations of FAR Limits \| Source: *Accessory Dwelling Unit Final EIS*, City of Seattle, 2018](images/seattle-far-diagram.png){#fig-far fig-alt="A diagram showing different ways that a development could arrange 1.0 FAR on a lot: 1 story, 2 stories, 3 stories" fig-align="left" width="400"}
 
 ### Research Questions
 
@@ -173,7 +171,7 @@ The purpose of this study is to provide information about the effects of the pro
 
 ### Approach
 
-We use a quantitative methodology to attempt to answer our research questions. First we assess House Bill 2160's impact across the entire study area, the central Puget Sound region, before examining several individual cities as case studies.
+We employ a quantitative methodology to address our research questions. First we evaluate the impact of House Bill 2160 across the entire study area, specifically the central Puget Sound region, and then proceed to analyze several individual cities as case studies.
 
 ### Methods
 
@@ -266,6 +264,8 @@ Our method is subject to several limitations that are important to consider when
 10. **Changing Development Regulations:** The study uses zoning and land use data collected in 2023. While Puget Sound jurisdictions will be required to update their development regulations to comply with [recent changes](https://www.commerce.wa.gov/serving-communities/growth-management/growth-management-topics/planning-for-middle-housing/) to the GMA by mid-2025, the study focuses on current development regulations.
 
 [^7]: HB 2160 would exclude "public facilities and portions of lots with critical areas and critical area buffers as designated in RCW 36.70A.060, except for critical aquifer recharge areas where a single-family detached house is an allowed use provided that any requirements to maintain aquifer recharge are met." [@reed2024]
+
+<!-- -->
 
 11. **FAR Averaging**: While this study assumes that the bill's maximum FAR standards would be uniformly applied across all eligible parcels in every station area, the Second Substitute House Bill 2160 language would allow the new FAR to be calculated as an average of the station area. Additional implementation details would be needed to accurately assess the impact that this flexilibty would have on the bill's effect.
 
@@ -744,7 +744,7 @@ kent_by_stationarea_type <-
 
 ![Kent, WA \| Photo courtesy of [Imogen Caroline](https://commons.wikimedia.org/wiki/File:Kent_Washington_Above.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/kent-aerial.jpg){fig-alt="An aerial photograph of Kent, Washington"}
 
-Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8%.[@pugetsoundregionalcouncil2021]
+Kent is a city located in King County, Washington. The city has approximate 135,000 residents. Between 2010 and 2020, the city's population increased by 47.8% [@pugetsoundregionalcouncil2021].
 
 HB 2160 would affect several station areas within Kent's city boundary, including two light rail stations, one commuter rail station, and 15 bus rapid transit stations. See @tbl-appendix-case-studies-kent-stations-table in the appendix for a complete list of the station areas in Kent.
 
@@ -916,7 +916,7 @@ mercerisland_by_stationarea_type <-
 
 ![Mercer Island, WA \| Photo courtest of [Dllu](https://commons.wikimedia.org/wiki/File:Aerial_photo_of_Mercer_Island,_Washington.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/mercer-island-aerial.jpg){fig-alt="An aerial photograph of Mercer Island"}
 
-Mercer Island is a city located in King County, Washington. The city has approximate 25,000 residents. Between 2010 and 2020, the city's population increased by 13.4% [@pugetsoundregionalcouncil2021]
+Mercer Island is a city located in King County, Washington. The city has approximate 25,000 residents. Between 2010 and 2020, the city's population increased by 13.4% [@pugetsoundregionalcouncil2021].
 
 HB 2160 would affect only one station area within the city boundary: the Mercer Island Light Rail station. Only three other cities share Mercer Island's situation by having a single transit station area that meets HB 2160's criteria; they are Mukilteo, DuPont, and University Place.
 
@@ -1066,7 +1066,7 @@ redmond_by_stationarea_type <-
 
 ```
 
-Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3%.[@pugetsoundregionalcouncil2021]
+Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3% [@pugetsoundregionalcouncil2021].
 
 HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^11] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
 
@@ -1261,7 +1261,7 @@ shoreline_by_stationarea_type <-
 
 ```
 
-Shoreline is a city located in King County, Washington. The city has approximate 58,700 residents. Between 2010 and 2020, the city's population increased by 10.6%.[@pugetsoundregionalcouncil2021]
+Shoreline is a city located in King County, Washington. The city has approximate 58,700 residents. Between 2010 and 2020, the city's population increased by 10.6% [@pugetsoundregionalcouncil2021].
 
 HB 2160 would affect several station areas within Shoreline's city boundary, including two light rail stations and approximately 30 bus rapid transit stations.[^12] See @tbl-appendix-case-studies-shoreline-stations-table in the appendix for a complete list of the station areas in Shoreline.
 
@@ -1516,6 +1516,7 @@ t_redmond |>
   )
 
 ```
+
 #### Shoreline
 
 ```{r}
@@ -1535,7 +1536,6 @@ t_shoreline |>
   )
 
 ```
-
 
 ## References {.unnumbered}
 
