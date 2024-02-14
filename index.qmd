@@ -28,9 +28,9 @@ abstract: |
   During the 2024 legislative session in Washington State, House of Representatives members introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would require cities to permit developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the development capacity increases proposed by the bill compare to existing allowances. The results show a significant potential increase in development for most areas within walking distance of transit stops. Specifically, for developable land currently zoned for lower development capacity than the bill suggests, the projected average capacity increase is an additional 1.79 floor area ratio (FAR). The bill could increase the development capacity of land near the region's public transit network by approximately 3.6 billion square feet.
  
 plain-language-summary: |
-  In 2024, the Washington State Legislature considered two new laws aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. These laws would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
+  In 2024, the Washington State Legislature considered a bill aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. This bill would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
 key-points:
-  - "Washington State Legislature's HB 2160 and SB 6024 (2024 legislative session) would substantially increase development capacity for most of the land within walking distance of high-capacity transit stops"
+  - "Washington State Legislature's HB 2160 from the 2024 legislative session would substantially increase development capacity for most of the land within walking distance of high-capacity transit stops"
 date: last-modified
 bibliography: references.bib
 citation:
@@ -125,13 +125,7 @@ One potential solution to the Puget Sound region's challenges is to concentrate 
 
     > \(1\) Urban growth. Encourage development in urban areas where adequate public facilities and services exist or can be provided in an efficient manner. (2) Reduce sprawl. Reduce the inappropriate conversion of undeveloped land into sprawling, low-density development. (3) Transportation. Encourage efficient multimodal transportation systems that will reduce greenhouse gas emissions and per capita vehicle miles traveled, and are based on regional priorities and coordinated with county and city comprehensive plans. (4) Housing. Plan for and accommodate housing affordable to all economic segments of the population of this state, promote a variety of residential densities and housing types, and encourage preservation of existing housing stock.
 
-The region's metropolitan planning organization, the [Puget Sound Regional Council](https://www.psrc.org/) (PSRC), incorporates TOD into its regional growth strategy. *VISION 2050* defines regional growth centers—the places where most of the region's growth should occur—as compact, walkable, mixed use communities centered around high-quality transit systems. This plan also adopts greenhouse gas emission reduction goals set by the [Puget Sound Clean Air Agency](https://pscleanair.gov/):
-
--   Reduce to 50% below 1990 levels by 2030
-
--   Reduce to 80% below 1990 levels by 2050
-
-PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development [@pugetsoundregionalcouncil2023a; @pugetsoundregionalcouncil2022].
+The region's metropolitan planning organization, the [Puget Sound Regional Council](https://www.psrc.org/) (PSRC), incorporates TOD into its regional growth strategy. *VISION 2050* defines regional growth centers—the places where most of the region's growth should occur—as compact, walkable, mixed use communities centered around high-quality transit systems. This plan also adopts greenhouse gas emission reduction goals set by the [Puget Sound Clean Air Agency](https://pscleanair.gov/), including reducing greenhouse to 50% below 1990 levels by 2030 and to80% below 1990 levels by 2050. PSRC lists multiple strategies for achieving these goals, including the reduction of vehicle miles traveled by planning for transit-oriented development [@pugetsoundregionalcouncil2023a; @pugetsoundregionalcouncil2022].
 
 ### House Bill 2160
 
@@ -227,7 +221,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|-----------------|--------------------------------------|-----------------|
+|------------------|-------------------------------------|------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -245,31 +239,27 @@ Data sets containing information relevant to HB 2160 are combined through spatia
 
 Our method is subject to several limitations that are important to consider when interpreting our findings:
 
-1.  **Scope of Parcels**: The study is limited to parcels where residential use is permitted. This exclusion may omit significant areas that could be relevant under different zoning changes or future development scenarios.
+-   **Changing Development Regulations:** The study uses zoning and land use data collected in 2023. While Puget Sound jurisdictions will be required to update their development regulations to comply with [recent changes](https://www.commerce.wa.gov/serving-communities/growth-management/growth-management-topics/planning-for-middle-housing/) to the GMA by mid-2025, the study focuses on current development regulations.
 
-2.  **Measurement of Transit Proximity**: Transit walksheds are calculated using Euclidean distance, measuring straight lines to the center of parcels, rather than using network distances that reflect actual walking paths. This method may overestimate or underestimate the true accessibility of parcels to transit services.
+-   **FAR Averaging**: While this study assumes that the bill's maximum FAR standards would be uniformly applied across all eligible parcels in every station area, the Second Substitute House Bill 2160 language would allow the new FAR to be calculated as an average of the station area. Additional implementation details would be needed to accurately assess the impact that this flexibility would have on the bill's effect.
 
-3.  **Lot Coverage Assumptions**: In cases where specific regulations on maximum building footprint or FAR are not provided, the study assumes that 100% lot coverage is permissible. This assumption may not align with actual zoning regulations, potentially leading to overestimations of development capacity.
+-   **Additional Restrictions on Development**: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.[^7]
 
-4.  **Omission of Development Regulations**: The estimated FAR metric does not incorporate other development regulations, such as setbacks, which can significantly impact the buildable area on a parcel.
+-   **Measurement of Transit Proximity**: Transit walksheds are calculated using Euclidean distance, measuring straight lines to the center of parcels, rather than using network distances that reflect actual walking paths. This method may overestimate or underestimate the true accessibility of parcels to transit services.
 
-5.  **Homeowner Association (HOA) Restrictions**: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA's exist.
+-   **Lot Coverage Assumptions**: In cases where specific regulations on maximum building footprint or FAR are not provided, the study assumes that 100% lot coverage is permissible. This assumption may not align with actual zoning regulations, potentially leading to over-estimations of development capacity.
 
-6.  **Housing Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
+-   **Omission of Other Development Regulations**: The estimated FAR metric does not incorporate other development regulations, such as setbacks, which can significantly impact the buildable area on a parcel.
 
-7.  **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
+-   **Homeowner Association (HOA) Restrictions**: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA's exist.
 
-8.  **Additional Restrictions on Development**: The analysis does not account for other significant restrictions, including those that prevent development from being sited within critical areas, shoreline environments, or on sites with landmark designations. Such restrictions can materially impact development possibilities but are not reflected in the study.[^7]
+-   **Housing Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
 
-9.  **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
+-   **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
 
-10. **Changing Development Regulations:** The study uses zoning and land use data collected in 2023. While Puget Sound jurisdictions will be required to update their development regulations to comply with [recent changes](https://www.commerce.wa.gov/serving-communities/growth-management/growth-management-topics/planning-for-middle-housing/) to the GMA by mid-2025, the study focuses on current development regulations.
+-   **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
 
 [^7]: HB 2160 would exclude "public facilities and portions of lots with critical areas and critical area buffers as designated in RCW 36.70A.060, except for critical aquifer recharge areas where a single-family detached house is an allowed use provided that any requirements to maintain aquifer recharge are met." [@reed2024]
-
-<!-- -->
-
-11. **FAR Averaging**: While this study assumes that the bill's maximum FAR standards would be uniformly applied across all eligible parcels in every station area, the Second Substitute House Bill 2160 language would allow the new FAR to be calculated as an average of the station area. Additional implementation details would be needed to accurately assess the impact that this flexilibty would have on the bill's effect.
 
 Further research, data collection, and methodological refinements could help address these limitations in future analyses.
 
@@ -1433,6 +1423,11 @@ map_shoreline_parcels
 
 House Bill 2160 aims to significantly increase development capacity near transit stops in the Puget Sound region, marking a meaningful move towards transit-oriented development. While this study indicates a substantial potential for new development capacity, it's important to consider these figures as estimates due to data and methodological limitations. Future refinements in data and methodology could enhance certainty about the bill's capacity impact. Despite these limitations, this study findings strongly suggest that this bill could have a significant impact on housing production, public transit access, and urban development in the central Puget Sound region.
 
+## References {.unnumbered}
+
+::: {#refs}
+:::
+
 ## Appendices {.unnumbered}
 
 ### Case Study Tables & Maps
@@ -1546,8 +1541,3 @@ t_shoreline |>
   )
 
 ```
-
-## References {.unnumbered}
-
-::: {#refs}
-:::
