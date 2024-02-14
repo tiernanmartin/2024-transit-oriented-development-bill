@@ -87,6 +87,8 @@ convert_to_mi2 <- function(x){x/27878400}
 
 ```
 
+[Copyright © February 2024. Futurewise. Permission is granted for reproduction of this file, with attribution to Futurewise.]{style="font-size: 0.7em; text-align: center;"}
+
 ## About Futurewise {.unnumbered}
 
 [![](images/Futurewise%20Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
@@ -111,11 +113,11 @@ The Puget Sound metropolitan region is one of North America's major growth cente
 
 [^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
 
-As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000 [@pugetsoundregionalcouncil2023]. In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate [@allhome2020].
+As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000 [@pugetsoundregionalcouncil2023]. In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate [@allhome2020]. Despite the efforts by both public and private housing developers to tackle the shortage of affordable housing, researchers estimate that the central Puget Sound region will experience a shortfall of approximately 140,000 units over the next 20 years [@freemark2023a].
 
 [^2]: This estimate includes three of the four central Puget Sound counties: King, Pierce, and Snohomish.
 
-Another challenge that the central Puget Sound region faces is climate change. In 2009, the Climate Impacts Group at the University of Washington developed a climate model that projected several series climate-related impacts over the coming decades. Those impacts include water shortages in the Yakima Basin, loss of salmon habitat due to elevated stream temperatures, increased wildfire risk, and more human deaths caused by heat events and poor air quality [@climateimpactsgroup2009].
+Another challenge that the region faces is climate change. In 2009, the Climate Impacts Group at the University of Washington developed a climate model that projected several series climate-related impacts over the coming decades. Those impacts include water shortages in the Yakima Basin, loss of salmon habitat due to elevated stream temperatures, increased wildfire risk, and more human deaths caused by heat events and poor air quality [@climateimpactsgroup2009].
 
 ### Transit-Oriented Development
 
