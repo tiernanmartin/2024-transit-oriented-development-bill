@@ -87,8 +87,6 @@ convert_to_mi2 <- function(x){x/27878400}
 
 ```
 
-[Copyright © February 2024. Futurewise. Permission is granted for reproduction of this file, with attribution to Futurewise.]{style="font-size: 0.7em; text-align: center;"}
-
 ## About Futurewise {.unnumbered}
 
 [![](images/Futurewise%20Logo.png){style="float: left; margin-right: 20px; margin-bottom: 20px;" fig-alt="Futurewise logo" fig-align="left" width="150"}](https://futurewise.org/)
@@ -223,7 +221,7 @@ Our method offers a metric for evaluating changes in development capacity, refle
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------|-------------------------------------|------------------|
+|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -1543,3 +1541,10 @@ t_shoreline |>
   )
 
 ```
+
+::: {#copyright .quarto-appendix-contents .quarto-appendix-secondary-label}
+
+------------------------------------------------------------------------
+
+[Copyright © February 2024. Futurewise. Permission is granted for reproduction of this file, with attribution to Futurewise.]{style="text-align: center;"}
+:::
