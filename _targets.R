@@ -13,19 +13,50 @@ library(here)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
-  packages = c("tibble","tidyverse","DBI","RPostgres","glue")
+  packages = c("tibble",
+               "tidyverse",
+               "DBI",
+               "RPostgres",
+               "glue",
+               "sf",
+               "janitor",
+               "mapview",
+               "readxl",
+               "here")
 )
 
 # SOURCE R FUNCTIONS ----
 
 tar_source(files = here("R/functions.R"))
 
-# DEFINE TARGET PLAN ----
+# PIPELINE PART: FILES ----
 
-list(
-  tar_target(landuse_codes_file, 
-             here("data/Washington State Standard Assessment 2-Digit Codes.xlsx"), 
-             format = "file"),
-  tar_target(landuse_codes, 
-             load_landuse_codes(landuse_codes_file))
-)
+pipeline_files <- 
+  list(
+    tar_target(landuse_codes_file, 
+               here("data/Washington State Standard Assessment 2-Digit Codes.xlsx"), 
+               format = "file")
+    
+  )
+
+
+# PIPELINE PART: POSTGRES ------------------------------------------------------
+
+
+pipeline_postgres <- 
+  list(
+    tar_target(landuse_codes, 
+               load_landuse_codes(landuse_codes_file))
+  )
+
+
+# MERGE PIPELINE PARTS ----------------------------------------------------
+
+
+pipeline <- c(pipeline_files,
+              pipeline_postgres)
+
+
+# RUN TARGET PIPELINE -----------------------------------------------------
+
+pipeline
