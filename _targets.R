@@ -39,9 +39,7 @@ pipeline_files <-
     
   )
 
-
 # PIPELINE PART: POSTGRES ------------------------------------------------------
-
 
 pipeline_postgres <- 
   list(
@@ -51,7 +49,6 @@ pipeline_postgres <-
 
 
 # MERGE PIPELINE PARTS ----------------------------------------------------
-
 
 pipeline <- c(pipeline_files,
               pipeline_postgres)
