@@ -25,32 +25,49 @@ tar_option_set(
                "here")
 )
 
-# SOURCE R FUNCTIONS ----
+# SOURCE R FUNCTIONS -----------------------------------------------------------
 
 tar_source(files = here("R/functions.R"))
 
-# PIPELINE PART: FILES ----
+# PIPELINE PART: FILES ---------------------------------------------------------
 
 pipeline_files <- 
   list(
     tar_target(landuse_codes_file, 
                here("data/Washington State Standard Assessment 2-Digit Codes.xlsx"), 
+               format = "file"),
+    tar_target(zoning_file, 
+               here("data/Puget_Sound_Zoning/seattle_zone_data.shp"), 
                format = "file")
     
   )
+
+
+# PIPELINE PART: LOAD FILES -----------------------------------------------
+
+pipeline_load_files <- 
+  list(
+    tar_target(landuse_codes, 
+               load_landuse_codes(landuse_codes_file))
+    
+  )
+
 
 # PIPELINE PART: POSTGRES ------------------------------------------------------
 
 pipeline_postgres <- 
   list(
-    tar_target(landuse_codes, 
-               load_landuse_codes(landuse_codes_file))
+    tar_target(pg_write_landuse_codes,
+               write_to_db(x = landuse_codes,
+                           table_name = "landuse_codes",
+                           overwrite = TRUE))
   )
 
 
 # MERGE PIPELINE PARTS ----------------------------------------------------
 
 pipeline <- c(pipeline_files,
+              pipeline_load_files,
               pipeline_postgres)
 
 
