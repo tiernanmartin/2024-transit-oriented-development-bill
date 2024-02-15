@@ -1,0 +1,6 @@
+name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
+write_to_db|function|c587e9a4a663cdf4
+load_landuse_codes|function|755abdfc152524ea
+.Random.seed|object|b1f4c4a2ca6ed3e9
+landuse_codes_file|stem|94ed978970de483a|c39ff0800b9b872c|ef46db3751d8e999|1748745441|C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill/data/Washington State Standard Assessment 2-Digit Codes.xlsx|t19757.1209360284s|f7d088ddc5b04b4e|20279|file|local|vector|||0||
+landuse_codes|stem|22b87aa417db406e|56694ec3d622f279|c10339bf97e1ecaa|-523762491||t19768.5949372005s|3d2c40b5e8ca1f8e|1743|rds|local|vector|||0.06||

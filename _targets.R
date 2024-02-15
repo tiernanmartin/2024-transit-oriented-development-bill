@@ -1,26 +1,31 @@
 # LOAD PACKAGES ----
 
 library(targets)
+library(tidyverse)
+library(DBI)
+library(RPostgres)
+library(glue)
+library(sf)
+library(janitor)
+library(mapview)
+library(readxl)
+library(here)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
-  packages = c("tibble","tidyverse","DBI","RPostgres")
+  packages = c("tibble","tidyverse","DBI","RPostgres","glue")
 )
 
 # SOURCE R FUNCTIONS ----
 
-tar_source(files = "R/functions.R") 
-
-# GET DATABASE CONNECTION PARAMETERS
-
-db_host <- Sys.getenv("DB_HOST")
-db_port <- Sys.getenv("DB_PORT")
-db_name <- Sys.getenv("DB_NAME")
-db_user <- Sys.getenv("DB_USER")
-db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+tar_source(files = here("R/functions.R"))
 
 # DEFINE TARGET PLAN ----
 
 list(
-  
+  tar_target(landuse_codes_file, 
+             here("data/Washington State Standard Assessment 2-Digit Codes.xlsx"), 
+             format = "file"),
+  tar_target(landuse_codes, 
+             load_landuse_codes(landuse_codes_file))
 )
