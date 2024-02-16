@@ -1,6 +1,16 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-write_to_db|function|c587e9a4a663cdf4
-load_landuse_codes|function|755abdfc152524ea
-.Random.seed|object|b1f4c4a2ca6ed3e9
-landuse_codes_file|stem|94ed978970de483a|c39ff0800b9b872c|ef46db3751d8e999|1748745441|C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill/data/Washington State Standard Assessment 2-Digit Codes.xlsx|t19757.1209360284s|f7d088ddc5b04b4e|20279|file|local|vector|||0||
+.Random.seed|object|8957782ab47d9784|||||||||||||||
 landuse_codes|stem|22b87aa417db406e|56694ec3d622f279|c10339bf97e1ecaa|-523762491||t19768.5949372005s|3d2c40b5e8ca1f8e|1743|rds|local|vector|||0.06||
+landuse_codes_file|stem|94ed978970de483a|c39ff0800b9b872c|ef46db3751d8e999|1748745441|C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill/data/Washington State Standard Assessment 2-Digit Codes.xlsx|t19757.1209360284s|f7d088ddc5b04b4e|20279|file|local|vector|||0||
+load_landuse_codes|function|755abdfc152524ea|||||||||||||||
+load_zoning|function|0836510c81a36b63|||||||||||||||
+pg_write_landuse_codes|stem|11d8e25a40fdbefd|e171b8a769f48753|8cedcf31b78fb604|432504970||t19769.6683800373s|758d7d51407f572d|117|rds|local|vector|||0.67||
+pg_write_zoning|stem|11d8e25a40fdbefd|7c7b7aec1d650bef|1ded50e99b8475bb|-979426884||t19769.6683718093s|758d7d51407f572d|117|rds|local|vector|||7.47||
+pipeline|object|018a64b2a99cd46e|||||||||||||||
+pipeline_files|object|db1c21c6b928317a|||||||||||||||
+pipeline_load_files|object|c8677fa5e492c031|||||||||||||||
+pipeline_postgres|object|a39227f9543f53b8|||||||||||||||
+write_sf_to_db|function|234e2ec2f1822153|||||||||||||||
+write_to_db|function|3a1a0b0856be5f44|||||||||||||||
+zoning|stem|bb53422925902dea|53e195f152c4453d|58b1d8eb8b094512|1117653851||t19768.7860360431s|adc9564003244a59|49423406|rds|local|vector|||1.17||
+zoning_file|stem|a001151bd5ca097a|722b420100f53d34|ef46db3751d8e999|-1172219563|C:/Users/tiern/Documents/R/2024-transit-oriented-development-bill/data/Puget_Sound_Zoning/seattle_zone_data.shp|t19744.9600723284s|0092e9584a05203e|66688196|file|local|vector|||0||
