@@ -33,6 +33,9 @@ tar_source(files = here("R/functions.R"))
 
 pipeline_files <- 
   list(
+    tar_target(parcels_file, 
+               here("data/2023-07-01_parcels.geojson"),
+               format = "file"),
     tar_target(transit_cr_file, 
                here("data/CR_stations/CR_stops.shp"),
                format = "file"),
@@ -94,6 +97,9 @@ pipeline_load_files <-
 
 pipeline_postgres <- 
   list(
+    tar_target(pg_write_parcels,
+               write_to_db_ogr2ogr(filepath = parcels_file,
+                              table_name = "parcels")),
     tar_target(pg_write_transit_hct,
                write_sf_to_db(x = transit_hct,
                               table_name = "transit_hct",

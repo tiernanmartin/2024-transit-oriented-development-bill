@@ -189,4 +189,44 @@ write_sf_to_db <- function(x, table_name, overwrite = TRUE) {
   return(table_exists)
 }
 
+write_to_db_ogr2ogr <- function(filepath, table_name){
+  
+  db_host <- Sys.getenv("POSTGRES_HOST")
+  db_port <- Sys.getenv("POSTGRES_PORT")
+  db_name <- Sys.getenv("POSTGRES_NAME")
+  db_user <- Sys.getenv("POSTGRES_USER")
+  db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+  
+  
+  con <- dbConnect(RPostgres::Postgres(),
+                   dbname = db_name,
+                   host = db_host,
+                   port = db_port,
+                   user = db_user,
+                   password = db_password)
+  
+  on.exit(dbDisconnect(con))
+  
+  # Create the command to pass to system()
+  
+  command <- glue('ogr2ogr -f "PostgreSQL" PG:"dbname={Sys.getenv("POSTGRES_NAME")} user={Sys.getenv("POSTGRES_USER")} password={Sys.getenv("POSTGRES_TOD_PASSWORD")}" {filepath} -nln {table_name} -overwrite -progress')
+  
+  # Run the command
+  system(command)
+  
+  # Check is table exists
+  
+  q <- glue("
+            SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = 'public' AND table_name = '{table_name}'
+                  );
+            ")
+  
+  table_exists <- dbGetQuery(con, q)
+  
+  return(table_exists)
+  
+}
+
 
