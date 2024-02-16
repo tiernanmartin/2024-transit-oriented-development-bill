@@ -13,27 +13,32 @@ load_transit_hct <- function(cr, lr, lr_alt, sc, brt, proj_crs = 2926L){
     st_transform(proj_crs) |> 
     transmute(mode = "LR",
               stop_name) |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   lr_alt<- st_read(lr_alt) |>  # this is used to clean up the other lightrail data set
     st_transform(proj_crs) |> 
     clean_names() |> 
-    transmute(stop_name_other = name)
+    transmute(stop_name_other = name) |> 
+    st_sf()
   
   sc <- st_read(sc) |> 
     st_transform(proj_crs) |> 
     transmute(mode = "SC",stop_name) |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   cr <- st_read(cr) |> 
     st_transform(proj_crs) |> 
     transmute(mode = "CR",stop_name) |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   brt <- st_read(brt) |> 
     st_transform(proj_crs) |> 
     transmute(mode = "BRT",stop_name) |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
  # Clean data
   
@@ -74,7 +79,8 @@ load_cities <- function(filepath = ""){
   cities <- st_read(filepath) |> 
     as_tibble() |> 
     clean_names() |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   return(cities)
   
@@ -85,7 +91,8 @@ load_uga <- function(filepath = ""){
   uga <- st_read(filepath) |> 
     as_tibble() |> 
     clean_names() |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   return(uga)
   
@@ -96,7 +103,8 @@ load_zoning <- function(filepath = ""){
   z <- st_read(filepath) |> 
     as_tibble() |> 
     clean_names() |> 
-    rename(geom = geometry)
+    rename(geom = geometry) |> 
+    st_sf()
   
   return(z)
   
