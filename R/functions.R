@@ -74,9 +74,10 @@ load_zoning_details <- function(filepath = ""){
   return(zd)
 }
 
-load_cities <- function(filepath = ""){
+load_cities <- function(filepath = "", proj_crs = 2926L){
   
-  cities <- st_read(filepath) |> 
+  cities <- st_read(filepath) |>
+    st_transform(proj_crs) |> 
     as_tibble() |> 
     clean_names() |> 
     rename(geom = geometry) |> 
@@ -86,9 +87,10 @@ load_cities <- function(filepath = ""){
   
 }
 
-load_uga <- function(filepath = ""){
+load_uga <- function(filepath = "", proj_crs = 2926L){
   
   uga <- st_read(filepath) |> 
+    st_transform(proj_crs) |> 
     as_tibble() |> 
     clean_names() |> 
     rename(geom = geometry) |> 
@@ -98,9 +100,10 @@ load_uga <- function(filepath = ""){
   
 }
 
-load_zoning <- function(filepath = ""){
+load_zoning <- function(filepath = "", proj_crs = 2926L){
   
   z <- st_read(filepath) |> 
+    st_transform(proj_crs) |> 
     as_tibble() |> 
     clean_names() |> 
     rename(geom = geometry) |> 

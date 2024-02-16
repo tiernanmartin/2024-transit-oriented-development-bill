@@ -75,7 +75,7 @@ pipeline_files <-
 
 pipeline_load_files <- 
   list(
-    
+    tar_target(proj_crs, 2926L),
     tar_target(transit_hct, 
                load_transit_hct(cr = transit_cr_file,
                                 lr = transit_lr_file,
@@ -86,14 +86,13 @@ pipeline_load_files <-
     tar_target(zoning_details, 
                load_zoning_details(zoning_details_file)),
     tar_target(cities, 
-               load_uga(cities_file)),
+               load_uga(cities_file, proj_crs = proj_crs)),
     tar_target(uga, 
-               load_uga(uga_file)),
+               load_uga(uga_file, proj_crs = proj_crs)),
     tar_target(zoning, 
-               load_zoning(zoning_file)),
+               load_zoning(zoning_file, proj_crs = proj_crs)),
     tar_target(landuse_codes, 
-               load_landuse_codes(landuse_codes_file)),
-    tar_target(proj_crs, 2926L)
+               load_landuse_codes(landuse_codes_file))
     
   )
 
