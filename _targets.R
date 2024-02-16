@@ -48,7 +48,9 @@ pipeline_files <-
 pipeline_load_files <- 
   list(
     tar_target(landuse_codes, 
-               load_landuse_codes(landuse_codes_file))
+               load_landuse_codes(landuse_codes_file)),
+    tar_target(zoning, 
+               load_zoning(zoning_file))
     
   )
 
@@ -60,6 +62,10 @@ pipeline_postgres <-
     tar_target(pg_write_landuse_codes,
                write_to_db(x = landuse_codes,
                            table_name = "landuse_codes",
+                           overwrite = TRUE)),
+    tar_target(pg_write_zoning,
+               write_sf_to_db(x = zoning,
+                           table_name = "zoning",
                            overwrite = TRUE))
   )
 
