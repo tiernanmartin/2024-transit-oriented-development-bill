@@ -2,7 +2,94 @@
 # This file defines functions used in the target plan (_targets.R)
 
 
-# FUNCTIONS ---------------------------------------------------------------
+
+# TARGET FUNCTIONS ----
+
+load_transit_hct <- function(cr, lr, lr_alt, sc, brt, proj_crs = 2926L){
+  
+  # Load data
+  
+  lr <- st_read(lr) |> 
+    st_transform(proj_crs) |> 
+    transmute(mode = "LR",
+              stop_name) |> 
+    rename(geom = geometry)
+  
+  lr_alt<- st_read(lr_alt) |>  # this is used to clean up the other lightrail data set
+    st_transform(proj_crs) |> 
+    clean_names() |> 
+    transmute(stop_name_other = name)
+  
+  sc <- st_read(sc) |> 
+    st_transform(proj_crs) |> 
+    transmute(mode = "SC",stop_name) |> 
+    rename(geom = geometry)
+  
+  cr <- st_read(cr) |> 
+    st_transform(proj_crs) |> 
+    transmute(mode = "CR",stop_name) |> 
+    rename(geom = geometry)
+  
+  brt <- st_read(brt) |> 
+    st_transform(proj_crs) |> 
+    transmute(mode = "BRT",stop_name) |> 
+    rename(geom = geometry)
+  
+ # Clean data
+  
+  lr <- lr |> distinct(geom, .keep_all = TRUE)
+  
+  lr_ready <- st_join(lr, 
+                      lr_alt, 
+                      join = st_is_within_distance, 
+                      dist = 1500) |>
+    mutate(stop_name = case_when(
+      is.na(stop_name) ~ stop_name_other,
+      TRUE ~ stop_name
+    )) |> 
+    select(-stop_name_other) |> 
+    distinct() |> 
+    select(mode, stop_name, geom)
+  
+  
+  # Combine data
+  
+  transit_hct <- rbind(lr_ready,sc,cr,brt)
+  
+  
+  return(transit_hct)
+}
+
+load_zoning_details <- function(filepath = ""){
+  
+  zd <- read_csv(filepath) |> 
+    as_tibble() |> 
+    clean_names()
+  
+  return(zd)
+}
+
+load_uga <- function(filepath = ""){
+  
+  uga <- st_read(filepath) |> 
+    as_tibble() |> 
+    clean_names() |> 
+    rename(geom = geometry)
+  
+  return(uga)
+  
+}
+
+load_zoning <- function(filepath = ""){
+  
+  z <- st_read(filepath) |> 
+    as_tibble() |> 
+    clean_names() |> 
+    rename(geom = geometry)
+  
+  return(z)
+  
+}
 
 load_landuse_codes <- function(filepath = ""){
  
@@ -12,6 +99,8 @@ load_landuse_codes <- function(filepath = ""){
   
   return(luc)
 }
+
+# UTILITY FUNCTIONS -----
 
 write_to_db <- function(x, table_name, overwrite = TRUE){
   
@@ -100,15 +189,4 @@ write_sf_to_db <- function(x, table_name, overwrite = TRUE) {
   return(table_exists)
 }
 
-
-load_zoning <- function(filepath = ""){
-  
-  z <- st_read(filepath) |> 
-    as_tibble() |> 
-    clean_names() |> 
-    rename(geom = geometry)
-  
-  return(z)
-  
-}
 
