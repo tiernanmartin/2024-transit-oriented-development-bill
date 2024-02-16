@@ -69,6 +69,17 @@ load_zoning_details <- function(filepath = ""){
   return(zd)
 }
 
+load_cities <- function(filepath = ""){
+  
+  cities <- st_read(filepath) |> 
+    as_tibble() |> 
+    clean_names() |> 
+    rename(geom = geometry)
+  
+  return(cities)
+  
+}
+
 load_uga <- function(filepath = ""){
   
   uga <- st_read(filepath) |> 
