@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Create transit_walksheds table with ST_Buffer process
 DROP TABLE IF EXISTS transit_walksheds;
 
@@ -25,3 +27,4 @@ JOIN transit_walksheds t ON ST_Intersects(z.geom, t.geom);
 
 CREATE INDEX idx_zoning_walksheds_geom ON zoning_walksheds USING GIST (geom);
 
+COMMIT;

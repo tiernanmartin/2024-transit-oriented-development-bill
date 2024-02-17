@@ -33,6 +33,18 @@ tar_source(files = here("R/functions.R"))
 
 pipeline_files <- 
   list(
+    tar_target(sql_02_file, 
+               here("SQL/02-prepare-tables.sql"),
+               format = "file"),
+    tar_target(sql_03_file, 
+               here("SQL/03-filter-parcels-walkshed.sql"),
+               format = "file"),
+    tar_target(sql_04_file, 
+               here("SQL/04-join-zoning.sql"),
+               format = "file"),
+    tar_target(sql_05_file, 
+               here("SQL/05-create-zoning-walksheds.sql"),
+               format = "file"),
     tar_target(parcels_file, 
                here("data/2023-07-01_parcels.geojson"),
                format = "file"),
@@ -86,7 +98,7 @@ pipeline_load_files <-
     tar_target(zoning_details, 
                load_zoning_details(zoning_details_file)),
     tar_target(cities, 
-               load_uga(cities_file, proj_crs = proj_crs)),
+               load_cities(cities_file, proj_crs = proj_crs)),
     tar_target(uga, 
                load_uga(uga_file, proj_crs = proj_crs)),
     tar_target(zoning, 
@@ -100,7 +112,29 @@ pipeline_load_files <-
 # PIPELINE PART: POSTGRES ------------------------------------------------------
 
 pipeline_postgres <- 
-  list(
+  list( 
+    tar_target(pg_02_prepare_tables,
+               run_sql_query(filepath = sql_02_file,
+                             table_name = "test_execute",
+                             target_dependencies = list(landuse_codes,
+                                                        load_zoning,
+                                                        load_uga,
+                                                        cities,
+                                                        zoning_details,
+                                                        transit_hct)),
+               cue = tar_cue()),
+    # tar_target(pg_03_filter_parcels_walkshed,
+    #            run_sql_query(filepath = sql_03_file,
+    #                          table_name = "parcels_walkshed"),
+    #            target_dependencies = list(pg_02_prepare_tables)),
+    # tar_target(pg_04_join_zoning,
+    #            run_sql_query(filepath = sql_04_file,
+    #                          table_name = "parcels_walkshed_zoning"),
+    #            target_dependencies = list(pg_03_filter_parcels_walkshed)),
+    # tar_target(pg_05_create_transit_walksheds,
+    #            run_sql_query(filepath = sql_05_file,
+    #                          table_name = "transit_walksheds"),
+    #            target_dependencies = list(pg_04_join_zoning)),
     tar_target(pg_write_parcels,
                write_to_db_ogr2ogr(filepath = parcels_file,
                               table_name = "parcels")),

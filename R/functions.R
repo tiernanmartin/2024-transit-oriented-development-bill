@@ -122,7 +122,62 @@ load_landuse_codes <- function(filepath = ""){
   return(luc)
 }
 
+
 # UTILITY FUNCTIONS -----
+
+test_psql <- function(){
+  system(glue("psql -U {Sys.getenv('POSTGRES_USER')} --version"))
+}
+
+run_sql_query <- function(filepath = "", table_name = "", target_dependencies = list()){ 
+  
+  db_host <- Sys.getenv("POSTGRES_HOST")
+  db_port <- Sys.getenv("POSTGRES_PORT")
+  db_name <- Sys.getenv("POSTGRES_NAME")
+  db_user <- Sys.getenv("POSTGRES_USER")
+  db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+  
+  
+  con <- dbConnect(RPostgres::Postgres(),
+                   dbname = db_name,
+                   host = db_host,
+                   port = db_port,
+                   user = db_user,
+                   password = db_password)
+  
+  on.exit(dbDisconnect(con))
+  
+  
+  # Create psql command
+  
+  psql_command <- glue("psql -h {db_host} -d {db_name} -U {db_user} -p {db_port} -a -f {filepath}")
+  
+  # IMPORTANT: 
+  # This psql command requires PostgreSQL authentication to access the database.
+  # Ensure that your PostgreSQL password is securely stored in the pgpass.conf file.
+  # This file should be located at %APPDATA%\postgresql\pgpass.conf on Windows systems.
+  # The pgpass.conf file must follow the format: hostname:port:database:username:password
+  
+  
+  # Execute the command
+  
+  system(psql_command)
+  
+  # Check if table exists
+  
+  check_query <- glue("
+            SELECT EXISTS (
+                    SELECT FROM information_schema.tables 
+                    WHERE table_schema = 'public' AND table_name = '{table_name}'
+                  );
+            ")
+  
+  table_exists <- dbGetQuery(con, check_query)
+  
+  return(table_exists)
+  
+}
+
 
 write_to_db <- function(x, table_name, overwrite = TRUE){
   

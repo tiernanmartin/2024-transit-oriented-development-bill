@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Join shape_length and shape_area
 UPDATE parcels_walkshed
 SET shape_area = p.area,
@@ -61,4 +63,6 @@ SELECT z.d_link AS zoning_d_link,
 FROM parcels_walkshed p
 JOIN zoning z ON ST_Within(p.geom, z.geom)
 JOIN zoning_details zd ON z.d_link = zd.d_link
-JOIN land_use_codes luc ON p.landuse_cd = luc.code;
+JOIN landuse_codes luc ON p.landuse_cd = luc.code;
+
+COMMIT;

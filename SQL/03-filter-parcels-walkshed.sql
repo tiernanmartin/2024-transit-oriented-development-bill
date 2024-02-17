@@ -1,3 +1,5 @@
+BEGIN;
+
 -- Set memory for the operation
 SET work_mem = '512MB';
 
@@ -14,9 +16,14 @@ parcels_uga AS (
     FROM parcels_psrc p
     JOIN uga u ON ST_Within(p.geom, u.geom)
 ),
+parcels_cities AS (
+	SELECT p.*
+	FROM parcels_uga p
+	JOIN cities c ON ST_Within(p.geom, c.geom)
+),
 parcels_within_half_mile AS (
     SELECT p.*
-    FROM parcels_uga p
+    FROM parcels_cities p
     WHERE EXISTS (
         SELECT 1
         FROM transit_hct t
@@ -54,3 +61,5 @@ WHERE w.is_within_lr_walkshed OR w.is_within_sc_walkshed OR w.is_within_cr_walks
 
 -- Create an index for the final table
 CREATE INDEX idx_parcels_walkshed ON parcels_walkshed USING GIST (geom);
+
+COMMIT;
