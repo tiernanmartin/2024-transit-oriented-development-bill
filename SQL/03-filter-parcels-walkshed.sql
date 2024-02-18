@@ -1,9 +1,17 @@
-BEGIN;
+--Runtime: ~19 mins
 
 -- Set memory for the operation
 SET work_mem = '512MB';
 
--- Create the final table parcels_walkshed using CTEs (runtime: ~18 mins)
+-- See SQL/99-adjust-parallel-settings.sql for parallel settings use with this script
+
+-- Run ANALYZE and VACUUM on the tables with geom columns
+ANALYZE parcels_pt;
+ANALYZE uga;
+ANALYZE cities;
+ANALYZE transit_hct;
+
+-- Create the final table parcels_walkshed using CTEs 
 DROP TABLE IF EXISTS parcels_walkshed;
 
 CREATE TABLE parcels_walkshed AS
@@ -60,6 +68,4 @@ JOIN walkshed_info w ON p.ogc_fid = w.parcel_id
 WHERE w.is_within_lr_walkshed OR w.is_within_sc_walkshed OR w.is_within_cr_walkshed OR w.is_within_brt_walkshed;
 
 -- Create an index for the final table
-CREATE INDEX idx_parcels_walkshed ON parcels_walkshed USING GIST (geom);
-
-COMMIT;
+CREATE INDEX IF NOT EXISTS idx_parcels_walkshed ON parcels_walkshed USING GIST (geom);

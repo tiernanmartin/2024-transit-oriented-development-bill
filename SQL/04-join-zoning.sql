@@ -1,5 +1,11 @@
-BEGIN;
 
+-- ANALYZE tables
+ANALYZE parcels_walkshed;
+ANALYZE zoning;
+ANALYZE zoning_details;
+ANALYZE landuse_codes;
+
+BEGIN;
 -- Join shape_length and shape_area
 UPDATE parcels_walkshed
 SET shape_area = p.area,
@@ -10,12 +16,16 @@ FROM (
 ) as p
 WHERE parcels_walkshed.ogc_fid = p.ogc_fid;
 
+COMMIT;
+
+BEGIN;
+
 -- Drop the table if it already exists
 DROP TABLE IF EXISTS parcels_walkshed_zoning;
 
 CREATE TABLE parcels_walkshed_zoning AS
 SELECT z.d_link AS zoning_d_link, 
-	   z.gid AS zoning_id,
+	   z.fid AS zoning_id,
        p.is_within_lr_walkshed AS transit_within_lr_walkshed,
        p.is_within_sc_walkshed AS transit_within_sc_walkshed,
 	   p.is_within_cr_walkshed AS transit_within_cr_walkshed,
@@ -64,5 +74,8 @@ FROM parcels_walkshed p
 JOIN zoning z ON ST_Within(p.geom, z.geom)
 JOIN zoning_details zd ON z.d_link = zd.d_link
 JOIN landuse_codes luc ON p.landuse_cd = luc.code;
+
+-- Create an index
+CREATE INDEX IF NOT EXISTS idx_parcels_walkshed_zoning ON parcels_walkshed_zoning USING GIST (geom);
 
 COMMIT;
