@@ -101,7 +101,7 @@ pipeline_load_files <-
                load_cities(cities_file, proj_crs = proj_crs)),
     tar_target(uga, 
                load_uga(uga_file, proj_crs = proj_crs)),
-    tar_target(zoning, 
+    tar_target(zoning,
                load_zoning(zoning_file, proj_crs = proj_crs)),
     tar_target(landuse_codes, 
                load_landuse_codes(landuse_codes_file))
@@ -109,67 +109,85 @@ pipeline_load_files <-
   )
 
 
-# PIPELINE PART: POSTGRES ------------------------------------------------------
+# PIPELINE PART: LOAD INTO POSTGRES ------------------------------------------------------
 
-pipeline_postgres <- 
+pipeline_load_into_pg <- 
   list( 
-    tar_target(pg_02_prepare_tables,
-               run_sql_query(filepath = sql_02_file,
-                             table_name = "test_execute",
-                             target_dependencies = list(landuse_codes,
-                                                        load_zoning,
-                                                        load_uga,
-                                                        cities,
-                                                        zoning_details,
-                                                        transit_hct)),
-               cue = tar_cue()),
-    # tar_target(pg_03_filter_parcels_walkshed,
-    #            run_sql_query(filepath = sql_03_file,
-    #                          table_name = "parcels_walkshed"),
-    #            target_dependencies = list(pg_02_prepare_tables)),
-    # tar_target(pg_04_join_zoning,
-    #            run_sql_query(filepath = sql_04_file,
-    #                          table_name = "parcels_walkshed_zoning"),
-    #            target_dependencies = list(pg_03_filter_parcels_walkshed)),
-    # tar_target(pg_05_create_transit_walksheds,
-    #            run_sql_query(filepath = sql_05_file,
-    #                          table_name = "transit_walksheds"),
-    #            target_dependencies = list(pg_04_join_zoning)),
     tar_target(pg_write_parcels,
                write_to_db_ogr2ogr(filepath = parcels_file,
-                              table_name = "parcels")),
+                              table_name = "parcels"),
+               cue = tar_cue("always")),
     tar_target(pg_write_transit_hct,
                write_sf_to_db(x = transit_hct,
                               table_name = "transit_hct",
-                              overwrite = TRUE)),
+                              overwrite = TRUE),
+               cue = tar_cue("always")),
     tar_target(pg_write_zoning_details,
                write_to_db(x = zoning_details,
                            table_name = "zoning_details",
-                           overwrite = TRUE)),
+                           overwrite = TRUE),
+               cue = tar_cue("always")),
     tar_target(pg_write_cities,
                write_sf_to_db(x = cities,
                               table_name = "cities",
-                              overwrite = TRUE)),
+                              overwrite = TRUE),
+               cue = tar_cue("always")),
     tar_target(pg_write_uga,
                write_sf_to_db(x = uga,
                               table_name = "uga",
-                              overwrite = TRUE)),
+                              overwrite = TRUE),
+               cue = tar_cue("always")),
     tar_target(pg_write_zoning,
                write_sf_to_db(x = zoning,
                            table_name = "zoning",
-                           overwrite = TRUE)),
+                           overwrite = TRUE),
+               cue = tar_cue("always")),
     tar_target(pg_write_landuse_codes,
                write_to_db(x = landuse_codes,
                            table_name = "landuse_codes",
-                           overwrite = TRUE))
+                           overwrite = TRUE),
+               cue = tar_cue("always"))
   )
 
+
+# CREATE POSTGRES TABLES --------------------------------------------------
+
+pipeline_create_pg_tables <- list(
+  tar_target(pg_02_prepare_tables,
+             run_sql_query(filepath = sql_02_file,
+                           table_name = "parcels_pt",
+                           target_dependencies = list(pg_write_parcels,
+                                                      pg_write_landuse_codes,
+                                                      pg_write_zoning,
+                                                      pg_write_uga,
+                                                      pg_write_cities,
+                                                      pg_write_zoning_details,
+                                                      pg_write_transit_hct)),
+             cue = tar_cue("always")),
+  tar_target(pg_03_filter_parcels_walkshed,
+             run_sql_query(filepath = sql_03_file,
+                           table_name = "parcels_walkshed",
+                           target_dependencies = list(pg_02_prepare_tables)),
+             cue = tar_cue("always")),
+  tar_target(pg_04_join_zoning,
+             run_sql_query(filepath = sql_04_file,
+                           table_name = "parcels_walkshed_zoning",
+                           target_dependencies = list(pg_03_filter_parcels_walkshed)),
+             cue = tar_cue("always")),
+  tar_target(pg_05_create_transit_walksheds,
+             run_sql_query(filepath = sql_05_file,
+                           table_name = "transit_walksheds",
+                           target_dependencies = list(pg_04_join_zoning)),
+             cue = tar_cue("always"))
+  
+)
 
 # MERGE PIPELINE PARTS ----------------------------------------------------
 
 pipeline <- c(pipeline_files,
               pipeline_load_files,
-              pipeline_postgres)
+              pipeline_load_into_pg,
+              pipeline_create_pg_tables)
 
 
 # RUN TARGET PIPELINE -----------------------------------------------------
