@@ -189,7 +189,9 @@ pipeline_create_pg_tables <- list(
 
 pipeline_analysis <- list(
   tar_target(analysis_parcels_revised,
-             make_parcels_revised(target_dependencies = list(pg_05_create_transit_walksheds)))
+             make_parcels_revised(target_dependencies = list(pg_05_create_transit_walksheds))),
+  tar_target(analysis_excluded_landuse_categories,
+             make_excluded_landuse_categories(target_dependencies = list(pg_05_create_transit_walksheds)))
 )
 
 

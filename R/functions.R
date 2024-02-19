@@ -159,6 +159,41 @@ make_parcels_revised <- function(target_dependencies = list()){
   
 }
 
+make_excluded_landuse_categories <- function(target_dependencies = list()){
+  
+  db_host <- Sys.getenv("POSTGRES_HOST")
+  db_port <- Sys.getenv("POSTGRES_PORT")
+  db_name <- Sys.getenv("POSTGRES_NAME")
+  db_user <- Sys.getenv("POSTGRES_USER")
+  db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+  
+  
+  con <- dbConnect(RPostgres::Postgres(),
+                   dbname = db_name,
+                   host = db_host,
+                   port = db_port,
+                   user = db_user,
+                   password = db_password)
+  
+  on.exit(dbDisconnect(con))
+  
+  lu <- dbReadTable(con,"landuse_codes") |> 
+    tibble()
+  
+  excluded_landuse_categories <- 
+    lu |> 
+    mutate(excluded = case_when(
+      category_short %in% "manufacturing" ~ TRUE,
+      category_short %in% "transport/utils" ~ TRUE,
+      category_short %in% "resources" ~ TRUE,
+      category_short %in% "services" & str_detect(use,"Gov|Edu") ~ TRUE,
+      category_short %in% "undeveloped" & code %in% c(95, 94, 93, 92) ~ TRUE,
+      TRUE ~ FALSE
+    ))
+  
+  return(excluded_landuse_categories)
+  
+}
 
 # UTILITY FUNCTIONS -----
 
