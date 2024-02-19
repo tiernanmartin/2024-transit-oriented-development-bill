@@ -122,8 +122,77 @@ load_landuse_codes <- function(filepath = ""){
   return(luc)
 }
 
+make_parcels_revised <- function(target_dependencies = list()){
+  
+  db_host <- Sys.getenv("POSTGRES_HOST")
+  db_port <- Sys.getenv("POSTGRES_PORT")
+  db_name <- Sys.getenv("POSTGRES_NAME")
+  db_user <- Sys.getenv("POSTGRES_USER")
+  db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+  
+  
+  con <- dbConnect(RPostgres::Postgres(),
+                   dbname = db_name,
+                   host = db_host,
+                   port = db_port,
+                   user = db_user,
+                   password = db_password)
+  
+  on.exit(dbDisconnect(con))
+  
+  p <- st_read(con, layer = "parcels_walkshed_zoning")
+  
+  parcels_revised <- p |> 
+    mutate(
+      zoning_allow_resi = case_when(zoning_zone_link %in% "Seattle-IDM" ~ "Y",
+                                    zoning_zone_link %in% "Seattle-IDR" ~ "Y",
+                                    TRUE ~ zoning_allow_resi),
+      zoning_height_ft = case_when(zoning_zone_link %in% c("Seattle-IDM") ~ 85, 
+                                   zoning_zone_link %in% c("Seattle-IDR") ~ 170, 
+                                   TRUE ~ zoning_height_ft),
+      zoning_max_lot_coverage = case_when(zoning_zone_link %in% c("Seattle-IDM") ~ "100%", 
+                                          zoning_zone_link %in% c("Seattle-IDR") ~ "65%", 
+                                          TRUE ~ zoning_max_lot_coverage)
+    )
+  
+  return(parcels_revised)
+  
+}
+
 
 # UTILITY FUNCTIONS -----
+
+pct_to_dec <- function(x) {
+  # Remove the '%' sign and convert to numeric
+  numeric_values <- as.numeric(sub("%", "", x))
+  
+  # Convert to decimal
+  decimal_values <- numeric_values / 100
+  
+  return(decimal_values)
+}
+
+convert_to_mi2 <- function(x){round(digits = 2, x/27878400)}
+
+est_height_stories <- function(x){
+  
+  if(is.na(x)){
+    return(NA)
+  }
+  
+  if(x<=30){
+    estimate <- floor(x/10)
+    return(estimate)
+  } 
+  
+  if(x>3){
+    base_floor <- 15
+    upper_floors <- floor((x - base_floor) / 10)
+    estimate <- 1 + upper_floors
+    return(estimate)
+  }
+  
+}
 
 test_psql <- function(){
   system(glue("psql -U {Sys.getenv('POSTGRES_USER')} --version"))

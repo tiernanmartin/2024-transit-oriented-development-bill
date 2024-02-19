@@ -150,7 +150,8 @@ pipeline_load_into_pg <-
   )
 
 
-# CREATE POSTGRES TABLES --------------------------------------------------
+
+# PIPELINE PART: CREATE POSTGRES TABLES -----------------------------------
 
 pipeline_create_pg_tables <- list(
   tar_target(pg_02_prepare_tables,
@@ -182,12 +183,23 @@ pipeline_create_pg_tables <- list(
   
 )
 
+
+
+# PIPELINE PART: CREATE ANALYSIS DATASET ----------------------------------
+
+pipeline_analysis <- list(
+  tar_target(analysis_parcels_revised,
+             make_parcels_revised(target_dependencies = list(pg_05_create_transit_walksheds)))
+)
+
+
 # MERGE PIPELINE PARTS ----------------------------------------------------
 
 pipeline <- c(pipeline_files,
               pipeline_load_files,
               pipeline_load_into_pg,
-              pipeline_create_pg_tables)
+              pipeline_create_pg_tables,
+              pipeline_analysis)
 
 
 # RUN TARGET PIPELINE -----------------------------------------------------
