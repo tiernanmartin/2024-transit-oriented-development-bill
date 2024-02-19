@@ -1,5 +1,0 @@
-ogr2ogr -f "PostgreSQL" PG:"dbname=tod user=postgres password=flattered-clash8-mystified" .\uga.geojson -nln uga -overwrite -progress
-
-ogr2ogr -f "PostgreSQL" PG:"dbname=tod user=postgres password=flattered-clash8-mystified" .\2023-07-01_parcels.geojson -nln parcels -overwrite -progress
-
-ogr2ogr -f "PostgreSQL" PG:"dbname=tod user=postgres password=flattered-clash8-mystified" .\transit_hct.gpkg -nln transit_hct -overwrite -progress
