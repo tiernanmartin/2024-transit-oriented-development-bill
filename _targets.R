@@ -10,6 +10,8 @@ library(janitor)
 library(mapview)
 library(readxl)
 library(here)
+library(scales)
+library(tidycensus)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -22,7 +24,9 @@ tar_option_set(
                "janitor",
                "mapview",
                "readxl",
-               "here")
+               "here",
+               "scales",
+               "tidycensus")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
@@ -33,6 +37,12 @@ tar_source(files = here("R/functions.R"))
 
 pipeline_files <- 
   list(
+    tar_target(postcensal_housing_file,
+               here("data/ofm_april1_postcensal_estimates_housing_1980_1990-present.xlsx"),
+               format = "file"),
+    tar_target(postcensal_pop_file,
+               here("data/ofm_april1_postcensal_estimates_pop_1960-present.xlsx"),
+               format = "file"),
     tar_target(sql_02_file, 
                here("SQL/02-prepare-tables.sql"),
                format = "file"),
@@ -198,13 +208,25 @@ pipeline_analysis <- list(
 )
 
 
+# PIPELINE PART: PUGET SOUND TRENDS ---------------------------------------
+
+pipeline_ps_trends <- list(
+  tar_target(pop_change_counties,
+             make_pop_change_counties(filepath = postcensal_pop_file)),
+  tar_target(housing_change_counties,
+             make_housing_change_counties(filepath = postcensal_housing_file)),
+  tar_target(pop_hu_change_cities,
+             make_pop_hu_change_cities())
+)
+
 # MERGE PIPELINE PARTS ----------------------------------------------------
 
 pipeline <- c(pipeline_files,
               pipeline_load_files,
               pipeline_load_into_pg,
               pipeline_create_pg_tables,
-              pipeline_analysis)
+              pipeline_analysis,
+              pipeline_ps_trends)
 
 
 # RUN TARGET PIPELINE -----------------------------------------------------

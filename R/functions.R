@@ -338,6 +338,94 @@ make_parcels_ndc <- function(p = analysis_parcels_revised,
   return(parcels_ndc)
 }
 
+make_pop_change_counties <- function(filepath = ""){
+  
+  pop_df <- read_excel(filepath, sheet = "Population", skip = 3) |> 
+    clean_names()
+  
+  ps_counties <- c("King",
+                   "Snohomish",
+                   "Kitsap",
+                   "Pierce")
+  
+  pop_change_counties <- pop_df |> 
+    filter(filter %in% "1") |>  
+    pivot_longer(cols = x_1960_census_count_of_total_population:last_col()) |> 
+    mutate(value = as.numeric(value),
+           pugetsound = case_when(
+             county %in%  ps_counties ~ TRUE,
+             TRUE ~ FALSE
+           )) |> 
+    filter(str_detect(name, "2010|2023")) |> 
+    filter(str_detect(name,"postcensal")) |> 
+    mutate(name = str_c("pop_", str_extract(name,"\\d{4}"))) |> 
+    pivot_wider(names_from = name,
+                values_from = value) |> 
+    group_by(pugetsound) |> 
+    summarise(pop_2010 = max(pop_2010),
+              pop_2023 = max(pop_2023),
+              pop_change = sum(pop_2023) - sum(pop_2010)) |> 
+    ungroup() |> 
+    mutate(pop_change_pct = round(digits = 2, pop_change / pop_2010))
+  
+  return(pop_change_counties)
+}
+
+make_housing_change_counties <- function(filepath = ""){
+  
+  hu_df <- read_excel(filepath, sheet = "Housing Units", skip = 3) |>  
+    clean_names()
+  
+  housing_change_counties <- hu_df |> 
+    filter(filter %in% "1") |> 
+    pivot_longer(cols = x1980_census_count_of_total_housing_units:last_col()) |> 
+    mutate(value = as.numeric(value),
+           pugetsound = case_when(
+             county %in% c("King",
+                           "Snohomish",
+                           "Kitsap",
+                           "Pierce") ~ TRUE,
+             TRUE ~ FALSE
+           )) |> 
+    filter(str_detect(name,"total")) |> 
+    filter(str_detect(name, "2010|2023")) |>  
+    mutate(name = str_c("hu_", str_extract(name,"\\d{4}"))) |> 
+    pivot_wider(names_from = name,
+                values_from = value) |> 
+    group_by(pugetsound) |> 
+    summarise(hu = sum(hu_2023,na.rm = TRUE) - sum(hu_2010, na.rm = TRUE))
+  
+  return(housing_change_counties)
+}
+
+make_pop_hu_change_cities <- function(){
+  
+  df_cities <- get_acs(
+    geometry = TRUE, 
+    geography = "place", 
+    variables = c(population = "B01003_001",
+                  housing_units = "B25001_001"), 
+    state = "WA", 
+    year = 2022, 
+    survey = "acs5" 
+  ) |> clean_names()
+  
+  cities_sf <- df_cities |> 
+    filter(variable == "population") |> 
+    select(geoid)
+  
+  pop_hu_change_cities <- df_cities |> 
+    st_drop_geometry() |> 
+    select(geoid, name, variable, estimate) |> 
+    filter(str_detect(name,"city")) |> 
+    mutate(name = str_remove(name," city, Washington")) |> 
+    pivot_wider(names_from = variable, values_from = estimate) |> 
+    left_join(cities_sf, by = join_by(geoid)) |> 
+    st_sf()
+  
+  return(pop_hu_change_cities)
+}
+
 # UTILITY FUNCTIONS -----
 
 pct_to_dec <- function(x) {
