@@ -184,7 +184,7 @@ make_excluded_landuse_categories <- function(target_dependencies = list()){
     lu |> 
     mutate(excluded = case_when(
       category_short %in% "manufacturing" ~ TRUE,
-      category_short %in% "transport/utils" ~ TRUE,
+      category_short %in% "transport/utils" & !str_detect(use,"parking") ~ TRUE,
       category_short %in% "resources" ~ TRUE,
       category_short %in% "services" & str_detect(use,"Gov|Edu") ~ TRUE,
       category_short %in% "undeveloped" & code %in% c(95, 94, 93, 92) ~ TRUE,
@@ -193,6 +193,149 @@ make_excluded_landuse_categories <- function(target_dependencies = list()){
   
   return(excluded_landuse_categories)
   
+}
+
+circularity <- function(df){
+  
+  # This method has issues (e.g., condos)
+  # Save it but don't implement
+  
+  circularity <- function(area, perimeter){
+    (4 * pi * area) / (perimeter^3)
+  }
+  
+  identify_outliers <- function(x) { 
+    
+    Q1 <- quantile(x, 0.25)
+    Q3 <- quantile(x, 0.75)
+    
+    IQR <- Q3 - Q1
+    
+    # Define the lower and upper bounds for outliers
+    lower_bound <- Q1 - 1.5 * IQR
+    upper_bound <- Q3 + 1.5 * IQR
+    
+    # Is outlier
+    is_outlier <- x[x < lower_bound | x > upper_bound]
+    
+    return(outliers)
+  }
+  
+  
+  df |> 
+  transmute(city = zoning_juris,
+            c = circularity(parcel_area, parcel_length)) |>
+  mutate(q1 = quantile(c, 0.25,na.rm = TRUE),
+         q3 = quantile(c, 0.75,na.rm = TRUE),
+         iqr = q3 - q1,
+         lower = q1 - (1.5*iqr),
+         upper = q3 + (1.5*iqr),
+         is_outlier = case_when(
+           c < lower ~ TRUE,
+           c > upper ~ TRUE,
+           TRUE ~ FALSE
+         ),
+         is_outlier_alt = case_when(
+           c < 0.01 ~ FALSE, # threshold that is obvious from the histogram
+           TRUE ~ TRUE
+         )) 
+  }
+
+make_parcels_ndc <- function(p = analysis_parcels_revised,
+                             excl_lu = analysis_excluded_landuse_categories){
+  
+  parcel_excl_lu <- p |> 
+    left_join(excl_lu, by = join_by(parcel_lu_code_category == category_short,
+                                    parcel_lu_code_use == use))
+  
+  parcels_ndc <- parcel_excl_lu |> 
+    rowwise() |>
+    transmute(
+      county = parcel_address_county,
+      city = zoning_juris,
+      transit_within_lr_walkshed,
+      transit_within_cr_walkshed,
+      transit_within_sc_walkshed,
+      transit_within_brt_walkshed,
+      transit_walkshed_desc,
+      land_use = parcel_lu_code_category,
+      area_ft2 = parcel_area,
+      area_mi2 = convert_to_mi2(area_ft2),
+      district_name = zoning_district_name,
+      max_bldg_ftprt = zoning_max_bldg_ftprt,
+      max_far = zoning_max_far,
+      max_lot_coverage = pct_to_dec(zoning_max_lot_coverage),
+      height_stories = zoning_height_stories,
+      height_ft = zoning_height_ft,
+      excl_lu_code = excluded,
+      excl_resi_not_allowed = case_when(
+        zoning_allow_resi %in% "N" ~ TRUE, # invert from 'allow' to 'not allow'
+        TRUE ~ FALSE
+      ),
+      excl_reason = case_when(
+        excl_lu_code & excl_resi_not_allowed ~ glue("Land Use: {land_use}; Resid.: Not Allowed"),
+        excl_lu_code ~ glue("Land Use: {land_use}"),
+        excl_resi_not_allowed ~ glue("Resid.: Not Allowed"),
+        TRUE ~ NA_character_
+      ),
+      est_max_bldg_ftprt_pct = case_when(
+        (max_bldg_ftprt / area_ft2) > 1 ~ 1, # put a ceiling on this percentage
+        TRUE ~ round(digits = 2, max_bldg_ftprt / area_ft2)),
+      est_max_lot_pct = case_when(
+        !is.na(max_lot_coverage) & !is.na(est_max_bldg_ftprt_pct) & max_lot_coverage < est_max_bldg_ftprt_pct ~ max_lot_coverage,
+        !is.na(max_lot_coverage) & !is.na(est_max_bldg_ftprt_pct) & max_lot_coverage > est_max_bldg_ftprt_pct ~ est_max_bldg_ftprt_pct,
+        !is.na(max_lot_coverage) ~ max_lot_coverage,
+        !is.na(est_max_bldg_ftprt_pct) ~ est_max_bldg_ftprt_pct,
+        TRUE ~ 1 # This assumes 100% lot coverage when no max footprint or coverage
+      ),
+      est_max_stories = case_when(
+        ! is.na(height_stories) ~ height_stories,
+        ! is.na(height_ft) ~ est_height_stories(height_ft),
+        TRUE ~ NA_integer_),
+      est_max_far = case_when(
+        excl_lu_code ~ NA_real_, # FAR is NA if p has excluded land use
+        excl_resi_not_allowed ~ NA_real_, # FAR is NA if p doesnt allow resi
+        ! is.na(max_far) ~ max_far,
+        TRUE ~  round(digits = 2, est_max_lot_pct * est_max_stories)
+      ),
+      est_max_far_type = case_when(
+        is.na(est_max_far) ~ NA,
+        ! is.na(max_far) ~ "actual",
+        TRUE ~ "estimate" 
+      ),
+      est_max_far_hb2160 = 
+        case_when(
+          transit_within_lr_walkshed ~ 3.5, 
+          transit_within_sc_walkshed ~ 3.5,
+          transit_within_cr_walkshed ~ 3.5,
+          transit_within_brt_walkshed ~ 2.5,
+          TRUE ~ NA_real_
+        ),
+      analysis_station_area_types = case_when(
+        transit_within_lr_walkshed ~ "Large (0.5 Mile)",
+        transit_within_cr_walkshed ~ "Large (0.5 Mile)",
+        transit_within_sc_walkshed ~ "Large (0.5 Mile)",
+        transit_within_brt_walkshed ~ "Small (0.25 Mile)",
+        TRUE ~ NA),
+      analysis_ndc = est_max_far_hb2160 - est_max_far,
+      analysis_ndc_uniform = case_when(
+        is.na(analysis_ndc) ~ NA_real_,
+        analysis_ndc < 0 ~ NA_real_,
+        TRUE ~ analysis_ndc # only calculate NDC for parcels below HB 2160's FAR thresholds
+      ),
+      analysis_type_uni = case_when(
+        is.na(analysis_ndc) ~ "Not Developable",
+        analysis_ndc < 0 ~ "Developable, Not Affected",
+        TRUE ~ "Developable, Affected"
+      ),
+      analysis_type_avg = case_when(
+        is.na(analysis_ndc) ~ "Not Developable",
+        TRUE ~ "Developable"
+      )
+    ) |> 
+    ungroup()
+  
+  return(parcels_ndc)
 }
 
 # UTILITY FUNCTIONS -----

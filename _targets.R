@@ -191,7 +191,10 @@ pipeline_analysis <- list(
   tar_target(analysis_parcels_revised,
              make_parcels_revised(target_dependencies = list(pg_05_create_transit_walksheds))),
   tar_target(analysis_excluded_landuse_categories,
-             make_excluded_landuse_categories(target_dependencies = list(pg_05_create_transit_walksheds)))
+             make_excluded_landuse_categories(target_dependencies = list(pg_05_create_transit_walksheds))),
+  tar_target(analysis_parcels_ndc,
+             make_parcels_ndc(p = analysis_parcels_revised,
+                              excl_lu = analysis_excluded_landuse_categories))
 )
 
 
