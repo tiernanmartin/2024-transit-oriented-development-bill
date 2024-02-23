@@ -185,6 +185,7 @@ make_excluded_landuse_categories <- function(target_dependencies = list()){
     mutate(excluded = case_when(
       category_short %in% "manufacturing" ~ TRUE,
       category_short %in% "transport/utils" & !str_detect(use,"parking") ~ TRUE,
+      category_short %in% "recreation" & str_detect(use, "Parks") ~ TRUE,
       category_short %in% "resources" ~ TRUE,
       category_short %in% "services" & str_detect(use,"Gov|Edu") ~ TRUE,
       category_short %in% "undeveloped" & code %in% c(95, 94, 93, 92) ~ TRUE,
@@ -393,9 +394,30 @@ make_housing_change_counties <- function(filepath = ""){
     pivot_wider(names_from = name,
                 values_from = value) |> 
     group_by(pugetsound) |> 
-    summarise(hu = sum(hu_2023,na.rm = TRUE) - sum(hu_2010, na.rm = TRUE))
+    summarise(.groups = "drop",
+              hu_2010 = sum(hu_2010, na.rm = TRUE),
+              hu_2023 = sum(hu_2023, na.rm = TRUE),
+              hu_change = sum(hu_2023,na.rm = TRUE) - sum(hu_2010, na.rm = TRUE)) |> 
+    mutate(hu_change_pct = round(digits = 2, hu_change / hu_2010))
+    
   
   return(housing_change_counties)
+}
+
+make_pop_hu_region_list <- function(pop_change_counties,
+                                    housing_change_counties){
+  lst <- pop_change_counties |> 
+    select(-pugetsound) |> 
+    bind_cols(housing_change_counties) |>  
+    mutate_at(vars(matches("pct")),scales::percent) |> 
+    mutate_at(vars(pop_2010:pop_change),scales::comma) |> 
+    mutate_at(vars(hu_2010:hu_change),scales::comma) |>
+    pivot_longer(cols = c(starts_with("pop"),starts_with("hu"))) |> 
+    transmute(region = if_else(pugetsound,"pugetsound","outside"),name,value) |> 
+    transmute(name = str_c(region,name,sep = "_"),value) |> 
+    tbl_to_named_list("value","name")
+  
+  return(lst)
 }
 
 make_pop_hu_change_cities <- function(){
@@ -426,7 +448,148 @@ make_pop_hu_change_cities <- function(){
   return(pop_hu_change_cities)
 }
 
+make_analysis_transit_walksheds <- function(target_dependencies = list()){
+  
+  db_host <- Sys.getenv("POSTGRES_HOST")
+  db_port <- Sys.getenv("POSTGRES_PORT")
+  db_name <- Sys.getenv("POSTGRES_NAME")
+  db_user <- Sys.getenv("POSTGRES_USER")
+  db_password <- Sys.getenv("POSTGRES_TOD_PASSWORD")
+  
+  
+  con <- dbConnect(RPostgres::Postgres(),
+                   dbname = db_name,
+                   host = db_host,
+                   port = db_port,
+                   user = db_user,
+                   password = db_password)
+  
+  on.exit(dbDisconnect(con))
+  
+  analysis_transit_walksheds <- st_read(con, "transit_walksheds") |> 
+    as_tibble() |> 
+    st_sf()
+  
+  return(analysis_transit_walksheds)
+  
+}
+
+make_analysis_study_groups <- function(analysis_parcels_ndc){
+  
+  analysis_study_total <- analysis_parcels_ndc |> 
+    st_drop_geometry() |> 
+    mutate(dev_capacity_added = poss_multiply(analysis_ndc_uniform, area_ft2)
+    ) |> 
+    summarize(n = n(),
+              area_mi2_smry = sum(area_mi2, na.rm = TRUE),
+              dev_capacity_added_smry = sum(dev_capacity_added, na.rm = TRUE),
+              awmndc_smry = round(digits = 2,
+                                  weighted.mean(na.rm = TRUE, 
+                                                analysis_ndc_uniform, 
+                                                w = area_mi2))
+    ) |> 
+    transmute(
+      name = "analysis_total",
+      value = "Total",
+      n_tbl = comma(n),
+      area_tbl = comma(area_mi2_smry),
+      devcap_tbl = format_nbr(dev_capacity_added_smry),
+      awmndc_tbl = as.character(awmndc_smry))
+  
+  analysis_study_groups <- analysis_parcels_ndc |> 
+    st_drop_geometry() |> 
+    mutate(analysis_type_uni = factor(analysis_type_uni, 
+                                      levels = c("Not Developable", 
+                                                 "Developable, Not Affected",
+                                                 "Developable, Affected")
+    ),
+    dev_capacity_added = poss_multiply(analysis_ndc_uniform, area_ft2)
+    ) |> 
+    pivot_longer(cols = c(analysis_type_uni, analysis_station_area_types)) |> 
+    group_by(name, value) |> 
+    summarize(n = n(),
+              area_mi2_smry = sum(area_mi2, na.rm = TRUE),
+              dev_capacity_added_smry = sum(dev_capacity_added, na.rm = TRUE),
+              awmndc_smry = round(digits = 2,
+                                  weighted.mean(na.rm = TRUE, 
+                                                analysis_ndc_uniform, 
+                                                w = area_mi2))
+    ) |> 
+    mutate(n_pct = n / sum(n),
+           area_pct = area_mi2_smry / sum(area_mi2_smry),
+           dev_cap_pct = dev_capacity_added_smry / sum(dev_capacity_added_smry, na.rm = TRUE)) |> 
+    ungroup() |> 
+    transmute(
+      name,
+      value,
+      n_tbl = glue("{comma(n)} ({percent(n_pct)})"),
+      area_tbl = glue("{comma(area_mi2_smry)} ({percent(area_pct, accuracy = 1)})"),
+      devcap_tbl = if_else(dev_capacity_added_smry<=0,
+                           "--",
+                           glue("{format_nbr(dev_capacity_added_smry)} ({percent(dev_cap_pct)})")),
+      awmndc_tbl = if_else(is.nan(awmndc_smry),
+                           '--',
+                           as.character(awmndc_smry))
+    )
+  
+  analysis_study_groups_ready <- bind_rows(analysis_study_total,
+                                           analysis_study_groups)
+  
+  return(analysis_study_groups_ready)
+}
+
+
 # UTILITY FUNCTIONS -----
+
+gt_custom_summary <- function(x, df, start_col=3, end_col=6) { 
+  for(col in start_col:end_col) { 
+    
+    if(identical(x, df[-1, col][[1]])) {
+      
+      return(df[1, col][[1]])
+    }
+  } 
+  
+  return(NULL)
+}
+
+format_nbr <- \(x) label_number(scale_cut = cut_short_scale(), accuracy = 0.01)(x)
+
+poss_multiply <- possibly(function(x,y) x*y, otherwise = NA,quiet = TRUE)
+
+weighted_mean <- possibly(.f = function(x,w){weighted.mean(x, w, na.rm = TRUE)},
+                          otherwise = NA)
+
+awmndc_fct <- function(ndc, wt, excl, ndc_max = 5){ 
+  
+  breaks <- c(-Inf, seq(0, ndc_max, by = 1))
+  
+  levels <- c( 
+    "Not Developable",
+    "Developable, Not Affected", 
+    # "Less than 0", # remove -- same as 'Developable, Not Affected'
+    paste(seq(0, ndc_max - 1, by = 1), "-", seq(1, ndc_max, by = 1), sep = "")
+    ) |> rev()
+  
+  breaks <- c(-Inf, 0:ndc_max)
+  
+  if(all(!is.na(excl))){return(fct("Not Developable", levels = levels))}
+  
+  if(all(is.na(ndc))){return(fct("Developable, Not Affected", levels = levels))}
+  
+  awmndc <- weighted.mean(na.rm = TRUE, x = ndc, w = wt)
+  
+  awmnd_ordinal <- cut(awmndc, breaks = breaks, labels = levels[length(levels)-1:length(levels)])
+  
+  awmnd_factor <- fct(as.character(awmnd_ordinal), levels = levels)
+  
+  return(awmnd_factor)
+  
+}
+
+tbl_to_named_list <- function(df,values,names){
+  split(pluck(df,values), pluck(df,names))
+}
 
 pct_to_dec <- function(x) {
   # Remove the '%' sign and convert to numeric
@@ -438,7 +601,7 @@ pct_to_dec <- function(x) {
   return(decimal_values)
 }
 
-convert_to_mi2 <- function(x){round(digits = 2, x/27878400)}
+convert_to_mi2 <- function(x){x/27878400}
 
 est_height_stories <- function(x){
   

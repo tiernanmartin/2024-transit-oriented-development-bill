@@ -12,6 +12,8 @@ library(readxl)
 library(here)
 library(scales)
 library(tidycensus)
+library(viridisLite)
+library(gt)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -26,7 +28,9 @@ tar_option_set(
                "readxl",
                "here",
                "scales",
-               "tidycensus")
+               "tidycensus",
+               "viridisLite",
+               "gt")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
@@ -198,13 +202,17 @@ pipeline_create_pg_tables <- list(
 # PIPELINE PART: CREATE ANALYSIS DATASET ----------------------------------
 
 pipeline_analysis <- list(
+  tar_target(analysis_transit_walksheds,
+             make_analysis_transit_walksheds(target_dependencies = list(pg_05_create_transit_walksheds))),
   tar_target(analysis_parcels_revised,
              make_parcels_revised(target_dependencies = list(pg_05_create_transit_walksheds))),
   tar_target(analysis_excluded_landuse_categories,
              make_excluded_landuse_categories(target_dependencies = list(pg_05_create_transit_walksheds))),
   tar_target(analysis_parcels_ndc,
              make_parcels_ndc(p = analysis_parcels_revised,
-                              excl_lu = analysis_excluded_landuse_categories))
+                              excl_lu = analysis_excluded_landuse_categories)),
+  tar_target(analysis_study_group,
+             make_analysis_study_groups(analysis_parcels_ndc))
 )
 
 
@@ -215,6 +223,9 @@ pipeline_ps_trends <- list(
              make_pop_change_counties(filepath = postcensal_pop_file)),
   tar_target(housing_change_counties,
              make_housing_change_counties(filepath = postcensal_housing_file)),
+  tar_target(pop_hu_region_list,
+             make_pop_hu_region_list(pop_change_counties, 
+                                     housing_change_counties)),
   tar_target(pop_hu_change_cities,
              make_pop_hu_change_cities())
 )
