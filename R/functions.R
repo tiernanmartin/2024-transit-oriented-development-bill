@@ -324,6 +324,7 @@ make_parcels_ndc <- function(p = analysis_parcels_revised,
         analysis_ndc < 0 ~ NA_real_,
         TRUE ~ analysis_ndc # only calculate NDC for parcels below HB 2160's FAR thresholds
       ),
+      analysis_dev_cap_added = poss_multiply(analysis_ndc_uniform, area_ft2), # multiply affected parcels' FAR by parcels' area (ft^2)
       analysis_type_uni = case_when(
         is.na(analysis_ndc) ~ "Not Developable",
         analysis_ndc < 0 ~ "Developable, Not Affected",
@@ -477,12 +478,10 @@ make_analysis_transit_walksheds <- function(target_dependencies = list()){
 make_analysis_study_groups <- function(analysis_parcels_ndc){
   
   analysis_study_total <- analysis_parcels_ndc |> 
-    st_drop_geometry() |> 
-    mutate(dev_capacity_added = poss_multiply(analysis_ndc_uniform, area_ft2)
-    ) |> 
+    st_drop_geometry() |>
     summarize(n = n(),
               area_mi2_smry = sum(area_mi2, na.rm = TRUE),
-              dev_capacity_added_smry = sum(dev_capacity_added, na.rm = TRUE),
+              dev_capacity_added_smry = sum(analysis_dev_cap_added, na.rm = TRUE),
               awmndc_smry = round(digits = 2,
                                   weighted.mean(na.rm = TRUE, 
                                                 analysis_ndc_uniform, 
@@ -502,14 +501,12 @@ make_analysis_study_groups <- function(analysis_parcels_ndc){
                                       levels = c("Not Developable", 
                                                  "Developable, Not Affected",
                                                  "Developable, Affected")
-    ),
-    dev_capacity_added = poss_multiply(analysis_ndc_uniform, area_ft2)
-    ) |> 
+    )) |> 
     pivot_longer(cols = c(analysis_type_uni, analysis_station_area_types)) |> 
     group_by(name, value) |> 
     summarize(n = n(),
               area_mi2_smry = sum(area_mi2, na.rm = TRUE),
-              dev_capacity_added_smry = sum(dev_capacity_added, na.rm = TRUE),
+              dev_capacity_added_smry = sum(analysis_dev_cap_added, na.rm = TRUE),
               awmndc_smry = round(digits = 2,
                                   weighted.mean(na.rm = TRUE, 
                                                 analysis_ndc_uniform, 
