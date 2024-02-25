@@ -267,6 +267,10 @@ Further research, data collection, and methodological refinements could help add
 
 tar_load(analysis_study_group)
 
+total_n <- analysis_study_group |> 
+  filter(value == "Total") |>
+  pluck("n_tbl")
+
 dev_aff_n_pct <- analysis_study_group |> 
   filter(value == "Developable, Affected") |>
   pluck("n_tbl") |> 
@@ -322,7 +326,7 @@ zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
 
 ### Entire Study Area
 
-The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+The study includes approximately 116,600 tax parcels (`r str_c("$","n = ",total_n,"$")`), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
 
 We separate the study data into three analysis groups:
 
@@ -363,6 +367,10 @@ Our findings suggest that the *Large (0.5 mile)* station areas would account for
 
 tar_load(analysis_study_group)
 
+total_awmndc <- analysis_study_group |> 
+  filter(value == "Total") |>
+  pluck("awmndc_tbl")
+
 analysis_study_group |> 
   filter(! str_detect(name, "total")) |> # remove the pre-defined summary row 
   gt(groupname_col = "name",
@@ -396,7 +404,7 @@ analysis_study_group |>
 
 ```
 
-We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +1.79 FAR. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. See @fig-results-histogram-affected below.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +`r total_awmndc` FAR. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. See @fig-results-histogram-affected below.
 
 ```{r}
 #| label: fig-results-histogram-affected
