@@ -14,6 +14,7 @@ library(scales)
 library(tidycensus)
 library(viridisLite)
 library(gt)
+library(latex2exp)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -30,7 +31,8 @@ tar_option_set(
                "scales",
                "tidycensus",
                "viridisLite",
-               "gt")
+               "gt",
+               "latex2exp")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
