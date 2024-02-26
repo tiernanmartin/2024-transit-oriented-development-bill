@@ -450,7 +450,21 @@ analysis_parcels_ndc |>
        x = "Net Development Capacity (FAR)") 
 ```
 
-In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is 2.15 FAR and $AWM_{NDC}$ for the *Small* station areas is 1.32 FAR.
+```{r}
+#| label: results-station-area-types-awmndc
+#| eval: false
+
+large_awmndc <- analysis_study_group |> 
+  filter(str_detect(value, "Large")) |>
+  pluck("awmndc_tbl")
+
+small_awmndc <- analysis_study_group |> 
+  filter(str_detect(value, "Small")) |>
+  pluck("awmndc_tbl")
+
+```
+
+In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is {`r large_awmndc`} FAR and $AWM_{NDC}$ for the *Small* station areas is {`r small_awmndc`} FAR.
 
 ```{r}
 #| label: fig-results-histogram-station-areas
@@ -459,37 +473,39 @@ In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ wi
 #| fig-cap: "Station Area Type Comparison"
 #| fig-height: 4
 
-p_station_area <- p_affected |> 
-  transmute(parcel_area_mi2,
-            zoning_new_max_far_additional,
-            analysis_station_area_types)
+# p_station_area <- p_affected |> 
+#   transmute(parcel_area_mi2,
+#             zoning_new_max_far_additional,
+#             analysis_station_area_types)
+# 
+# wt_avg_station_area <- p_station_area |> 
+#   group_by(analysis_station_area_types) |> 
+#     summarize(
+#       n = n(),
+#       area = sum(parcel_area_mi2, na.rm = TRUE),
+#       wt_avg = weighted.mean(zoning_new_max_far_additional, 
+#                              w = parcel_area_mi2,
+#                              na.rm = TRUE)
+#     )
 
-wt_avg_station_area <- p_station_area |> 
-  group_by(analysis_station_area_types) |> 
-    summarize(
-      n = n(),
-      area = sum(parcel_area_mi2, na.rm = TRUE),
-      wt_avg = weighted.mean(zoning_new_max_far_additional, 
-                             w = parcel_area_mi2,
-                             na.rm = TRUE)
-    )
-  
-p_addtl_max <- max(p_station_area$zoning_new_max_far_additional, na.rm = TRUE)
 
-subtitle <- TeX("Large Station Area $AWM_{NDC}$ is 2.15 FAR, Small Station Area $AWM_{NDC}$ is 1.32 FAR")
+s <- glue("Includes all 'Developable, Affected' parcels, Large Station Area $AWM_{{NDC}}$ is {large_awmndc} FAR, Small Station Area $AWM_{{NDC}}$ is {small_awmndc}")
 
-p_station_area |> 
+subtitle <- TeX(s)
+
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
 ggplot() +  
-  aes(x = zoning_new_max_far_additional,
-      weight = parcel_area_mi2,
+  aes(x = analysis_ndc_uniform,
+      weight = area_mi2,
       group = analysis_station_area_types) + 
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +  
+ geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") +
   scale_y_continuous(labels = scales::label_comma()) + 
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  scale_x_continuous( breaks = seq(0, ndc_uni_max, by = 0.5)) + 
   facet_wrap(~ analysis_station_area_types, scales = "fixed", ncol = 1) +
   labs(title = "HB 2160's Effect on Net Development Capacity by Station Area Type",
        subtitle = subtitle,
-       y = "Land Area (sq. miles)",
+       y = expression("Land Area (mi"^2*")"),
        x = "Net Development Capacity (FAR)") 
 ```
 
@@ -503,32 +519,24 @@ Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area revea
 #| fig-cap: "Transit Station Areas, Central Puget Sound"
 #| include: false
 
-t_join <- st_join(t,
-                  filter(p, analysis_type %in% "Developable, Affected"))
+tar_load(analysis_stations_awmndc)
+tar_load(analysis_transit_walksheds)
 
-t_map <-  t_join |>
-  st_drop_geometry() |>
-  group_by(mode, stop_name) |>
-  summarize(.groups = "drop",
-            parcel_n = n(),
-            area_wt_old_far = round(
-              weighted.mean(zoning_est_max_far,
-                            parcel_area,
-                            na.rm = TRUE), 2),
-            parea_wt_new_far = round(
-              weighted.mean(zoning_new_max_far,
-                            parcel_area,
-                            na.rm = TRUE), 2),
-            area_wt_mean_net_dev_cap = round(
-              weighted.mean(zoning_new_max_far_additional,
-                                            parcel_area,
-                                            na.rm = TRUE), 2)) |>
-  ungroup() |>
-  left_join(t) |>
-  st_sf()
+t_stop_name <- analysis_transit_walksheds |> 
+    mutate(stop_name = as.character(glue("{stop_name} (ID:{row_number()})")))
 
-mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
-        layer.name = "Mean Net Development Capacity")
+t_sf <- t_stop_name |> 
+  select(stop_name) |> 
+  left_join(analysis_stations_awmndc)
+  
+my_pal <- viridisLite::viridis(n = 6) |> 
+  rev() |> 
+  set_names(levels(t_sf$without_averaging))
+
+mapview(t_sf, 
+        zcol = "without_averaging", 
+        layer.name = "FAR Increase",
+        col.region = my_pal)
 
 ```
 
