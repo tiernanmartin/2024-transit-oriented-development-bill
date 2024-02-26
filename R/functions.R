@@ -535,6 +535,42 @@ make_analysis_study_groups <- function(analysis_parcels_ndc){
   return(analysis_study_groups_ready)
 }
 
+make_analysis_stations_awmndc <- function(p = analysis_parcels_ndc, 
+                                          t = analysis_transit_walksheds){
+  
+  p_trim <- p |> select(city,
+                        area_mi2, 
+                        excl_reason,
+                        analysis_ndc,
+                        analysis_ndc_uniform) 
+  
+  t_stop_name <- t |> 
+    mutate(stop_name = as.character(glue("{stop_name} (ID:{row_number()})")))
+  
+  t_join <- t_stop_name |>  
+    st_join(p_trim) |> 
+    st_drop_geometry()
+  
+  t_hist <- t_join |> 
+    pivot_longer(cols = starts_with("analysis")) |> 
+    group_by(mode, stop_name, name) |> 
+    summarize(.groups = "drop",
+              area = sum(na.rm = TRUE, area_mi2),
+              awm_ndc = weighted.mean(na.rm = TRUE, value,area_mi2),
+              awm_ndc_fct = awmndc_fct(ndc = value, 
+                                       wt = area_mi2, 
+                                       excl = excl_reason,
+                                       ndc_max = 4),
+              total_ndc = sum(na.rm = TRUE, poss_multiply(value, area_mi2))) |>  
+    mutate(name = if_else(str_detect(name, "uniform"),"Without Averaging", "With Averaging") )
+  
+  analysis_stations_awmndc <- t_hist |> 
+    select(-total_ndc, -awm_ndc) |> 
+    pivot_wider(names_from = "name", values_from = awm_ndc_fct) |> 
+    clean_names()
+  
+  return(analysis_stations_awmndc)
+}
 
 # UTILITY FUNCTIONS -----
 
