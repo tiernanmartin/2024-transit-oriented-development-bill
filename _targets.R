@@ -214,7 +214,10 @@ pipeline_analysis <- list(
              make_parcels_ndc(p = analysis_parcels_revised,
                               excl_lu = analysis_excluded_landuse_categories)),
   tar_target(analysis_study_group,
-             make_analysis_study_groups(analysis_parcels_ndc))
+             make_analysis_study_groups(analysis_parcels_ndc)),
+  tar_target(analysis_stations_awmndc,
+             make_analysis_stations_awmndc(analysis_parcels_ndc,
+                                           analysis_transit_walksheds))
 )
 
 
