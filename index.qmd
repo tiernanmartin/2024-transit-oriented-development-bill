@@ -195,11 +195,15 @@ $$ {#eq-ndc} Where:
 -   $SDC_{old,i}$: parcel $i$'s current (standarized) maximum development capacity.
 -   $SDC_{new,i}$: the (standardized) maximum development capacity that would apply to parcel $i$ if HB 2160 became law.
 
-To quantify the impact of the proposed bill within a geography larger than an individual parcel, we calculate the area-weighted mean of net development capacity ($AWM_{NDC}$). We define ($AWM_{NDC}$) as follows:
+To quantify the impact of the proposed bill on a geographic scale larger than an individual parcel, we employ two metrics: an absolute metric, the total net development capacity ($T_{NDC}$), and a relative metric, the area-weighted mean of net development capacity ($AWM_{NDC}$).
+
+#### Total Net Development Capacity ($T_{NDC}$) {.unnumbered}
+
+The total net development capacity ($T_{NDC}$) is calculated as the sum of the net development capacity for each parcel, adjusted by the parcel's area and eligibility based on specific criteria. We define it as follows:
 
 $$
-AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
-$$ {#eq-awm-ndc}
+T_{NDC} = \sum_{i}(NDC_i \cdot A_i \cdot I_i)
+$$
 
 Where:
 
@@ -207,9 +211,19 @@ Where:
 -   $A_i$: the geometric area of parcel $i$.
 -   $I_i$: an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
 
-This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel's contribution to the overall mean being proportionally weighted by its area.
+This formula ensures that only parcels meeting all specified conditions contribute to the total net development capacity. The indicator function ($I_i$) serves as a filter, excluding parcels not suited for development under the proposed bill's guidelines.
 
-Our method offers a metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
+#### Area-Weighted Mean of Net Development Capacity ($AWM_{NDC}$) {.unnumbered}
+
+To calculate the mean net development capacity, weighted by the proportion of the area that each parcel occupies within the eligible region, we use the following formula:
+
+$$
+AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
+$$ {#eq-awm-ndc}
+
+This calculation divides the sum of the net development capacity of each parcel, adjusted by its area and eligibility, by the total eligible area. This method results in a weighted mean that reflects the proportional impact of each parcel, with larger parcels having a greater influence on the overall metric.
+
+In a region where cities employ various tools to regulate development intensity, our method introduces two metrics for assessing changes in development capacity, irrespective of the regulatory tool in use. It also enables us to summarize the bill's effect at different geographic levels, including station areas, cities, and regions. This approach allows us to describe individual geographies (for example, a specific station area) and to compare them with one another (for example, several cities in comparison to the region as a whole).
 
 ### Data Collection
 
@@ -549,23 +563,23 @@ In order to better understand how the effects of HB 2160 may differ from place t
 #| message: false
 #| tbl-cap: "Case Studies"
 
+tar_load(pop_hu_change_cities)
+
 case_studies <- c("Shoreline",
                   "Redmond",
                   "Mercer Island",
                   "Kent"
                   )
 
-ps_cities <- st_read(
-  quiet = TRUE,
-  here("data_outputs/2024-tod-bill.gpkg"),
-  layer = "ps-cities-pop-hu") |> 
+ps_cities <- pop_hu_change_cities |> 
+  filter(name %in% case_studies) |> 
   st_transform(2926) |> 
-  mutate(area = st_area(geom),
+  mutate(area = st_area(geometry),
          area_mi2 = as.numeric(convert_to_mi2(area))
 )
 
-
-st_join(t,ps_cities) |> 
+analysis_transit_walksheds |> 
+st_join(ps_cities) |> 
   st_drop_geometry() |> 
   filter(name %in% case_studies) |> 
   group_by(name, mode) |> 
@@ -578,7 +592,7 @@ st_join(t,ps_cities) |>
   select(name, population, housing_units, area_mi2, everything()) |> 
   gt(rowname_col = "name") |> 
    tab_spanner(
-    label = "Population & Housing",
+    label = "Population, Housing, & Land",
     columns = c(population, housing_units, area_mi2)
   ) |>
   tab_spanner(
