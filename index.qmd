@@ -315,26 +315,29 @@ large_devcap_pct <- analysis_study_group |>
   str_extract("\\((.*?)\\)") |>
   str_replace_all("\\(|\\)", "")
 
-dev_cap_total <- analysis_study_group |> filter(str_detect(name, "total")) |> pluck("devcap_tbl") |> str_replace("B", " billion")
+dev_cap_total <- analysis_study_group |> 
+  filter(str_detect(name, "total")) |> 
+  pluck("devcap_tbl") |> 
+  str_replace("B", " billion")
 
 
-p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-             layer = "tod-parcels",
-             quiet = TRUE)
-
-p_affected <- p |> 
-  st_drop_geometry() |> 
-  filter(analysis_type %in% "Developable, Affected")
-
-undev_land_codes <- c(94, 93, 92)
-
-t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-         layer = "transit-station-areas",
-         quiet = TRUE)
-
-zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-         layer = "tod-zoning-districts",
-         quiet = TRUE)
+# p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#              layer = "tod-parcels",
+#              quiet = TRUE)
+# 
+# p_affected <- p |> 
+#   st_drop_geometry() |> 
+#   filter(analysis_type %in% "Developable, Affected")
+# 
+# undev_land_codes <- c(94, 93, 92)
+# 
+# t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#          layer = "transit-station-areas",
+#          quiet = TRUE)
+# 
+# zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#          layer = "tod-zoning-districts",
+#          quiet = TRUE)
 
 ```
 
@@ -466,7 +469,6 @@ analysis_parcels_ndc |>
 
 ```{r}
 #| label: results-station-area-types-awmndc
-#| eval: false
 
 large_awmndc <- analysis_study_group |> 
   filter(str_detect(value, "Large")) |>
@@ -549,7 +551,7 @@ my_pal <- viridisLite::viridis(n = 6) |>
 
 mapview(t_sf, 
         zcol = "without_averaging", 
-        layer.name = "FAR Increase",
+        layer.name = "Net Dev. Capacity",
         col.region = my_pal)
 
 ```
@@ -621,37 +623,41 @@ Grouping the study data by city and analysis group, we find that there is a sign
 #| tbl-cap: "Case Studies by Analysis Group"
 #| tbl-cap-location: top
 
+tar_load(analysis_parcels_ndc)
+
 col_names_city <- c("City",
                     "Analysis Group",
                     "Parcels (n)", 
                     "Land Area (sq. miles)")
 
-p_cities <- p |> 
+# p_cities <- p |> 
+#   st_drop_geometry() |> 
+#   filter(zoning_juris %in% case_studies)
+
+# p_cities_affected <- p_affected |>  
+#   filter(zoning_juris %in% case_studies)
+
+analysis_parcels_ndc |> 
   st_drop_geometry() |> 
-  filter(zoning_juris %in% case_studies)
-
-p_cities_affected <- p_affected |>  
-  filter(zoning_juris %in% case_studies)
-
-p_cities |> 
-  group_by(zoning_juris, analysis_type) |> 
+  filter(city %in% case_studies) |> 
+  group_by(city, analysis_type_uni) |> 
   summarize(.groups = "drop",
             n = n(),
             area = 
               round(digits = 2,
-                    sum(parcel_area_mi2, na.rm = TRUE))
+                    sum(area_mi2, na.rm = TRUE))
             ) |> 
-  group_by(zoning_juris) |> 
+  group_by(city) |> 
   mutate(n_total = sum(n),
          area_total = sum(area)) |> 
-  group_by(zoning_juris, analysis_type) |> 
+  group_by(city, analysis_type_uni) |> 
   summarize(
+    .groups = "drop",
     n = glue("{comma(n)} ({percent(n/n_total)})"),
     area = glue("{area} ({percent(area/area_total)})")
-  ) |> 
-  ungroup() |>  
-  gt(rowname_col = "analysis_type" ,
-     groupname_col = "zoning_juris",
+  ) |>
+  gt(rowname_col = "analysis_type_uni" ,
+     groupname_col = "city",
      process_md = TRUE) |> 
   cols_label(
     n = "Parcels (n)",
@@ -671,91 +677,78 @@ Calculating area-weighted mean net development capacity ($AWM_{NDC}$) and total 
 #| label: tbl-results-case-studies-results-by-city
 #| tbl-cap: "Results by City"
 
-case_study_results <- p_affected |> 
-  filter(zoning_juris %in% case_studies) |> 
-st_drop_geometry() |>
-  group_by(zoning_juris) |> 
+tar_load(analysis_parcels_ndc)
+
+case_study_results <- analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies)|>
+  filter(analysis_type_uni %in% "Developable, Affected") |> 
+  group_by(city) |> 
   summarise(.groups = "drop",
             n = n(),
-            area = sum(parcel_area_mi2, na.rm = TRUE),
-            awm_ndc = weighted_mean(x = zoning_new_max_far_additional,
-                                    w = parcel_area_mi2)) |> 
-  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
-         area_ndc_ft2 = area_ndc_mi2 * 27878400) 
+            area = sum(area_mi2, na.rm = TRUE),
+            awm_ndc = weighted_mean(x = analysis_ndc_uniform,
+                                    w = area_mi2),
+            area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) 
 
 case_study_results |> 
-  select(-area_ndc_mi2) |> 
-  gt(rowname_col = "zoning_juris") |> 
+  gt(rowname_col = "city") |> 
   cols_label(
     n = "Parcels (n)",
     area = html("Land Area (mi<sup>2</sup>)"),
-    awm_ndc = html("<i><sub>AWM_NDC</sub></i>"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
     area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
   ) |> 
   fmt_number( 
-    columns = c(2,5),
+    columns = c(2),
     decimals = 0,       
     sep_mark = ","
   ) |> 
   fmt_number( 
     columns = c(3,4),
     decimals = 2
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  ) |> 
+  tab_source_note(
+    source_note = "Note: The figures in this table are limited to those parcels within station areas that are developable and impacted by HB 2160. They do not include all parcels within the station areas of each city."
+  ) |> 
+  tab_footnote(
+    footnote = "Area-weighted mean of net development capacity",
+    locations = cells_column_labels(
+      columns = 4
+    )
   )
+
 
 ```
 
 ```{r}
 #| label: results-case-studies-awmndc 
 
+tar_load(analysis_parcels_ndc)
 
+cs_awmndc <- split(case_study_results, city_awmndc$city) |> 
+  map(\(x) pluck(x,"awm_ndc") |> round(digits = 2))
 
-
-city_awmndc <- p_affected |> 
+case_studies_by_stationarea_type <-
+analysis_parcels_ndc |> 
   st_drop_geometry() |> 
-  group_by(zoning_juris) |> 
-  summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
-    zoning_new_max_far_additional,
-    w = parcel_area_mi2
-  ))
-
-case_studies_awmndc <- city_awmndc |> 
-  filter(zoning_juris %in% case_studies)
-
-kent_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Kent") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-mercerisland_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Mercer Island") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-redmond_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Redmond") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-shoreline_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Shoreline") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-case_studies_by_stationarea_type <- p |> 
-  st_drop_geometry() |> 
-  filter(zoning_juris %in% case_studies) |> 
-  group_by(zoning_juris, 
-           analysis_station_area_types,
-           analysis_type) |> 
-  summarize(.groups = "drop",
+  filter(city %in% case_studies)|>
+  filter(analysis_type_uni %in% "Developable, Affected") |> 
+  group_by(city,
+           analysis_station_area_types) |> 
+  summarise(.groups = "drop",
             n = n(),
-            area = round(digits = 2, sum(parcel_area_mi2,na.rm = TRUE)),
-            net_dev_cap = weighted.mean(na.rm = TRUE,
-                                        zoning_new_max_far_additional,
-                                        w = parcel_area_mi2
-                                        )
-            ) |> 
-  mutate(net_dev_cap = if_else(is.nan(net_dev_cap),NA,net_dev_cap))
+            area = sum(area_mi2, na.rm = TRUE),
+            awm_ndc = weighted_mean(x = analysis_ndc_uniform,
+                                    w = area_mi2),
+            area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) 
 
 ```
 
@@ -846,7 +839,7 @@ map_kent_stations
 
 ```
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 69% of the station area parcels and 62% of the station area land.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be `r cs_awmndc['Kent']` FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 69% of the station area parcels and 62% of the station area land.
 
 ```{r}
 #| label: fig-results-case-studies-kent-histogram
@@ -895,7 +888,7 @@ kent_by_stationarea_type |>
     columns = c(4,5),
     decimals = 2,       
     sep_mark = ","
-  )
+  ) 
   
 
 ```
