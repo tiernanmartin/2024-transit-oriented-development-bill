@@ -15,6 +15,7 @@ library(tidycensus)
 library(viridisLite)
 library(gt)
 library(latex2exp)
+library(tigris)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -32,7 +33,8 @@ tar_option_set(
                "tidycensus",
                "viridisLite",
                "gt",
-               "latex2exp")
+               "latex2exp",
+               "tigris")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
@@ -232,7 +234,9 @@ pipeline_ps_trends <- list(
              make_pop_hu_region_list(pop_change_counties, 
                                      housing_change_counties)),
   tar_target(pop_hu_change_cities,
-             make_pop_hu_change_cities())
+             make_pop_hu_change_cities()),
+  tar_target(pop_hu_change_cities_no_water,
+             tigris::erase_water(pop_hu_change_cities))
 )
 
 # MERGE PIPELINE PARTS ----------------------------------------------------

@@ -435,8 +435,7 @@ make_pop_hu_change_cities <- function(){
   
   cities_sf <- df_cities |> 
     filter(variable == "population") |> 
-    select(geoid) |> 
-    tigris::erase_water()
+    select(geoid)
   
   pop_hu_change_cities <- df_cities |> 
     st_drop_geometry() |> 
