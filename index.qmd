@@ -348,13 +348,13 @@ The study includes approximately 116,600 tax parcels (`r str_c("$","n = ",total_
 We separate the study data into three analysis groups:
 
 1.  *Not Developable* (${i | I_i = 0}$)\
-    Parcels ineligible under HB 2160 criteria. This study applies these criteria by selecting parcels that: a) are located in zoning districts permitting residential uses; and b) feature current land uses that are suitable for transit-oriented development. To evaluate current land use, we use tax assessor-assigned land use codes to exclude properties with incompatible uses. HB 2160 specifies incompatible uses as streets, roads, highways, sidewalks, lighting systems for streets and roads, traffic signals, domestic water systems, storm and sanitary sewer systems, parks and recreational facilities, and schools [@reed2024]. Although HB 2160 exempts parcels governed by shoreline master programs or critical area ordinances, this study includes these lots due to the lack of comprehensive regional data sets with the required information.
+    Parcels ineligible under HB 2160 criteria. This study applies the HB 2160 criteria by selecting parcels that: a) are located within cities and within a UGA; b) are located in zoning districts permitting residential uses; and c) have current land uses that are suitable for transit-oriented development. To evaluate current land use, we use tax assessor-assigned land use codes to exclude properties with incompatible uses. HB 2160 specifies incompatible uses as streets, roads, highways, sidewalks, lighting systems for streets and roads, traffic signals, domestic water systems, storm and sanitary sewer systems, parks and recreational facilities, and schools [@reed2024]. Although HB 2160 exempts parcels governed by shoreline master programs or critical area ordinances, this study does not exclude these lots due to the lack of comprehensive regional data sets with the required information.
 
 2.  *Developable* (${i | I_i = 1}$)\
     Parcels that meet 2160's eligibility criteria. Within *Developable* parcels, we distinguish the following two subsets:
 
     A.  *Developable, Not Affected* ($\{i | I_i = 1 \text{ and } NDC_i \leq 0\}$)\
-        Parcels that meet the eligibility criteria and have a standardized development capacity equal or higher than the minimum required by HB 2160 and would, therefore, not be affected by the bill.
+        Parcels that meet the eligibility criteria and have a standardized development capacity equal or greater than the minimum required by HB 2160 and would, therefore, not be affected by the bill.
     B.  *Developable, Affected* ($\{i | I_i = 1 \text{ and } NDC_i \gt 0\}$)\
         Parcels that meet the eligibility criteria and have a standardized development capacity less than the minimum required by HB 2160 and would, therefore, be affected by the bill.
 
@@ -370,7 +370,7 @@ Using HB 2160's definition of station areas, we create two station area types an
 
 [^8]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
 
-Our study focuses on the third analysis group, *Developable, Affected*, which make up the majority of the station area parcels (`r dev_aff_n_pct`) but constitute only `r dev_aff_area_pct` of the total land area. We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately `r dev_cap_total` ft^2^.[^9]
+Our study focuses primarily on the third analysis group, *Developable, Affected*, which make up the majority of the station area parcels (`r dev_aff_n_pct`) but constitute only `r dev_aff_area_pct` of the total land area. We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately `r dev_cap_total` ft^2^.[^9]
 
 [^9]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
 
@@ -399,8 +399,8 @@ analysis_study_group |>
              devcap_tbl = html("Added Dev. Capacity (ft<sup>2</sup>)"),
              awmndc_tbl = html("AWM<sub>NDC</sub>")) |> 
   grand_summary_rows(
-    fns =  list(label = "Total", id = "totals") ~ gt_custom_summary(., df = analysis_study_group), 
-    side = "bottom"
+    fns =  list(label = "All Station Area Parcels", id = "totals") ~ gt_custom_summary(., df = analysis_study_group), 
+    side = "top"
   ) |> 
   tab_style(
     style = list(
@@ -421,7 +421,7 @@ analysis_study_group |>
 
 ```
 
-We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +`r total_awmndc` FAR. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe that the majority (by land area) would be affected by a development capacity increase of 1.5 FAR or greater. See @fig-results-histogram-affected below.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +`r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe that the majority (by land area) would be affected by a development capacity increase of 1.5 FAR or greater. See @fig-results-histogram-affected below.
 
 ```{r}
 #| label: fig-results-histogram-affected
@@ -471,17 +471,19 @@ analysis_parcels_ndc |>
 ```{r}
 #| label: results-station-area-types-awmndc
 
-large_awmndc <- analysis_study_group |> 
-  filter(str_detect(value, "Large")) |>
+tar_load(analysis_station_types_dev_affected)
+
+large_awmndc <- analysis_station_types_dev_affected |> 
+  filter(str_detect(analysis_station_area_types, "Large")) |>
   pluck("awmndc_tbl")
 
-small_awmndc <- analysis_study_group |> 
-  filter(str_detect(value, "Small")) |>
+small_awmndc <- analysis_station_types_dev_affected |> 
+  filter(str_detect(analysis_station_area_types, "Small")) |>
   pluck("awmndc_tbl")
 
 ```
 
-In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is {`r large_awmndc`} FAR and $AWM_{NDC}$ for the *Small* station areas is {`r small_awmndc`} FAR.
+In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ for *Developable, Affected* parcels between the two station area types. The $AWM_{NDC}$ for the *Large* station areas is {`r large_awmndc`} FAR and $AWM_{NDC}$ for the *Small* station areas is {`r small_awmndc`} FAR.
 
 ```{r}
 #| label: fig-results-histogram-station-areas
@@ -489,22 +491,6 @@ In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ wi
 #| message: false
 #| fig-cap: "Station Area Type Comparison"
 #| fig-height: 4
-
-# p_station_area <- p_affected |> 
-#   transmute(parcel_area_mi2,
-#             zoning_new_max_far_additional,
-#             analysis_station_area_types)
-# 
-# wt_avg_station_area <- p_station_area |> 
-#   group_by(analysis_station_area_types) |> 
-#     summarize(
-#       n = n(),
-#       area = sum(parcel_area_mi2, na.rm = TRUE),
-#       wt_avg = weighted.mean(zoning_new_max_far_additional, 
-#                              w = parcel_area_mi2,
-#                              na.rm = TRUE)
-#     )
-
 
 s <- glue("Includes all 'Developable, Affected' parcels, Large Station Area $AWM_{{NDC}}$ is {large_awmndc} FAR, Small Station Area $AWM_{{NDC}}$ is {small_awmndc}")
 
