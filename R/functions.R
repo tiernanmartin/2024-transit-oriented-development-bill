@@ -484,7 +484,7 @@ make_analysis_study_groups <- function(analysis_parcels_ndc){
               dev_capacity_added_smry = sum(analysis_dev_cap_added, na.rm = TRUE),
               awmndc_smry = round(digits = 2,
                                   weighted.mean(na.rm = TRUE, 
-                                                analysis_ndc_uniform, 
+                                                analysis_ndc, 
                                                 w = area_mi2))
     ) |> 
     transmute(
@@ -509,7 +509,7 @@ make_analysis_study_groups <- function(analysis_parcels_ndc){
               dev_capacity_added_smry = sum(analysis_dev_cap_added, na.rm = TRUE),
               awmndc_smry = round(digits = 2,
                                   weighted.mean(na.rm = TRUE, 
-                                                analysis_ndc_uniform, 
+                                                analysis_ndc, 
                                                 w = area_mi2))
     ) |> 
     mutate(n_pct = n / sum(n),
@@ -572,6 +572,38 @@ make_analysis_stations_awmndc <- function(p = analysis_parcels_ndc,
   return(analysis_stations_awmndc)
 }
 
+make_analysis_station_types_dev_affected <- function(analysis_parcels_ndc){
+  
+  analysis_station_types_dev_affected <- analysis_parcels_ndc |> 
+    st_drop_geometry() |> 
+    group_by(analysis_station_area_types) |> 
+    summarize(n = n(),
+              area_mi2_smry = sum(area_mi2, na.rm = TRUE),
+              dev_capacity_added_smry = sum(analysis_dev_cap_added, na.rm = TRUE),
+              awmndc_smry = round(digits = 2,
+                                  weighted.mean(na.rm = TRUE, 
+                                                analysis_ndc_uniform, 
+                                                w = area_mi2))
+    ) |> 
+    mutate(n_pct = n / sum(n),
+           area_pct = area_mi2_smry / sum(area_mi2_smry),
+           dev_cap_pct = dev_capacity_added_smry / sum(dev_capacity_added_smry, na.rm = TRUE)) |> 
+    ungroup() |> 
+    transmute(
+      analysis_station_area_types,
+      n_tbl = glue("{comma(n)} ({percent(n_pct)})"),
+      area_tbl = glue("{comma(area_mi2_smry)} ({percent(area_pct, accuracy = 1)})"),
+      devcap_tbl = if_else(dev_capacity_added_smry<=0,
+                           "--",
+                           glue("{format_nbr(dev_capacity_added_smry)} ({percent(dev_cap_pct)})")),
+      awmndc_tbl = if_else(is.nan(awmndc_smry),
+                           '--',
+                           as.character(awmndc_smry))
+    )
+  
+  
+  return(analysis_station_types_dev_affected)
+}
 # UTILITY FUNCTIONS -----
 
 gt_custom_summary <- function(x, df, start_col=3, end_col=6) { 

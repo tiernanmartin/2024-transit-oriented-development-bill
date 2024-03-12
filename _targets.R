@@ -219,7 +219,9 @@ pipeline_analysis <- list(
              make_analysis_study_groups(analysis_parcels_ndc)),
   tar_target(analysis_stations_awmndc,
              make_analysis_stations_awmndc(analysis_parcels_ndc,
-                                           analysis_transit_walksheds))
+                                           analysis_transit_walksheds)),
+  tar_target(analysis_station_types_dev_affected,
+             make_analysis_station_types_dev_affected(analysis_parcels_ndc))
 )
 
 
