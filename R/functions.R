@@ -606,6 +606,41 @@ make_analysis_station_types_dev_affected <- function(analysis_parcels_ndc){
 }
 # UTILITY FUNCTIONS -----
 
+create_pie_chart <- function(data, category_col, value_col, color_values = NULL, label_size = 3L) { 
+  data <- data %>%
+    mutate(!!sym(category_col) := factor(!!sym(category_col)))
+  
+  data_processed <- data %>%
+    group_by(!!sym(category_col)) %>%
+    summarise(count = n(),  
+              value_sum = sum(!!sym(value_col))) %>%
+    arrange(desc(!!sym(category_col))) %>%
+    mutate(label = percent(value_sum / sum(value_sum))) %>%
+    mutate(label_position = cumsum(value_sum) - (0.5 * value_sum))
+  
+  
+  if(is.null(color_values)) {
+    color_values <- RColorBrewer::brewer.pal(n = length(unique(data[[category_col]])), name = "Set3")
+  }
+  
+  
+  ggplot(data_processed, aes(x = "", fill = !!sym(category_col), y = value_sum)) + 
+    geom_col(width = 1) +
+    coord_radial(theta = "y", expand = FALSE, inner.radius = 0.3, r_axis_inside = TRUE, direction = -1) +
+    scale_y_continuous(name = NULL) +
+    scale_fill_manual(values = color_values) +
+    theme(axis.text.theta = element_blank(), axis.ticks.theta = element_blank(), axis.ticks.r = element_blank()) +
+    geom_text(
+      aes(label = label, y = label_position), 
+      size = label_size, 
+      color = c("black","black","white"),
+      fontface = c("plain","plain","bold")
+    ) +
+    theme(axis.title = element_blank(),
+          panel.background = element_blank(),
+          plot.background = element_blank()) 
+}
+
 gt_custom_summary <- function(x, df, start_col=3, end_col=6) { 
   for(col in start_col:end_col) { 
     
