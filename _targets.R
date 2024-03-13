@@ -16,6 +16,7 @@ library(viridisLite)
 library(gt)
 library(latex2exp)
 library(tigris)
+library(patchwork)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -34,7 +35,8 @@ tar_option_set(
                "viridisLite",
                "gt",
                "latex2exp",
-               "tigris")
+               "tigris",
+               "patchwork")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
