@@ -264,12 +264,6 @@ Our method is subject to several limitations that are important to consider when
 
 -   **Homeowner Association (HOA) Restrictions**: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA's exist.
 
--   **Housing Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
-
--   **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
-
--   **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
-
 [^7]: HB 2160 would exclude "public facilities and portions of lots with critical areas and critical area buffers as designated in RCW 36.70A.060, except for critical aquifer recharge areas where a single-family detached house is an allowed use provided that any requirements to maintain aquifer recharge are met." [@reed2024]
 
 Further research, data collection, and methodological refinements could help address these limitations in future analyses.
