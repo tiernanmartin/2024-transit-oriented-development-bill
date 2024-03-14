@@ -230,7 +230,7 @@ In a region where cities employ various tools to regulate development intensity,
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|------------------|------------------------------------|------------------|
+|------------------|-----------------------------------|------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
@@ -626,13 +626,6 @@ col_names_city <- c("City",
                     "Parcels (n)", 
                     "Land Area (sq. miles)")
 
-# p_cities <- p |> 
-#   st_drop_geometry() |> 
-#   filter(zoning_juris %in% case_studies)
-
-# p_cities_affected <- p_affected |>  
-#   filter(zoning_juris %in% case_studies)
-
 cs_results_analysis_group <- 
 analysis_parcels_ndc |> 
   st_drop_geometry() |> 
@@ -688,12 +681,12 @@ tar_load(analysis_parcels_ndc)
 case_study_results <- analysis_parcels_ndc |> 
   st_drop_geometry() |> 
   filter(city %in% case_studies)|>
-  filter(analysis_type_uni %in% "Developable, Affected") |> 
+  filter(analysis_type_avg %in% "Developable") |> 
   group_by(city) |> 
   summarise(.groups = "drop",
             n = n(),
             area = sum(area_mi2, na.rm = TRUE),
-            awm_ndc = weighted_mean(x = analysis_ndc_uniform,
+            awm_ndc = weighted_mean(x = analysis_ndc,
                                     w = area_mi2),
             area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) 
 
@@ -721,15 +714,13 @@ case_study_results |>
     n_sigfig = 3,
     suffixing = TRUE
   ) |> 
-  tab_source_note(
-    source_note = "Note: The figures in this table are limited to those parcels within station areas that are developable and impacted by HB 2160. They do not include all parcels within the station areas of each city."
-  ) |> 
   tab_footnote(
     footnote = "Area-weighted mean of net development capacity",
     locations = cells_column_labels(
       columns = 4
     )
-  )
+  ) |> 
+  tab_source_note(source_note = "Note: This table summarizes all Developable parcels within each city's station areas; it does not include parcels that would be exempt from HB 2160.")
 
 
 ```
@@ -739,23 +730,94 @@ case_study_results |>
 
 tar_load(analysis_parcels_ndc)
 
-cs_n <- cs_results_analysis_group |> 
-  filter(analysis_type_uni == "Developable, Affected") |> 
+cs_results_analysis_group_dev <-
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies) |> 
+  group_by(city, analysis_type_avg) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = 
+              round(digits = 2,
+                    sum(area_mi2, na.rm = TRUE))
+            ) |> 
+  group_by(city) |> 
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(city, analysis_type_avg) |> 
+  summarize(
+    .groups = "drop",
+    n = first(n),
+    area = first(area),
+    n_total = first(n_total),
+    area_total = first(area_total),
+    n_pct = percent(n/n_total),
+    area_pct = percent(area/area_total),
+    n_tbl = glue("{comma(n)} ({percent(n/n_total)})"),
+    area_tbl = glue("{area} ({percent(area/area_total)})")
+  ) 
+  
+cs_results_analysis_group_devaffected <-
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies) |> 
+  filter(analysis_type_uni %in% c("Developable, Affected")) |> 
+  group_by(city, analysis_type_uni) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = 
+              round(digits = 2,
+                    sum(area_mi2, na.rm = TRUE))
+            ) |> 
+  group_by(city) |> 
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(city, analysis_type_uni) |> 
+  summarize(
+    .groups = "drop",
+    n = first(n),
+    area = first(area),
+    n_total = first(n_total),
+    area_total = first(area_total),
+    n_pct = percent(n/n_total),
+    area_pct = percent(area/area_total),
+    n_tbl = glue("{comma(n)} ({percent(n/n_total)})"),
+    area_tbl = glue("{area} ({percent(area/area_total)})")
+  ) 
+
+cs_results_analysis_group_dev_only <- cs_results_analysis_group_dev |> 
+  filter(analysis_type_avg %in% "Developable")
+
+cs_n <- cs_results_analysis_group_dev_only |> 
   (\(x) split(x, x$city))() |> 
   map(\(x) pluck(x,"n") |> comma())
 
-cs_area <- cs_results_analysis_group |> 
-  filter(analysis_type_uni == "Developable, Affected") |> 
+cs_area <- cs_results_analysis_group_dev_only |> 
   (\(x) split(x, x$city))() |> 
   map(\(x) pluck(x,"area"))
 
-cs_n_pct <- cs_results_analysis_group |> 
-  filter(analysis_type_uni == "Developable, Affected") |> 
+cs_n_pct <- cs_results_analysis_group_dev_only |> 
   (\(x) split(x, x$city))() |> 
   map(\(x) pluck(x,"n_pct"))
 
-cs_area_pct <- cs_results_analysis_group |> 
-  filter(analysis_type_uni == "Developable, Affected") |> 
+cs_area_pct <- cs_results_analysis_group_dev_only |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area_pct"))
+
+
+cs_devaff_n <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n") |> comma())
+
+cs_devaff_area <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area"))
+
+cs_devaff_n_pct <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n_pct"))
+
+cs_devaff_area_pct <- cs_results_analysis_group_devaffected |> 
   (\(x) split(x, x$city))() |> 
   map(\(x) pluck(x,"area_pct"))
 
@@ -769,17 +831,15 @@ case_studies_by_stationarea_type <-
 analysis_parcels_ndc |> 
   st_drop_geometry() |> 
   filter(city %in% case_studies)|>
-  filter(analysis_type_uni %in% "Developable, Affected") |> 
+  filter(analysis_type_avg %in% "Developable") |> 
   group_by(city,
            analysis_station_area_types) |> 
   summarise(.groups = "drop",
             n = n(),
             area = sum(area_mi2, na.rm = TRUE),
-            awm_ndc = weighted_mean(x = analysis_ndc_uniform,
+            awm_ndc = weighted_mean(x = analysis_ndc,
                                     w = area_mi2),
             area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) 
-
-# max_ndc <- ceiling(max(na.rm = TRUE, analysis_parcels_ndc$analysis_ndc_uniform) * 2) / 2
 
 max_ndc <- max(na.rm = TRUE, analysis_parcels_ndc$analysis_ndc_uniform)
   
@@ -832,13 +892,15 @@ kent <-
 
 p_kent <- analysis_parcels_ndc |> 
   filter(city %in% "Kent") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
   select(area_mi2,
          district_name,
-         net_dev_capacity = analysis_ndc_uniform,
+         net_dev_capacity = analysis_ndc,
+         analysis_type_avg,
          analysis_type_uni)
 
-p_affected_kent <- p_kent |>  
-  filter(analysis_type_uni %in% "Developable, Affected")
+# p_affected_kent <- p_kent |>  
+#   filter(analysis_type_uni %in% "Developable, Affected")
 
 kent_by_stationarea_type <- 
   case_studies_by_stationarea_type |> 
@@ -891,7 +953,9 @@ map_kent_stations
 
 ```
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be `r cs_awmndc['Kent']` FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes `r cs_n_pct['Kent']` of the station area parcels and `r cs_area_pct['Kent']` of the station area land.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be `r cs_awmndc['Kent']` FAR. This metric summarizes HB 2160's effect on the *Developable* parcels in the city's station areas, which includes `r cs_n_pct['Kent']` of the station area parcels and `r cs_area_pct['Kent']` of the station area land.
+
+In @fig-results-case-studies-kent-histogram, we observe the distribution of changes in development capacity that HB 2160 would have on *Developable, Affected* parcels in Kent's station areas.
 
 ```{r}
 #| label: fig-results-case-studies-kent-histogram
@@ -905,19 +969,11 @@ kent_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}
   glue() |> 
   TeX()
 
-p_affected_kent |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = area_mi2) +
-  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous(breaks = seq(0, ndc_uni_max, by = 0.5),
-                     limits = c(0,ndc_uni_max))
-  
-  labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
-       subtitle = kent_hist_subtitle,
-       y = expression("Land Area (mi"^2*")"),
-       x = "Net Development Capacity (FAR)")
+analysis_parcels_ndc |> 
+  filter(city %in% "Kent") |> 
+  create_hist_with_inset() +
+  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+       subtitle = kent_hist_subtitle)
 ```
 
 Examining the data grouped by station area type, we observe two patterns. First, there are a significant number of *Not Developable* parcels in the half-mile station areas. Second, the *Developable, Affected* parcels in both types of station areas would be substantially affected by HB 2160, as indicated by the relatively large $AWM_{NDC}$ values in @tbl-results-case-studies-kent-station-areas.
