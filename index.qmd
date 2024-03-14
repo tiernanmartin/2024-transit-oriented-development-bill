@@ -57,6 +57,7 @@ library(latex2exp)
 library(mapview)
 library(RColorBrewer)
 library(targets)
+library(patchwork)
 mapviewOptions(platform = "leaflet")
 
 ```
@@ -967,7 +968,7 @@ kent_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}
 analysis_parcels_ndc |> 
   filter(city %in% "Kent") |> 
   create_hist_with_inset() +
-  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
        subtitle = kent_hist_subtitle)
 ```
 
@@ -1185,7 +1186,7 @@ mercerisland_hist_subtitle <- "Area-weighted mean net development capacity ($AWM
 analysis_parcels_ndc |> 
   filter(city %in% "Mercer Island") |> 
   create_hist_with_inset(binwidth = .25) +
-  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
+  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
        subtitle = mercerisland_hist_subtitle)
 ```
 
@@ -1378,7 +1379,7 @@ redmond_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{ND
 analysis_parcels_ndc |> 
   filter(city %in% "Redmond") |> 
   create_hist_with_inset() +
-  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
+  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
        subtitle = redmond_hist_subtitle)
 ```
 
@@ -1427,7 +1428,6 @@ Displaying the net development capacity of individual parcels reveals a complica
 #| eval: true
 #| message: false
 #| fig-cap: "Net Development Capacity, Redmond Station Areas"
-#| include: false
 
 
 map_redmond <- mapview(redmond,
@@ -1605,7 +1605,7 @@ shoreline_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{
 analysis_parcels_ndc |> 
   filter(city %in% "Shoreline") |> 
   create_hist_with_inset() +
-  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
+  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
        subtitle = shoreline_hist_subtitle)
 ```
 
