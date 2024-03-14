@@ -56,21 +56,20 @@ library(kableExtra)
 library(latex2exp)
 library(mapview)
 library(RColorBrewer)
+library(targets)
 mapviewOptions(platform = "leaflet")
 
 ```
 
 ```{r}
-#| label: read-objects
+#| label: load-targets
 #| include: false
 
-pugetsound_pop_growth_2010_2023 <- readRDS(here("data_outputs/pugetsound_pop_growth_2010_2023.rds"))
-
-outside_pop_growth_2010_2023 <- readRDS(here("data_outputs/outside_pop_growth_2010_2023.rds"))
-
-pugetsound_hu_growth_2010_2023 <- readRDS(here("data_outputs/pugetsound_hu_growth_2010_2023.rds"))
-
-outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010_2023.rds"))
+tar_load(
+  c(
+    pop_hu_region_list
+  )
+)
 
 ```
 
@@ -78,11 +77,7 @@ outside_hu_growth_2010_2023 <- readRDS(here("data_outputs/outside_hu_growth_2010
 #| label: utility-functions
 #| include: false
 
-weighted_mean <- possibly(
-  .f = function(x,w,d = 2){round(digits = d, weighted.mean(x, w, na.rm = TRUE))},
-  otherwise = NA)
-
-convert_to_mi2 <- function(x){x/27878400}
+source("R/functions.R")
 
 
 ```
@@ -109,7 +104,7 @@ Thanks to Yonah Freemark of the Urban Institute for the provision of zoning dist
 
 The Puget Sound metropolitan region is one of North America's major growth centers for people, jobs, and housing. Between 2010 and 2023, the central Puget Sound's four-county region (King, Kitsap, Pierce, and Snohomish counties) added more residents and housing units than the rest of Washington state combined.[^1] According to forecasts by the Puget Sound Regional Council, the region's population is expected to grow to 5.8 million people living within 2.8 million households by 2050 [@pugetsoundregionalcouncil2018].
 
-[^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r comma(pugetsound_pop_growth_2010_2023)` people between 2010 and 2023, while the rest of the state's population grew by `r comma(outside_pop_growth_2010_2023)` people. During the same period, `r comma(pugetsound_hu_growth_2010_2023)` housing units were added in the this region, while `r comma(outside_hu_growth_2010_2023)` units were created elsewhere in the state.
+[^1]: The source of these statistics are the author's analysis of postcensial estimates by the Washington State Office of Financial Management. The central Puget Sound population grew by `r pop_hu_region_list$pugetsound_pop_change` people (`r pop_hu_region_list$pugetsound_pop_change_pct`) between 2010 and 2023, while the rest of the state's population grew by `r pop_hu_region_list$outside_pop_change` people (`r pop_hu_region_list$outside_pop_change_pct`). During the same period, `r pop_hu_region_list$pugetsound_hu_change` housing units (`r pop_hu_region_list$pugetsound_hu_change_pct`) were added in the this region, while `r pop_hu_region_list$outside_hu_change` units (`r pop_hu_region_list$outside_hu_change_pct`) were created elsewhere in the state.
 
 As the region grows, it faces challenges that come with that growth. One such challenge is high, rising housing costs. The Puget Sound Regional Council's *Housing Stability Strategy: 2023 Monitoring Report* provides several sobering statistics about the region's housing costs. According to the report, during the decade between 2010 and 2020, the region added only one housing unit for every three new people that were born or moved there. Between July 2015 and July 2023, the median rent cost increased by 50%[^2] and the annual income required to purchase the area's median priced home was \$160,000 [@pugetsoundregionalcouncil2023]. In 2020, an estimated 11,751 people experienced homelessness within King County alone—a 5% increase from the county's 2019 estimate [@allhome2020]. Despite the efforts by both public and private housing developers to tackle the shortage of affordable housing, researchers estimate that the central Puget Sound region will experience a shortfall of approximately 140,000 units over the next 20 years [@freemark2023a].
 
@@ -200,11 +195,15 @@ $$ {#eq-ndc} Where:
 -   $SDC_{old,i}$: parcel $i$'s current (standarized) maximum development capacity.
 -   $SDC_{new,i}$: the (standardized) maximum development capacity that would apply to parcel $i$ if HB 2160 became law.
 
-To quantify the impact of the proposed bill within a geography larger than an individual parcel, we calculate the area-weighted mean of net development capacity ($AWM_{NDC}$). We define ($AWM_{NDC}$) as follows:
+To quantify the impact of the proposed bill on a geographic scale larger than an individual parcel, we employ two metrics: an absolute metric, the total net development capacity ($T_{NDC}$), and a relative metric, the area-weighted mean of net development capacity ($AWM_{NDC}$).
+
+#### Total Net Development Capacity ($T_{NDC}$) {.unnumbered}
+
+The total net development capacity ($T_{NDC}$) is calculated as the sum of the net development capacity for each parcel, adjusted by the parcel's area and eligibility based on specific criteria. We define it as follows:
 
 $$
-AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
-$$ {#eq-awm-ndc}
+T_{NDC} = \sum_{i}(NDC_i \cdot A_i \cdot I_i)
+$$
 
 Where:
 
@@ -212,24 +211,35 @@ Where:
 -   $A_i$: the geometric area of parcel $i$.
 -   $I_i$: an indicator function that equals 1 if parcel $i$ satisfies all of the following conditions: it is within a station area, it lies within a zoning district where residential use is permitted, and it is within an urban growth area; otherwise, $I_i$ equals 0.
 
-This formula ensures that the calculation exclusively incorporates parcels meeting the specified criteria, with each parcel's contribution to the overall mean being proportionally weighted by its area.
+This formula ensures that only parcels meeting all specified conditions contribute to the total net development capacity. The indicator function ($I_i$) serves as a filter, excluding parcels not suited for development under the proposed bill's guidelines.
 
-Our method offers a metric for evaluating changes in development capacity, reflecting the effects of the proposed bill. It also allows us to summarize the bills effect at different geographic levels, including station area, city, and region. We can then both describe individual geographies (e.g., a specific station area) and compare between geographies (e.g., several cities compared individually to the region).
+#### Area-Weighted Mean of Net Development Capacity ($AWM_{NDC}$) {.unnumbered}
+
+To calculate the mean net development capacity, weighted by the proportion of the area that each parcel occupies within the eligible region, we use the following formula:
+
+$$
+AWM_{NDC} = \frac{\sum_{i}(NDC_i \cdot A_i \cdot I_i)}{\sum_{i}(A_i \cdot I_i)}
+$$ {#eq-awm-ndc}
+
+This calculation divides the sum of the net development capacity of each parcel, adjusted by its area and eligibility, by the total eligible area. This method results in a weighted mean that reflects the proportional impact of each parcel, with larger parcels having a greater influence on the overall metric.
+
+In a region where cities employ various tools to regulate development intensity, our method introduces two metrics for assessing changes in development capacity, irrespective of the regulatory tool in use. It also enables us to summarize the bill's effect at different geographic levels, including station areas, cities, and regions. This approach allows us to describe individual geographies (for example, a specific station area) and to compare them with one another (for example, several cities in comparison to the region as a whole).
 
 ### Data Collection
 
 The study uses several data sets from a variety of different sources. The following table summarize the study's data:
 
 | Data                                | Description                                                                                                                                 | Citation                       |
-|-------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------|
+|------------------|-----------------------------------|------------------|
 | Current Parcels (2023)              | A statewide data set of tax parcels                                                                                                         | @washingtonstateparcelsproject |
 | Transit Stations                    | Transit station locations for light rail, commuter rail, streetcar, and existing bus rapid transit routes in the central Puget Sound Region | @pugetsoundregionalcouncil2024 |
 | Puget Sound Zoning Districts (2023) | Zoning and land use regulations collected from central Puget Sound local governments' land use codes and maps                               | @urbaninstitute                |
 | Urban Growth Areas                  | Urban growth areas for the central Puget Sound region (King, Snohomish, Kitsap, and Pierce counties)                                        | @pugetsoundregionalcouncil     |
+| City Boundaries                     | Boundaries of city jurisdictions with the central Puget Sound region                                                                        | @pugetsoundregionalcouncil     |
 
 ### Data Analysis
 
-The study uses a combination of a relational database and statistical software to conduct its analysis. The relational database, PostgreSQL with the PostGIS extension, is used to perform spatial filters and spatial joins on the Current Parcel data set. The R programming language is used to perform aggregations and calculate summary statistics on the filtered and augmented parcel dataset. R is also also used to produce summary tables and visualizations.
+The study uses a combination of a relational database and statistical software to conduct its analysis. The relational database, [PostgreSQL](https://www.postgresql.org/) with the [PostGIS](https://postgis.net/) extension, is used to perform spatial filters and spatial joins on the Current Parcel data set. The [R](https://www.r-project.org/) programming language is used to perform aggregations and calculate summary statistics on the filtered and augmented parcel data set. R is also also used to produce summary tables and visualizations. Construction of the study data set and analysis of its data are coordinated using the [targets](https://docs.ropensci.org/targets/) pipeline tool (see @landau2021).
 
 Data sets containing information relevant to HB 2160 are combined through spatial filtering and spatial joining to produce a data set of all parcels within the station areas. The refined parcel data are augmented with zoning and land use regulation information from the zoning districts. A maximum FAR baseline is estimated for all parcels, then the new maximum FAR that would be introduced by HB 2160 is estimated. For each parcel, the net difference between the current (old) and new FAR is calculated. For parcels where the current zoning allows development greater than the new FAR, the effect of the bill is considered to be zero additional FAR; for parcels where the current zoning is more restrictive that the new FAR, the effect is calculated in terms of additional FAR allowed. The bill's effect on each parcel is then aggregated by station area, jurisdiction, and region, and summarized using the area-weight mean.[^6]
 
@@ -269,42 +279,84 @@ Further research, data collection, and methodological refinements could help add
 #| label: results-objects
 #| include: false
 
-p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-             layer = "tod-parcels",
-             quiet = TRUE)
+tar_load(analysis_study_group)
 
-p_affected <- p |> 
-  st_drop_geometry() |> 
-  filter(analysis_type %in% "Developable, Affected")
+total_n <- analysis_study_group |> 
+  filter(value == "Total") |>
+  pluck("n_tbl")
 
-undev_land_codes <- c(94, 93, 92)
+dev_aff_n_pct <- analysis_study_group |> 
+  filter(value == "Developable, Affected") |>
+  pluck("n_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
 
-t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-         layer = "transit-station-areas",
-         quiet = TRUE)
+dev_aff_area_pct <- analysis_study_group |> 
+  filter(value == "Developable, Affected") |>
+  pluck("area_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
 
-zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-         layer = "tod-zoning-districts",
-         quiet = TRUE)
+large_n_pct <- analysis_study_group |> 
+  filter(str_detect(value, "Large")) |>
+  pluck("n_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
+
+large_area_pct <- analysis_study_group |> 
+  filter(str_detect(value, "Large")) |>
+  pluck("area_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
+
+large_devcap_pct <- analysis_study_group |> 
+  filter(str_detect(value, "Large")) |>
+  pluck("devcap_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
+
+dev_cap_total <- analysis_study_group |> 
+  filter(str_detect(name, "total")) |> 
+  pluck("devcap_tbl") |> 
+  str_replace("B", " billion")
+
+
+# p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#              layer = "tod-parcels",
+#              quiet = TRUE)
+# 
+# p_affected <- p |> 
+#   st_drop_geometry() |> 
+#   filter(analysis_type %in% "Developable, Affected")
+# 
+# undev_land_codes <- c(94, 93, 92)
+# 
+# t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#          layer = "transit-station-areas",
+#          quiet = TRUE)
+# 
+# zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
+#          layer = "tod-zoning-districts",
+#          quiet = TRUE)
 
 ```
 
 ### Entire Study Area
 
-The study includes approximately 125,000 parcels ($N = 124,941$), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
+The study includes approximately 116,600 tax parcels (`r str_c("$","n = ",total_n,"$")`), all within the four central Puget Sound counties, within an Urban Growth Area, and within HB 2160's specified distance thresholds of a qualifying transit stop.
 
 We separate the study data into three analysis groups:
 
-1.  *Not Developable*\
-    Parcels that do not meet HB 2160's eligibility criteria. The study implements these criteria by selecting parcels that which: a) are located within a zoning district that allows residential uses; and b) have a current land use that is compatible with transit-oriented development. For the current land use criterion, we use tax assessor-assigned land use codes[^8] to screen out non-compatible uses such as parks, open space, forest lands, and water areas.
+1.  *Not Developable* (${i | I_i = 0}$)\
+    Parcels ineligible under HB 2160 criteria. This study applies the HB 2160 criteria by selecting parcels that: a) are located within cities and within a UGA; b) are located in zoning districts permitting residential uses; and c) have current land uses that are suitable for transit-oriented development. To evaluate current land use, we use tax assessor-assigned land use codes to exclude properties with incompatible uses. HB 2160 specifies incompatible uses as streets, roads, highways, sidewalks, lighting systems for streets and roads, traffic signals, domestic water systems, storm and sanitary sewer systems, parks and recreational facilities, and schools [@reed2024]. Although HB 2160 exempts parcels governed by shoreline master programs or critical area ordinances, this study does not exclude these lots due to the lack of comprehensive regional data sets with the required information.
 
-2.  *Developable, Not Affected*\
-    Parcels that meet the study's eligibility criteria but have an equal or higher development capacity than the bill would allow and would, therefore, not be affected by the bill.
+2.  *Developable* (${i | I_i = 1}$)\
+    Parcels that meet 2160's eligibility criteria. Within *Developable* parcels, we distinguish the following two subsets:
 
-3.  *Developable, Affected*\
-    Parcels that meet the study's eligibility criteria and have zoning that is more restrictive than the maximum FAR set by the bill and would, therefore, be affected.
-
-[^8]: The general framework for tax assessor land use codes is defined in [WAC 458-53-030](https://apps.leg.wa.gov/wac/default.aspx?cite=458-53-030).
+    A.  *Developable, Not Affected* ($\{i | I_i = 1 \text{ and } NDC_i \leq 0\}$)\
+        Parcels that meet the eligibility criteria and have a standardized development capacity equal or greater than the minimum required by HB 2160 and would, therefore, not be affected by the bill.
+    B.  *Developable, Affected* ($\{i | I_i = 1 \text{ and } NDC_i \gt 0\}$)\
+        Parcels that meet the eligibility criteria and have a standardized development capacity less than the minimum required by HB 2160 and would, therefore, be affected by the bill.
 
 We also divide the parcel data by the type of station area it is within:
 
@@ -314,15 +366,15 @@ We also divide the parcel data by the type of station area it is within:
 2.  *Small (0.25 Mile)\
     *Parcels within a quarter mile of a bus rapid transit stop and not within a *Large* station area
 
-Using HB 2160's definition of station areas, we create two station area types and assign one type to every parcel. Parcels that are within both *Large* and *Small* station area types as classified as part of a *Large* station area.[^9]
+Using HB 2160's definition of station areas, we create two station area types and assign one type to every parcel. Parcels that are within both *Large* and *Small* station area types as classified as part of a *Large* station area.[^8]
 
-[^9]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
+[^8]: While many parcels are within more than one type of station area, our analysis sets a limit of one station area type per parcel to ensure that each parcel is only counted once during tabulation and aggregation procedures.
 
-Our study focuses on the third analysis group, *Developable, Affected*, which are the majority of the station area parcels by both count (78%) and land area (64%). We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately 3.6 billion ft^2^.[^10]
+Our study focuses primarily on the third analysis group, *Developable, Affected*, which make up the majority of the station area parcels (`r dev_aff_n_pct`) but constitute only `r dev_aff_area_pct` of the total land area. We find that the total amount of additional development capacity that would be added by HB 2160 to be approximately `r dev_cap_total` ft^2^.[^9]
 
-[^10]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
+[^9]: While increasing development capacity is necessary for the production of additional housing units, it is not a sufficient condition.
 
-Our findings suggest that the *Large (0.5 mile)* station areas would account for the majority of the parcels (64%), land area (59%), and added development capacity (68%) associated with HB 2160. See @tbl-results-summary-table below.
+Our findings suggest that the *Large (0.5 mile)* station areas would account for the majority of the parcels (`r large_n_pct`), land area (`r large_area_pct`), and added development capacity (`r large_devcap_pct`) associated with HB 2160. See @tbl-results-summary-table below.
 
 ```{r}
 #| label: tbl-results-summary-table
@@ -330,43 +382,26 @@ Our findings suggest that the *Large (0.5 mile)* station areas would account for
 #| message: false
 #| tbl-cap: "Summary of Study Data"
 
-poss_multiply <- possibly(function(x,y) x*y, otherwise = NA,quiet = TRUE)
+tar_load(analysis_study_group)
 
-p_both_summaries_tbl <- p |> 
-  st_drop_geometry() |>
-  mutate( analysis_type = factor(analysis_type, 
-                                 levels = c("Not Developable", 
-                                            "Developable, Not Affected",
-                                            "Developable, Affected")
-  ),
-  dev_capacity_added = poss_multiply(zoning_new_max_far_additional, parcel_area)
-  ) |> 
-  pivot_longer(cols = c(analysis_type, analysis_station_area_types)) |> 
-  group_by(name, value) |> 
-  summarize(n = n(),
-            area_mi2 = sum(parcel_area_mi2),
-            dev_capacity_added = sum(dev_capacity_added, na.rm = TRUE)) |> 
-  mutate(n_pct = n / sum(n),
-         area_pct = area_mi2 / sum(area_mi2),
-         dev_cap_pct = dev_capacity_added / sum(dev_capacity_added, na.rm = TRUE)) |> 
-  ungroup() |> 
-  transmute(
-    name,
-    value,
-    n_tbl = glue("{comma(n)} ({percent(n_pct)})"),
-    area_tbl = glue("{comma(area_mi2)} ({percent(area_pct, accuracy = 1)})"),
-    devcap_tbl = glue("{comma(dev_capacity_added)} ({percent(dev_cap_pct)})")
-  )
+total_awmndc <- analysis_study_group |> 
+  filter(value == "Total") |>
+  pluck("awmndc_tbl")
 
-
-p_both_summaries_tbl |> 
+analysis_study_group |> 
+  filter(! str_detect(name, "total")) |> # remove the pre-defined summary row 
   gt(groupname_col = "name",
      rowname_col = "value") |> 
-  tab_row_group(label = "Station Area Types", rows = 1:2) |> 
-  tab_row_group(label = "Analysis Groups", rows = 3:5) |> 
+  tab_row_group(label = "Station Area Types", rows = 1:2) |>
+  tab_row_group(label = "Analysis Groups", rows = 3:5) |>
   cols_label(n_tbl = "Parcels (n)",
              area_tbl = html("Land Area (mi<sup>2</sup>)"),
-             devcap_tbl = html("Added Dev. Capacity (ft<sup>2</sup>)")) |> 
+             devcap_tbl = html("Added Dev. Capacity (ft<sup>2</sup>)"),
+             awmndc_tbl = html("AWM<sub>NDC</sub>")) |> 
+  grand_summary_rows(
+    fns =  list(label = "All Station Area Parcels", id = "totals") ~ gt_custom_summary(., df = analysis_study_group), 
+    side = "top"
+  ) |> 
   tab_style(
     style = list(
       cell_text(align = "left", indent = px(20))),
@@ -376,11 +411,17 @@ p_both_summaries_tbl |>
     style = list(
       cell_text(align = "right")),
     locations = cells_body()
+  ) |> 
+   tab_style(
+    locations = cells_grand_summary(),
+    style = cell_text(align = "right")
   )
+  
+  
 
 ```
 
-We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +1.79 FAR. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe two modal "peaks" at +1.5 and +2.5 FAR. See @fig-results-histogram-affected below.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +`r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe that the majority (by land area) would be affected by a development capacity increase of 1.5 FAR or greater. See @fig-results-histogram-affected below.
 
 ```{r}
 #| label: fig-results-histogram-affected
@@ -389,32 +430,60 @@ We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summariz
 #| fig-cap: "HB 2160's Effect on Net Development Capacity"
 #| fig-height: 4
 
-wt_avg <- weighted.mean(p_affected$zoning_new_max_far_additional,
-                        w = p_affected$parcel_area,
-                        na.rm = TRUE) |> round(digits = 2)
+tar_load(analysis_parcels_ndc)
 
-p_addtl_max <- max(p_affected$zoning_new_max_far_additional, na.rm = TRUE)
+ndc_uni_max <- max(analysis_parcels_ndc$analysis_ndc_uniform, na.rm = TRUE)
 
-n_parcels <- scales::comma(nrow(p_affected))
+awmndc_dev_aff <- analysis_study_group |> 
+  filter(value == "Developable, Affected") |> 
+  pluck("awmndc_tbl")
 
-subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.79 FAR, n = 97,434 parcels (78%)")
+area_dev_aff_mi <- analysis_study_group |> 
+  filter(value == "Developable, Affected") |> 
+  pluck("area_tbl") |> 
+  str_extract("^[^\\s]*")
 
-p_affected |> 
-  st_drop_geometry() |>  
-ggplot() +  
-  aes(x = zoning_new_max_far_additional,
-      weight = parcel_area_mi2) + 
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") + 
-  # geom_vline(xintercept = wt_avg, color = "tomato",linetype = 2, size =2) +
+area_dev_aff_pct <- analysis_study_group |> 
+  filter(value == "Developable, Affected") |> 
+  pluck("area_tbl") |> 
+  str_extract("\\((.*?)\\)") |>
+  str_replace_all("\\(|\\)", "")
+
+s <- glue("Includes all 'Developable, Affected' parcels, $AWM_{{NDC}}$ = {awmndc_dev_aff} FAR, land area = {area_dev_aff_mi}$mi^2$ ({area_dev_aff_pct} of station area land)")
+
+subtitle <- TeX(s)
+
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  ggplot() +
+  aes(x = analysis_ndc_uniform,
+      weight = area_mi2) + 
+  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") +
   scale_y_continuous(labels = scales::label_comma()) + 
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  scale_x_continuous(breaks = seq(0, ndc_uni_max, by = 0.5),
+                     limits = c(0,ndc_uni_max)) + 
   labs(title = "HB 2160's Effect on Net Development Capacity",
        subtitle = subtitle,
-       y = "Land Area (sq. miles)",
+       y = expression("Land Area (mi"^2*")"),
        x = "Net Development Capacity (FAR)") 
 ```
 
-In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ within the two station area types. The $AWM_{NDC}$ for the *Large* station areas is 2.15 FAR and $AWM_{NDC}$ for the *Small* station areas is 1.32 FAR.
+```{r}
+#| label: results-station-area-types-awmndc
+
+tar_load(analysis_station_types_dev_affected)
+
+large_awmndc <- analysis_station_types_dev_affected |> 
+  filter(str_detect(analysis_station_area_types, "Large")) |>
+  pluck("awmndc_tbl")
+
+small_awmndc <- analysis_station_types_dev_affected |> 
+  filter(str_detect(analysis_station_area_types, "Small")) |>
+  pluck("awmndc_tbl")
+
+```
+
+In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ for *Developable, Affected* parcels between the two station area types. The $AWM_{NDC}$ for the *Large* station areas is {`r large_awmndc`} FAR and $AWM_{NDC}$ for the *Small* station areas is {`r small_awmndc`} FAR.
 
 ```{r}
 #| label: fig-results-histogram-station-areas
@@ -423,37 +492,24 @@ In @fig-results-histogram-station-areas, we compare the distribution of $NDC$ wi
 #| fig-cap: "Station Area Type Comparison"
 #| fig-height: 4
 
-p_station_area <- p_affected |> 
-  transmute(parcel_area_mi2,
-            zoning_new_max_far_additional,
-            analysis_station_area_types)
+s <- glue("Includes all 'Developable, Affected' parcels, Large Station Area $AWM_{{NDC}}$ is {large_awmndc} FAR, Small Station Area $AWM_{{NDC}}$ is {small_awmndc}")
 
-wt_avg_station_area <- p_station_area |> 
-  group_by(analysis_station_area_types) |> 
-    summarize(
-      n = n(),
-      area = sum(parcel_area_mi2, na.rm = TRUE),
-      wt_avg = weighted.mean(zoning_new_max_far_additional, 
-                             w = parcel_area_mi2,
-                             na.rm = TRUE)
-    )
-  
-p_addtl_max <- max(p_station_area$zoning_new_max_far_additional, na.rm = TRUE)
+subtitle <- TeX(s)
 
-subtitle <- TeX("Large Station Area $AWM_{NDC}$ is 2.15 FAR, Small Station Area $AWM_{NDC}$ is 1.32 FAR")
-
-p_station_area |> 
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
 ggplot() +  
-  aes(x = zoning_new_max_far_additional,
-      weight = parcel_area_mi2,
+  aes(x = analysis_ndc_uniform,
+      weight = area_mi2,
       group = analysis_station_area_types) + 
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +  
+ geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") +
   scale_y_continuous(labels = scales::label_comma()) + 
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
+  scale_x_continuous(breaks = seq(0, ndc_uni_max, by = 0.5),
+                     limits = c(0,ndc_uni_max)) + 
   facet_wrap(~ analysis_station_area_types, scales = "fixed", ncol = 1) +
   labs(title = "HB 2160's Effect on Net Development Capacity by Station Area Type",
        subtitle = subtitle,
-       y = "Land Area (sq. miles)",
+       y = expression("Land Area (mi"^2*")"),
        x = "Net Development Capacity (FAR)") 
 ```
 
@@ -466,32 +522,24 @@ Summarizing $AWM_{NDC}$ of *Developable, Affected* parcels by station area revea
 #| fig-asp: 1
 #| fig-cap: "Transit Station Areas, Central Puget Sound"
 
-t_join <- st_join(t,
-                  filter(p, analysis_type %in% "Developable, Affected"))
+tar_load(analysis_stations_awmndc)
+tar_load(analysis_transit_walksheds)
 
-t_map <-  t_join |>
-  st_drop_geometry() |>
-  group_by(mode, stop_name) |>
-  summarize(.groups = "drop",
-            parcel_n = n(),
-            area_wt_old_far = round(
-              weighted.mean(zoning_est_max_far,
-                            parcel_area,
-                            na.rm = TRUE), 2),
-            parea_wt_new_far = round(
-              weighted.mean(zoning_new_max_far,
-                            parcel_area,
-                            na.rm = TRUE), 2),
-            area_wt_mean_net_dev_cap = round(
-              weighted.mean(zoning_new_max_far_additional,
-                                            parcel_area,
-                                            na.rm = TRUE), 2)) |>
-  ungroup() |>
-  left_join(t) |>
-  st_sf()
+t_stop_name <- analysis_transit_walksheds |> 
+    mutate(stop_name = as.character(glue("{stop_name} (ID:{row_number()})")))
 
-mapview(t_map, zcol = "area_wt_mean_net_dev_cap",
-        layer.name = "Mean Net Development Capacity")
+t_sf <- t_stop_name |> 
+  select(stop_name) |> 
+  left_join(analysis_stations_awmndc)
+  
+my_pal <- viridisLite::viridis(n = 6) |> 
+  rev() |> 
+  set_names(levels(t_sf$without_averaging))
+
+mapview(t_sf, 
+        zcol = "without_averaging", 
+        layer.name = "Net Dev. Capacity",
+        col.region = my_pal)
 
 ```
 
@@ -504,23 +552,31 @@ In order to better understand how the effects of HB 2160 may differ from place t
 #| message: false
 #| tbl-cap: "Case Studies"
 
+tar_load(pop_hu_change_cities)
+tar_load(pop_hu_change_cities_no_water)
+
 case_studies <- c("Shoreline",
                   "Redmond",
                   "Mercer Island",
                   "Kent"
                   )
 
-ps_cities <- st_read(
-  quiet = TRUE,
-  here("data_outputs/2024-tod-bill.gpkg"),
-  layer = "ps-cities-pop-hu") |> 
+case_study_cities <- pop_hu_change_cities |> 
+  filter(name %in% case_studies) |> 
   st_transform(2926) |> 
-  mutate(area = st_area(geom),
+  mutate(area = st_area(geometry),
          area_mi2 = as.numeric(convert_to_mi2(area))
 )
 
+case_study_cities_no_water <- pop_hu_change_cities_no_water |> 
+  filter(name %in% case_studies) |> 
+  st_transform(2926) |> 
+  mutate(area = st_area(geometry),
+         area_mi2 = as.numeric(convert_to_mi2(area))
+)
 
-st_join(t,ps_cities) |> 
+analysis_transit_walksheds |> 
+st_join(case_study_cities) |> 
   st_drop_geometry() |> 
   filter(name %in% case_studies) |> 
   group_by(name, mode) |> 
@@ -528,12 +584,12 @@ st_join(t,ps_cities) |>
             n = n()) |> 
   pivot_wider(names_from = mode,values_from = n,values_fill = 0L) |> 
   mutate(SC = 0L) |> 
-  left_join(st_drop_geometry(ps_cities)) |> 
+  left_join(st_drop_geometry(case_study_cities)) |> 
   select(-geoid, -area) |> 
   select(name, population, housing_units, area_mi2, everything()) |> 
   gt(rowname_col = "name") |> 
    tab_spanner(
-    label = "Population & Housing",
+    label = "Population, Housing, & Land",
     columns = c(population, housing_units, area_mi2)
   ) |>
   tab_spanner(
@@ -562,41 +618,48 @@ Grouping the study data by city and analysis group, we find that there is a sign
 #| tbl-cap: "Case Studies by Analysis Group"
 #| tbl-cap-location: top
 
+tar_load(analysis_parcels_ndc)
+
 col_names_city <- c("City",
                     "Analysis Group",
                     "Parcels (n)", 
                     "Land Area (sq. miles)")
 
-p_cities <- p |> 
+cs_results_analysis_group <- 
+analysis_parcels_ndc |> 
   st_drop_geometry() |> 
-  filter(zoning_juris %in% case_studies)
-
-p_cities_affected <- p_affected |>  
-  filter(zoning_juris %in% case_studies)
-
-p_cities |> 
-  group_by(zoning_juris, analysis_type) |> 
+  filter(city %in% case_studies) |> 
+  group_by(city, analysis_type_uni) |> 
   summarize(.groups = "drop",
             n = n(),
             area = 
               round(digits = 2,
-                    sum(parcel_area_mi2, na.rm = TRUE))
+                    sum(area_mi2, na.rm = TRUE))
             ) |> 
-  group_by(zoning_juris) |> 
+  group_by(city) |> 
   mutate(n_total = sum(n),
          area_total = sum(area)) |> 
-  group_by(zoning_juris, analysis_type) |> 
+  group_by(city, analysis_type_uni) |> 
   summarize(
-    n = glue("{comma(n)} ({percent(n/n_total)})"),
-    area = glue("{area} ({percent(area/area_total)})")
-  ) |> 
-  ungroup() |>  
-  gt(rowname_col = "analysis_type" ,
-     groupname_col = "zoning_juris",
+    .groups = "drop",
+    n = first(n),
+    area = first(area),
+    n_total = first(n_total),
+    area_total = first(area_total),
+    n_pct = percent(n/n_total),
+    area_pct = percent(area/area_total),
+    n_tbl = glue("{comma(n)} ({percent(n/n_total)})"),
+    area_tbl = glue("{area} ({percent(area/area_total)})")
+  ) 
+
+cs_results_analysis_group |>
+  select(city, analysis_type_uni, ends_with("tbl")) |> 
+  gt(rowname_col = "analysis_type_uni" ,
+     groupname_col = "city",
      process_md = TRUE) |> 
   cols_label(
-    n = "Parcels (n)",
-    area = html("Land Area (mi<sup>2</sup>)")
+    n_tbl = "Parcels (n)",
+    area_tbl = html("Land Area (mi<sup>2</sup>)")
   ) |> 
   tab_style(
     style = list(
@@ -612,91 +675,196 @@ Calculating area-weighted mean net development capacity ($AWM_{NDC}$) and total 
 #| label: tbl-results-case-studies-results-by-city
 #| tbl-cap: "Results by City"
 
-case_study_results <- p_affected |> 
-  filter(zoning_juris %in% case_studies) |> 
-st_drop_geometry() |>
-  group_by(zoning_juris) |> 
+tar_load(analysis_parcels_ndc)
+
+case_study_results <- analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies)|>
+  filter(analysis_type_avg %in% "Developable") |> 
+  group_by(city) |> 
   summarise(.groups = "drop",
             n = n(),
-            area = sum(parcel_area_mi2, na.rm = TRUE),
-            awm_ndc = weighted_mean(x = zoning_new_max_far_additional,
-                                    w = parcel_area_mi2)) |> 
-  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
-         area_ndc_ft2 = area_ndc_mi2 * 27878400) 
+            area = sum(area_mi2, na.rm = TRUE),
+            awm_ndc = weighted_mean(x = analysis_ndc,
+                                    w = area_mi2),
+            area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) 
 
 case_study_results |> 
-  select(-area_ndc_mi2) |> 
-  gt(rowname_col = "zoning_juris") |> 
+  gt(rowname_col = "city") |> 
   cols_label(
     n = "Parcels (n)",
     area = html("Land Area (mi<sup>2</sup>)"),
-    awm_ndc = html("<i><sub>AWM_NDC</sub></i>"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
     area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
   ) |> 
   fmt_number( 
-    columns = c(2,5),
+    columns = c(2),
     decimals = 0,       
     sep_mark = ","
   ) |> 
   fmt_number( 
     columns = c(3,4),
     decimals = 2
-  )
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  ) |> 
+  tab_footnote(
+    footnote = "Area-weighted mean of net development capacity",
+    locations = cells_column_labels(
+      columns = 4
+    )
+  ) |> 
+  tab_source_note(source_note = "Note: This table summarizes all Developable parcels within each city's station areas; it does not include parcels that would be exempt from HB 2160.")
+
 
 ```
 
 ```{r}
 #| label: results-case-studies-awmndc 
 
+tar_load(analysis_parcels_ndc)
 
-
-
-city_awmndc <- p_affected |> 
+cs_results_analysis_group_dev <-
+analysis_parcels_ndc |> 
   st_drop_geometry() |> 
-  group_by(zoning_juris) |> 
-  summarize(analysis_awmndc = weighted.mean(na.rm = TRUE,
-    zoning_new_max_far_additional,
-    w = parcel_area_mi2
-  ))
-
-case_studies_awmndc <- city_awmndc |> 
-  filter(zoning_juris %in% case_studies)
-
-kent_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Kent") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-mercerisland_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Mercer Island") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-redmond_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Redmond") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-shoreline_awmndc <- case_studies_awmndc |> 
-  filter(zoning_juris %in% "Shoreline") |> 
-  pluck("analysis_awmndc") |> 
-  round(digits = 2)
-
-case_studies_by_stationarea_type <- p |> 
-  st_drop_geometry() |> 
-  filter(zoning_juris %in% case_studies) |> 
-  group_by(zoning_juris, 
-           analysis_station_area_types,
-           analysis_type) |> 
+  filter(city %in% case_studies) |> 
+  group_by(city, analysis_type_avg) |> 
   summarize(.groups = "drop",
             n = n(),
-            area = round(digits = 2, sum(parcel_area_mi2,na.rm = TRUE)),
-            net_dev_cap = weighted.mean(na.rm = TRUE,
-                                        zoning_new_max_far_additional,
-                                        w = parcel_area_mi2
-                                        )
+            area = 
+              round(digits = 2,
+                    sum(area_mi2, na.rm = TRUE))
             ) |> 
-  mutate(net_dev_cap = if_else(is.nan(net_dev_cap),NA,net_dev_cap))
+  group_by(city) |> 
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(city, analysis_type_avg) |> 
+  summarize(
+    .groups = "drop",
+    n = first(n),
+    area = first(area),
+    n_total = first(n_total),
+    area_total = first(area_total),
+    n_pct = percent(n/n_total),
+    area_pct = percent(area/area_total),
+    n_tbl = glue("{comma(n)} ({percent(n/n_total)})"),
+    area_tbl = glue("{area} ({percent(area/area_total)})")
+  ) 
+  
+cs_results_analysis_group_devaffected <-
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies) |> 
+  filter(analysis_type_uni %in% c("Developable, Affected")) |> 
+  group_by(city, analysis_type_uni) |> 
+  summarize(.groups = "drop",
+            n = n(),
+            area = 
+              round(digits = 2,
+                    sum(area_mi2, na.rm = TRUE))
+            ) |> 
+  group_by(city) |> 
+  mutate(n_total = sum(n),
+         area_total = sum(area)) |> 
+  group_by(city, analysis_type_uni) |> 
+  summarize(
+    .groups = "drop",
+    n = first(n),
+    area = first(area),
+    n_total = first(n_total),
+    area_total = first(area_total),
+    n_pct = percent(n/n_total),
+    area_pct = percent(area/area_total),
+    n_tbl = glue("{comma(n)} ({percent(n/n_total)})"),
+    area_tbl = glue("{area} ({percent(area/area_total)})")
+  ) 
+
+cs_results_analysis_group_dev_only <- cs_results_analysis_group_dev |> 
+  filter(analysis_type_avg %in% "Developable")
+
+cs_n <- cs_results_analysis_group_dev_only |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n") |> comma())
+
+cs_area <- cs_results_analysis_group_dev_only |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area"))
+
+cs_n_pct <- cs_results_analysis_group_dev_only |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n_pct"))
+
+cs_area_pct <- cs_results_analysis_group_dev_only |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area_pct"))
+
+
+cs_devaff_n <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n") |> comma())
+
+cs_devaff_area <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area"))
+
+cs_devaff_n_pct <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"n_pct"))
+
+cs_devaff_area_pct <- cs_results_analysis_group_devaffected |> 
+  (\(x) split(x, x$city))() |> 
+  map(\(x) pluck(x,"area_pct"))
+
+
+cs_awmndc <- case_study_results |> 
+  split(case_study_results$city) |> 
+  map(\(x) pluck(x,"awm_ndc") |> 
+        round(digits = 2))
+
+case_studies_by_stationarea_type <-
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  filter(city %in% case_studies)|>
+  group_by(city,
+           analysis_type_uni,
+           analysis_station_area_types) |> 
+  summarise(.groups = "drop",
+            n = n(),
+            area = sum(area_mi2, na.rm = TRUE),
+            awm_ndc = weighted_mean(x = analysis_ndc,
+                                    w = area_mi2),
+            area_ndc_ft2 = sum(analysis_dev_cap_added, na.rm = TRUE)) |> 
+  mutate(awm_ndc = if_else(is.nan(awm_ndc),0,awm_ndc))
+
+max_ndc <- max(na.rm = TRUE, analysis_parcels_ndc$analysis_ndc_uniform)
+  
+
+```
+
+```{r}
+#| label: results-case-studies-transit-stations
+
+tar_load(analysis_transit_walksheds)
+
+case_studies_transit_stations <- analysis_transit_walksheds |> 
+  st_join(case_study_cities) |> 
+  transmute(
+    name,
+    mode = factor(mode,
+                  levels = c(
+                    "LR",
+                    "CR",
+                    "SC",
+                    "BRT"
+                  )),
+    stop_name
+  )
+
 
 ```
 
@@ -705,40 +873,33 @@ case_studies_by_stationarea_type <- p |>
 ```{r}
 #| label: results-case-studies-kent-objects
 
-t_kent <- st_join(t, ps_cities) |>  
-  filter(name %in% "Kent") |> 
-  transmute(
-    mode,
-    stop_name
-  )
+t_kent <- case_studies_transit_stations |> 
+  filter(name %in% "Kent")
 
 # Kent has several non-contiguous parts of the city.
 # These will be dropped in order to allow the leaflet map
 # to focus on the majority of the city
 
-kent <- ps_cities |> 
+kent <- 
+  case_study_cities |>
   filter(name %in% "Kent") |> 
   st_cast("POLYGON") |> 
-  mutate(area_polygon = st_area(geom)) |> 
-  filter(area_polygon == max(area_polygon)) |> # keep only the main part of Kent
+  mutate(area_polygon = st_area(geometry)) |> 
+  slice_max(area_polygon,n = 1) |> # keep only the main part of Kent
   select(-area_polygon)
 
-p_kent <- p |> 
-  filter(zoning_juris %in% "Kent") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
-
-p_affected_kent <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Kent") |>   
-  select(parcel_area_mi2,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
+p_kent <- analysis_parcels_ndc |> 
+  filter(city %in% "Kent") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  select(area_mi2,
+         district_name,
+         net_dev_capacity = analysis_ndc,
+         analysis_type_avg,
+         analysis_type_uni)
 
 kent_by_stationarea_type <- 
   case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Kent")
+  filter(city %in% "Kent")
 
 ```
 
@@ -753,6 +914,7 @@ HB 2160 would affect several station areas within Kent's city boundary, includin
 #| message: false
 #| fig-cap: "Kent Station Areas"
 
+tar_load(mode_pal)
 
 map_kent <- mapview(kent,
         col.regions = "grey",
@@ -764,7 +926,7 @@ map_kent <- mapview(kent,
 
 map_kent_stations_baselayer <- mapview(t_kent,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "gray",
         legend = TRUE,
@@ -776,7 +938,7 @@ map_kent_stations_baselayer <- mapview(t_kent,
 map_kent_stations <- map_kent + 
   mapview(t_kent,
           zcol = "mode",
-          col.regions = brewer.pal(3, "Set2"),
+          col.regions = mode_pal,
           legend = TRUE,
           layer.name = "Station Area Type",
           popup = FALSE,
@@ -786,7 +948,9 @@ map_kent_stations
 
 ```
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be 2.07 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 69% of the station area parcels and 62% of the station area land.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's station areas to be `r cs_awmndc['Kent']` FAR. This metric summarizes HB 2160's effect on the *Developable* parcels in the city's station areas, which includes `r cs_n_pct['Kent']` of the station area parcels (`r cs_n_pct['Kent']` parcels) and `r cs_area_pct['Kent']` of the station area land (`r cs_area['Kent']` mi^2^).
+
+In @fig-results-case-studies-kent-histogram, we observe the distribution of changes in development capacity that HB 2160 would have on *Developable, Affected* parcels in Kent's station areas.
 
 ```{r}
 #| label: fig-results-case-studies-kent-histogram
@@ -796,19 +960,15 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Kent's
 #| fig-cap: "Net Development Capacity, Kent"
 
 
-kent_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 2.07 FAR, n = 1,195 (69%)")
+kent_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}$) is {cs_awmndc['Kent']} FAR" |> 
+  glue() |> 
+  TeX()
 
-p_affected_kent |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
-       subtitle = kent_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
+analysis_parcels_ndc |> 
+  filter(city %in% "Kent") |> 
+  create_hist_with_inset() +
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+       subtitle = kent_hist_subtitle)
 ```
 
 Examining the data grouped by station area type, we observe two patterns. First, there are a significant number of *Not Developable* parcels in the half-mile station areas. Second, the *Developable, Affected* parcels in both types of station areas would be substantially affected by HB 2160, as indicated by the relatively large $AWM_{NDC}$ values in @tbl-results-case-studies-kent-station-areas.
@@ -819,13 +979,14 @@ Examining the data grouped by station area type, we observe two patterns. First,
 #| tbl-cap: "Station Area Type Summary, Kent"
 
 kent_by_stationarea_type |> 
-  select(-zoning_juris) |> 
-  gt(rowname_col = "analysis_type",
+  select(-city) |> 
+  gt(rowname_col = "analysis_type_uni",
      groupname_col = "analysis_station_area_types") |> 
   cols_label(
     n = "Parcels (n)",
     area = html("Land Area (mi<sup>2</sup>)"),
-    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
   ) |> 
   tab_style(
     style = list(cell_text(indent = px(20))),
@@ -835,6 +996,13 @@ kent_by_stationarea_type |>
     columns = c(4,5),
     decimals = 2,       
     sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(6),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
   )
   
 
@@ -859,7 +1027,7 @@ map_kent <- mapview(kent,
 
 map_kent_stations_baselayer <- mapview(t_kent,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "white",
         legend = TRUE,
@@ -880,37 +1048,77 @@ map_kent_parcels
 
 ```
 
+The majority of parcels within this city's station areas is zoned as "Single-Family". The total net development capacity for this zoning district would be a significant increase, as shown in @tbl-results-case-studies-kent-by-district.
+
+
+```{r}
+#| label: tbl-results-case-studies-kent-by-district
+#| message: false
+#| tbl-cap: "Top 5 Zoning Districts by Net Development Capacity, Kent"
+
+ analysis_parcels_ndc |> 
+  filter(city %in% "Kent") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  st_drop_geometry() |> 
+  group_by(district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = analysis_ndc,
+                                  w = area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_mi2 = if_else(area_ndc_mi2 <=0,0,area_ndc_mi2),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+   select(-area_ndc_mi2) |> 
+  arrange(desc(area_ndc_ft2)) |> 
+   slice_head(n = 5) |> 
+   gt(rowname_col = "district_name") |> 
+   cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
+  ) |> fmt_number( 
+    columns = c(3,4),
+    decimals = 2,       
+    sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  )
+
+
+
+```
+
 #### Mercer Island
 
 ```{r}
 #| label: results-case-studies-mercerisland-objects
 
-t_mercerisland <- st_join(t, ps_cities) |>  
-  filter(name %in% "Mercer Island") |> 
-  transmute(
-    mode,
-    stop_name
-  )
+t_mercerisland <- case_studies_transit_stations |> 
+  filter(name %in% "Mercer Island") 
 
-mercerisland <- ps_cities |> 
-  filter(name %in% "Mercer Island")
+mercerisland <- 
+  case_study_cities_no_water |>
+  filter(name %in% "Mercer Island") 
 
-p_mercerisland <- p |> 
-  filter(zoning_juris %in% "Mercer Island") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
-
-p_affected_mercerisland <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Mercer Island") |>   
-  select(parcel_area_mi2,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
+p_mercerisland <- analysis_parcels_ndc |> 
+  filter(city %in% "Mercer Island") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  select(area_mi2,
+         district_name,
+         net_dev_capacity = analysis_ndc,
+         analysis_type_avg,
+         analysis_type_uni)
 
 mercerisland_by_stationarea_type <- 
   case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Mercer Island")
+  filter(city %in% "Mercer Island")
 
 ```
 
@@ -936,7 +1144,7 @@ map_mercerisland <- mapview(mercerisland,
 
 map_mercerisland_stations_baselayer <- mapview(t_mercerisland,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "gray",
         legend = TRUE,
@@ -948,7 +1156,7 @@ map_mercerisland_stations_baselayer <- mapview(t_mercerisland,
 map_mercerisland_stations <- map_mercerisland + 
   mapview(t_mercerisland,
           zcol = "mode",
-          col.regions = brewer.pal(3, "Set2"),
+          col.regions = mode_pal,
           legend = TRUE,
           layer.name = "Station Area Type",
           popup = FALSE,
@@ -958,7 +1166,9 @@ map_mercerisland_stations
 
 ```
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer Island's light rail station area to be 3.01 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station area, which includes 87% of the station area parcels and 69% of the station area land.
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer Island's single station area to be `r cs_awmndc['Mercer Island']` FAR. This metric summarizes HB 2160's effect on the *Developable* parcels in the city's station area, which includes `r cs_n_pct['Mercer Island']` of the station area parcels (`r cs_n_pct['Mercer Island']` parcels) and `r cs_area_pct['Mercer Island']` of the station area land (`r cs_area['Mercer Island']` mi^2^).
+
+In @fig-results-case-studies-mercerisland-histogram, we observe the distribution of changes in development capacity that HB 2160 would have on *Developable, Affected* parcels in Mercer Island's light rail station area.
 
 ```{r}
 #| label: fig-results-case-studies-mercerisland-histogram
@@ -968,35 +1178,25 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Mercer
 #| fig-cap: "Net Development Capacity, Mercer Island"
 
 
-mercerisland_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 3.01 FAR, n = 550 parcels (87%)")
+mercerisland_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}$) is {cs_awmndc['Mercer Island']} FAR" |> 
+  glue() |> 
+  TeX()
 
-p_affected_mercerisland |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
-       subtitle = mercerisland_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
+analysis_parcels_ndc |> 
+  filter(city %in% "Mercer Island") |> 
+  create_hist_with_inset(binwidth = .25) +
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
+       subtitle = mercerisland_hist_subtitle)
 ```
 
-Displaying the net development capacity of individual parcels reveals a clear pattern around Mercer Island's light rail station area, as shown in @fig-results-case-studies-mercerisland-maps. Aside from the Town Center zoning district, which already allows buildings with up to 4 FAR, the station area parcels have an area-weighted average FAR of 0.49—significantly lower than the maximum FAR that HB 2160 would introduce.
+Displaying the net development capacity of individual parcels reveals a clear pattern around Mercer Island's light rail station area, as shown in @fig-results-case-studies-mercerisland-maps. 
 
 ```{r}
 #| label: fig-results-case-studies-mercerisland-maps
 #| eval: true
 #| message: false
-#| fig-cap: "Net Development Capacity, Mercer Island Light Rail Station Area"
+#| fig-cap: "Net Development Capacity, Mercer Island Station Areas"
 
-mercerisland_mean_current_far <- p |> 
-  filter(zoning_juris == "Mercer Island") |>
-  filter(analysis_type == "Developable, Affected") |> 
-  summarize(mean = weighted.mean(zoning_est_max_far,
-                                 parcel_area, 
-                                 na.rm = TRUE))
 
 map_mercerisland <- mapview(mercerisland,
         col.regions = "grey",
@@ -1008,7 +1208,7 @@ map_mercerisland <- mapview(mercerisland,
 
 map_mercerisland_stations_baselayer <- mapview(t_mercerisland,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "white",
         legend = TRUE,
@@ -1029,6 +1229,53 @@ map_mercerisland_parcels
 
 ```
 
+Aside from the Town Center zoning district, which already allows buildings with up to 4 FAR, the station area parcels have an area-weighted average FAR of 0.49—significantly lower than the maximum FAR that HB 2160 would introduce. The total net development capacity for station area parcels zoned as "Single-Family" would be a significant increase, as shown in @tbl-results-case-studies-kent-by-district.
+
+
+```{r}
+#| label: tbl-results-case-studies-mercerisland-by-district
+#| message: false
+#| tbl-cap: "Zoning Districts by Net Development Capacity, Mercer Island"
+
+ analysis_parcels_ndc |> 
+  filter(city %in% "Mercer Island") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  st_drop_geometry() |> 
+  group_by(district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = analysis_ndc,
+                                  w = area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_mi2 = if_else(area_ndc_mi2 <=0,0,area_ndc_mi2),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+   select(-area_ndc_mi2) |> 
+  arrange(desc(area_ndc_ft2)) |>  
+   gt(rowname_col = "district_name") |> 
+   cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
+  ) |> fmt_number( 
+    columns = c(3,4),
+    decimals = 2,       
+    sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  )
+
+
+
+```
+
+
 #### Redmond
 
 ![Redmond, WA \| Photo courtesy of [Spicypepper999](https://commons.wikimedia.org/wiki/File:Redmond_aerial,_April_2023.png), CC0, via Wikimedia Commons](images/redmond-aerial.png){fig-alt="An aerial photo of Redmond, Washington"}
@@ -1036,47 +1283,49 @@ map_mercerisland_parcels
 ```{r}
 #| label: results-case-studies-redmond-objects
 
-t_redmond <- st_join(t, ps_cities) |>  
-  filter(name %in% "Redmond") |> 
-  transmute(
-    mode,
-    stop_name
-  )
-
-redmond <- ps_cities |> 
+t_redmond <- case_studies_transit_stations |> 
   filter(name %in% "Redmond")
 
-p_redmond <- p |> 
-  filter(zoning_juris %in% "Redmond") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
+# Redmond has several non-contiguous parts of the city.
+# These will be dropped in order to allow the leaflet map
+# to focus on the majority of the city
 
-p_affected_redmond <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Redmond") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
+redmond <- 
+  case_study_cities |>
+  filter(name %in% "Redmond") |> 
+  st_cast("POLYGON") |> 
+  mutate(area_polygon = st_area(geometry)) |> 
+  slice_max(area_polygon,n = 1) |> # keep only the main part of Redmond
+  select(-area_polygon)
+
+p_redmond <- analysis_parcels_ndc |> 
+  filter(city %in% "Redmond") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  select(area_mi2,
+         district_name,
+         net_dev_capacity = analysis_ndc,
+         analysis_type_avg,
+         analysis_type_uni)
 
 redmond_by_stationarea_type <- 
   case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Redmond")
+  filter(city %in% "Redmond")
 
 ```
 
 Redmond is a city located in King County, Washington. The city has approximate 74,000 residents. Between 2010 and 2020, the city's population increased by 35.3% [@pugetsoundregionalcouncil2021].
 
-HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^11] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
+HB 2160 would affect several station areas within Redmond's city boundary, including four light rail stations and approximately 30 bus rapid transit stations.[^10] See @tbl-appendix-case-studies-redmond-stations-table in the appendix for a complete list of the station areas in Redmond.
 
-[^11]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
+[^10]: While most of the bus rapid transit stations are spatially distinct, there are several cases where two BRT stations appear to be in the same location. One example is Redmond Transit Center, where both Bay 1 and Bay 4 are included in the study's transit stop dataset even though they have (approximately) the same station area. This situation affect six BRT stops / three distinct station areas in total.
 
 ```{r}
 #| label: fig-case-studies-redmond-stations-map 
 #| message: false
 #| fig-cap: "Redmond Station Areas"
+#| include: false
 
+tar_load(mode_pal)
 
 map_redmond <- mapview(redmond,
         col.regions = "grey",
@@ -1088,7 +1337,7 @@ map_redmond <- mapview(redmond,
 
 map_redmond_stations_baselayer <- mapview(t_redmond,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "gray",
         legend = TRUE,
@@ -1100,7 +1349,7 @@ map_redmond_stations_baselayer <- mapview(t_redmond,
 map_redmond_stations <- map_redmond + 
   mapview(t_redmond,
           zcol = "mode",
-          col.regions = brewer.pal(3, "Set2"),
+          col.regions = mode_pal,
           legend = TRUE,
           layer.name = "Station Area Type",
           popup = FALSE,
@@ -1110,7 +1359,9 @@ map_redmond_stations
 
 ```
 
-We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be +1.67 FAR. This metric summarizes HB 2160's effect on the *Developable, Affected* parcels in the city's station areas, which includes 90% of the station area parcels (1,336 parcels) and 76% of the station area land (2.09 mi^2^).
+We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmond's station areas to be `r cs_awmndc['Redmond']` FAR. This metric summarizes HB 2160's effect on the *Developable* parcels in the city's station areas, which includes `r cs_n_pct['Redmond']` of the station area parcels (`r cs_n_pct['Redmond']` parcels) and `r cs_area_pct['Redmond']` of the station area land (`r cs_area['Redmond']` mi^2^).
+
+In @fig-results-case-studies-redmond-histogram, we observe the distribution of changes in development capacity that HB 2160 would have on *Developable, Affected* parcels in Redmond's station areas.
 
 ```{r}
 #| label: fig-results-case-studies-redmond-histogram
@@ -1120,22 +1371,18 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Redmon
 #| fig-cap: "Net Development Capacity, Redmond"
 
 
-redmond_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
+redmond_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}$) is {cs_awmndc['Redmond']} FAR" |> 
+  glue() |> 
+  TeX()
 
-p_affected_redmond |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
-       subtitle = redmond_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
+analysis_parcels_ndc |> 
+  filter(city %in% "Redmond") |> 
+  create_hist_with_inset() +
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
+       subtitle = redmond_hist_subtitle)
 ```
 
-Examining the data grouped by station area type, we observe that while both station area types contain a similar number of *Developable, Affected* parcels, the *Large* station areas include substantially more land area that would be affected by the bill. Additionally, the $AWM_{NDC}$ of Redmond's *Large* station areas is substantially higher than the *Small* station areas (+1.92 FAR and + 1.14 FAR, respectively).
+Examining the data grouped by station area type, we observe that while both station area types contain a similar number of *Developable, Affected* parcels, the *Large* station areas include substantially more land area that would be affected by the bill. Additionally, the $AWM_{NDC}$ of Redmond's *Large* station areas is substantially higher than the *Small* station areas (+1.90 FAR and + 1.15 FAR, respectively).
 
 ```{r}
 #| label: tbl-results-case-studies-redmond-station-areas
@@ -1143,13 +1390,14 @@ Examining the data grouped by station area type, we observe that while both stat
 #| tbl-cap: "Station Area Type Summary, Redmond"
 
 redmond_by_stationarea_type |> 
-  select(-zoning_juris) |> 
-  gt(rowname_col = "analysis_type",
+  select(-city) |> 
+  gt(rowname_col = "analysis_type_uni",
      groupname_col = "analysis_station_area_types") |> 
   cols_label(
     n = "Parcels (n)",
     area = html("Land Area (mi<sup>2</sup>)"),
-    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
   ) |> 
   tab_style(
     style = list(cell_text(indent = px(20))),
@@ -1159,38 +1407,27 @@ redmond_by_stationarea_type |>
     columns = c(4,5),
     decimals = 2,       
     sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(6),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
   )
   
 
 ```
 
-Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. The Overlake Mixed-Use zoning district would see substantial increase to its total development capacity (+43M ft^2^).
+Displaying the net development capacity of individual parcels reveals a complicated pattern around Redmond's station areas, as shown in @fig-results-case-studies-redmond-maps. 
 
-```{r}
-#| label: results-case-studies-redmond-by-district
-#| include: false 
-
-p_affected_redmond |> 
-  st_drop_geometry() |> 
-  group_by(zoning_district_name) |> 
-summarise(.groups = "drop",
-          n = n(),
-          area = sum(parcel_area_mi2, na.rm = TRUE),
-          awm_ndc = weighted_mean(x = net_dev_capacity,
-                                  w = parcel_area_mi2)) |> 
-  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
-         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
-  arrange(desc(area_ndc_mi2))
-
-
-
-```
 
 ```{r}
 #| label: fig-results-case-studies-redmond-maps
 #| eval: true
 #| message: false
 #| fig-cap: "Net Development Capacity, Redmond Station Areas"
+#| include: false
 
 
 map_redmond <- mapview(redmond,
@@ -1203,7 +1440,7 @@ map_redmond <- mapview(redmond,
 
 map_redmond_stations_baselayer <- mapview(t_redmond,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "white",
         legend = TRUE,
@@ -1224,6 +1461,51 @@ map_redmond_parcels
 
 ```
 
+While there are a few neighborhoods that would not be affected, such as Redmond Town Center and the manufacturing park on the north, the majority of parcels within the transit station areas would have their maximum development capacity increased by HB 2160. For example, the Overlake Mixed-Use zoning district would see substantial increase to its total development capacity (see @tbl-results-case-studies-redmond-by-district).
+
+```{r}
+#| label: tbl-results-case-studies-redmond-by-district
+#| message: false
+#| tbl-cap: "Top 5 Zoning Districts by Net Development Capacity, Redmond"
+
+ analysis_parcels_ndc |> 
+  filter(city %in% "Redmond") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  st_drop_geometry() |> 
+  group_by(district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = analysis_ndc,
+                                  w = area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+   select(-area_ndc_mi2) |> 
+  arrange(desc(area_ndc_ft2)) |> 
+   slice_head(n = 5) |> 
+   gt(rowname_col = "district_name") |> 
+   cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
+  ) |> fmt_number( 
+    columns = c(3,4),
+    decimals = 2,       
+    sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  )
+
+
+
+```
+
 #### Shoreline
 
 ![City of Shoreline, WA \| Photo courtesy of [Haruo](https://commons.wikimedia.org/wiki/File:City_of_Shoreline_sign_at_145th_and_Aurora.jpg), [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0), via Wikimedia Commons](images/city-of-shoreline-sign.jpg)
@@ -1231,47 +1513,48 @@ map_redmond_parcels
 ```{r}
 #| label: results-case-studies-shoreline-objects
 
-t_shoreline <- st_join(t, ps_cities) |>  
-  filter(name %in% "Shoreline") |> 
-  transmute(
-    mode,
-    stop_name
-  )
-
-shoreline <- ps_cities |> 
+t_shoreline <- case_studies_transit_stations |> 
   filter(name %in% "Shoreline")
 
-p_shoreline <- p |> 
-  filter(zoning_juris %in% "Shoreline") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         net_dev_capacity = zoning_new_max_far_additional)
+# Shoreline has several non-contiguous parts of the city.
+# These will be dropped in order to allow the leaflet map
+# to focus on the majority of the city
 
-p_affected_shoreline <- p |>  
-  filter(analysis_type %in% "Developable, Affected") |> 
-  filter(zoning_juris %in% "Shoreline") |>   
-  select(parcel_area_mi2,
-         zoning_district_name,
-         analysis_station_area_types,
-         net_dev_capacity = zoning_new_max_far_additional) 
+shoreline <- 
+  case_study_cities |>
+  filter(name %in% "Shoreline") |> 
+  st_cast("POLYGON") |> 
+  mutate(area_polygon = st_area(geometry)) |> 
+  slice_max(area_polygon,n = 1) |> # keep only the main part of Shoreline
+  select(-area_polygon)
+
+p_shoreline <- analysis_parcels_ndc |> 
+  filter(city %in% "Shoreline") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  select(area_mi2,
+         district_name,
+         net_dev_capacity = analysis_ndc,
+         analysis_type_avg,
+         analysis_type_uni)
 
 shoreline_by_stationarea_type <- 
   case_studies_by_stationarea_type |> 
-  filter(zoning_juris %in% "Shoreline")
+  filter(city %in% "Shoreline")
 
 ```
 
 Shoreline is a city located in King County, Washington. The city has approximate 58,700 residents. Between 2010 and 2020, the city's population increased by 10.6% [@pugetsoundregionalcouncil2021].
 
-HB 2160 would affect several station areas within Shoreline's city boundary, including two light rail stations and approximately 30 bus rapid transit stations.[^12] See @tbl-appendix-case-studies-shoreline-stations-table in the appendix for a complete list of the station areas in Shoreline.
+HB 2160 would affect several station areas within Shoreline's city boundary, including two light rail stations and approximately 30 bus rapid transit stations.[^11] See @tbl-appendix-case-studies-shoreline-stations-table in the appendix for a complete list of the station areas in Shoreline.
 
-[^12]: While most of the bus rapid transit station areas are spatially distinct, the Aurora Village Transit Center constitutes two stations (Bay 10 and Bay 3) in the study data set even though they have (approximately) the same station area.
+[^11]: While most of the bus rapid transit station areas are spatially distinct, the Aurora Village Transit Center constitutes two stations (Bay 10 and Bay 3) in the study data set even though they have (approximately) the same station area.
 
 ```{r}
 #| label: fig-case-studies-shoreline-stations-map 
 #| message: false
 #| fig-cap: "Shoreline Station Areas"
 
+tar_load(mode_pal)
 
 map_shoreline <- mapview(shoreline,
         col.regions = "grey",
@@ -1283,7 +1566,7 @@ map_shoreline <- mapview(shoreline,
 
 map_shoreline_stations_baselayer <- mapview(t_shoreline,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "gray",
         legend = TRUE,
@@ -1295,7 +1578,7 @@ map_shoreline_stations_baselayer <- mapview(t_shoreline,
 map_shoreline_stations <- map_shoreline + 
   mapview(t_shoreline,
           zcol = "mode",
-          col.regions = brewer.pal(3, "Set2"),
+          col.regions = mode_pal,
           legend = TRUE,
           layer.name = "Station Area Type",
           popup = FALSE,
@@ -1315,19 +1598,15 @@ We find the area-weighted mean net development capacity ($AWM_{NDC}$) for Shorel
 #| fig-cap: "Net Development Capacity, Shoreline"
 
 
-shoreline_hist_subtitle <- TeX("Area-weighted mean net development capacity ($AWM_{NDC}$) is 1.67 FAR, n = 1,336 (90%)")
+shoreline_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}$) is {cs_awmndc['Shoreline']} FAR" |> 
+  glue() |> 
+  TeX()
 
-p_affected_shoreline |>
-ggplot() +
-  aes(x = net_dev_capacity,
-      weight = parcel_area_mi2) +
-  geom_histogram(binwidth = 0.25, color = "grey20", fill= "grey80") +
-  scale_y_continuous(labels = scales::label_comma()) +
-  scale_x_continuous( breaks = seq(0, p_addtl_max, by = 0.25)) +
-  labs(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
-       subtitle = shoreline_hist_subtitle,
-       y = "Land Area (sq. miles)",
-       x = "Net Development Capacity (FAR)")
+analysis_parcels_ndc |> 
+  filter(city %in% "Shoreline") |> 
+  create_hist_with_inset() +
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
+       subtitle = shoreline_hist_subtitle)
 ```
 
 Examining the data grouped by station area type, we observe that in Shoreline the *Small* station areas make up both more parcels and more land area than the *Large* station areas. However, the $AWM_{NDC}$ of Shoreline's *Large* station areas is substantially higher than that of the *Small* station areas (+2.23 FAR and + 1.27 FAR, respectively).
@@ -1338,13 +1617,14 @@ Examining the data grouped by station area type, we observe that in Shoreline th
 #| tbl-cap: "Station Area Type Summary, Shoreline"
 
 shoreline_by_stationarea_type |> 
-  select(-zoning_juris) |> 
-  gt(rowname_col = "analysis_type",
+  select(-city) |> 
+  gt(rowname_col = "analysis_type_uni",
      groupname_col = "analysis_station_area_types") |> 
   cols_label(
     n = "Parcels (n)",
     area = html("Land Area (mi<sup>2</sup>)"),
-    net_dev_cap = html("<i>AWM<sub>NDC</sub></i>")
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
   ) |> 
   tab_style(
     style = list(cell_text(indent = px(20))),
@@ -1354,32 +1634,20 @@ shoreline_by_stationarea_type |>
     columns = c(4,5),
     decimals = 2,       
     sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(6),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
   )
   
 
 ```
 
-Displaying the net development capacity of individual parcels reveals a that most of Shorelines station areas would be significantly affected by HB 2160, as shown in @fig-results-case-studies-shoreline-maps. The vast majority of parcels within this city's station areas is zoned as "Low-Density Residential". The total net development capacity for this zoning district would be a significant increase (+54M ft^2^).
+Displaying the net development capacity of individual parcels reveals a complicated pattern around Shoreline's station areas, as shown in @fig-results-case-studies-shoreline-maps. 
 
-```{r}
-#| label: results-case-studies-shoreline-by-district
-#| include: false 
-
-p_affected_shoreline |> 
-  st_drop_geometry() |> 
-  group_by(zoning_district_name) |> 
-summarise(.groups = "drop",
-          n = n(),
-          area = sum(parcel_area_mi2, na.rm = TRUE),
-          awm_ndc = weighted_mean(x = net_dev_capacity,
-                                  w = parcel_area_mi2)) |> 
-  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
-         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
-  arrange(desc(area_ndc_mi2))
-
-
-
-```
 
 ```{r}
 #| label: fig-results-case-studies-shoreline-maps
@@ -1398,7 +1666,7 @@ map_shoreline <- mapview(shoreline,
 
 map_shoreline_stations_baselayer <- mapview(t_shoreline,
         zcol = "mode",
-        col.regions = brewer.pal(3, "Set2"),
+        col.regions = mode_pal,
         alpha.regions = 0.2,
         color = "white",
         legend = TRUE,
@@ -1418,6 +1686,54 @@ map_shoreline_parcels <- map_shoreline_stations_baselayer +
 map_shoreline_parcels
 
 ```
+
+
+The vast majority of parcels within this city's station areas is zoned as "Low-Density Residential". The total net development capacity for this zoning district would be a significant increase, as shown in @tbl-results-case-studies-shoreline-by-district.
+
+```{r}
+#| label: tbl-results-case-studies-shoreline-by-district
+#| message: false
+#| tbl-cap: "Top 3 Zoning Districts by Net Development Capacity, Shoreline"
+
+ analysis_parcels_ndc |> 
+  filter(city %in% "Shoreline") |>   
+  filter(analysis_type_avg %in% "Developable") |> 
+  st_drop_geometry() |> 
+  group_by(district_name) |> 
+summarise(.groups = "drop",
+          n = n(),
+          area = sum(area_mi2, na.rm = TRUE),
+          awm_ndc = weighted_mean(x = analysis_ndc,
+                                  w = area_mi2)) |> 
+  mutate(area_ndc_mi2 = poss_multiply(area, awm_ndc),
+         area_ndc_mi2 = if_else(area_ndc_mi2 <=0,0,area_ndc_mi2),
+         area_ndc_ft2 = area_ndc_mi2 * 27878400) |> 
+   select(-area_ndc_mi2) |> 
+  arrange(desc(area_ndc_ft2)) |> 
+   slice_head(n = 3) |> 
+   gt(rowname_col = "district_name") |> 
+   cols_label(
+    n = "Parcels (n)",
+    area = html("Land Area (mi<sup>2</sup>)"),
+    awm_ndc = html("<i>AWM<sub>NDC</sub></i>"),
+    area_ndc_ft2 = html("Net Dev. Capacity (ft<sup>2</sup>)")
+  ) |> fmt_number( 
+    columns = c(3,4),
+    decimals = 2,       
+    sep_mark = ","
+  ) |> 
+  fmt_number( 
+    columns = c(5),
+    decimals = 0,       
+    sep_mark = ",",
+    n_sigfig = 3,
+    suffixing = TRUE
+  )
+
+
+
+```
+
 
 ## Conclusion
 
@@ -1454,51 +1770,53 @@ t_kent |>
 
 ```{r}
 #| label: fig-appendix-case-studies-kent-zoning
-#| include: false
 #| message: false
 #| fig-cap: "Zoning Districts, Kent Station Areas (Appendix)"
+#| include: false
+#| eval: false
 
 
-zd_kent <- zd |> 
-  filter(juris %in% "Kent") |> 
-  select(district_name,
-         zone,
-         allow_residential:min_parking
-         )
 
-map_kent_zoning_districts <- map_kent + 
-  mapview(zd_kent,
-          zcol = "zone",
-          col.regions = c(brewer.pal(12, "Set3"),
-                          brewer.pal(8, "Set2")),
-          popup = TRUE,
-          layer.name = "Zoning Districts")
-
-map_kent_zoning_districts
+# zd_kent <- zd |> 
+#   filter(juris %in% "Kent") |> 
+#   select(district_name,
+#          zone,
+#          allow_residential:min_parking
+#          )
+# 
+# map_kent_zoning_districts <- map_kent + 
+#   mapview(zd_kent,
+#           zcol = "zone",
+#           col.regions = c(brewer.pal(12, "Set3"),
+#                           brewer.pal(8, "Set2")),
+#           popup = TRUE,
+#           layer.name = "Zoning Districts")
+# 
+# map_kent_zoning_districts
 
 ```
 
 ```{r}
-#| label: fig-appendix-case-studies-kent-parcels
-#| include: false
+#| label: fig-appendix-case-studies-kent-parcels-map
 #| eval: true
 #| message: false
 #| fig-cap: "Net Development Capacity, Kent Station Areas (Appendix)"
+#| include: false
 
 
-p_kent <- p |> 
-  filter(zoning_juris %in% "Kent") |> 
-  select(net_dev_capacity = zoning_new_max_far_additional)
-
-map_kent_parcels <- map_kent +  
-  map_kent_stations_baselayer +
-  mapview(p_kent,
-          zcol = "net_dev_capacity",
-          legend = TRUE,
-          layer.name = "Net FAR",
-          popup = "net_dev_capacity") 
-
-map_kent_parcels
+# p_kent <- p |> 
+#   filter(zoning_juris %in% "Kent") |> 
+#   select(net_dev_capacity = zoning_new_max_far_additional)
+# 
+# map_kent_parcels <- map_kent +  
+#   map_kent_stations_baselayer +
+#   mapview(p_kent,
+#           zcol = "net_dev_capacity",
+#           legend = TRUE,
+#           layer.name = "Net FAR",
+#           popup = "net_dev_capacity") 
+# 
+# map_kent_parcels
 
 ```
 
