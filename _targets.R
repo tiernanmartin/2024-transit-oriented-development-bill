@@ -17,6 +17,7 @@ library(gt)
 library(latex2exp)
 library(tigris)
 library(patchwork)
+library(RColorBrewer)
 
 # SET TARGET OPTIONS ----
 tar_option_set(
@@ -36,7 +37,8 @@ tar_option_set(
                "gt",
                "latex2exp",
                "tigris",
-               "patchwork")
+               "patchwork",
+               "RColorBrewer")
 )
 
 # SOURCE R FUNCTIONS -----------------------------------------------------------
@@ -223,7 +225,9 @@ pipeline_analysis <- list(
              make_analysis_stations_awmndc(analysis_parcels_ndc,
                                            analysis_transit_walksheds)),
   tar_target(analysis_station_types_dev_affected,
-             make_analysis_station_types_dev_affected(analysis_parcels_ndc))
+             make_analysis_station_types_dev_affected(analysis_parcels_ndc)),
+  tar_target(mode_pal,
+             make_mode_pal(analysis_transit_walksheds))
 )
 
 
