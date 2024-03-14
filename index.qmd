@@ -967,7 +967,7 @@ kent_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{NDC}}
 analysis_parcels_ndc |> 
   filter(city %in% "Kent") |> 
   create_hist_with_inset() +
-  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Kent, WA",
        subtitle = kent_hist_subtitle)
 ```
 
@@ -1185,7 +1185,7 @@ mercerisland_hist_subtitle <- "Area-weighted mean net development capacity ($AWM
 analysis_parcels_ndc |> 
   filter(city %in% "Mercer Island") |> 
   create_hist_with_inset(binwidth = .25) +
-  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Mercer Island, WA",
        subtitle = mercerisland_hist_subtitle)
 ```
 
@@ -1378,7 +1378,7 @@ redmond_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{ND
 analysis_parcels_ndc |> 
   filter(city %in% "Redmond") |> 
   create_hist_with_inset() +
-  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Redmond, WA",
        subtitle = redmond_hist_subtitle)
 ```
 
@@ -1605,7 +1605,7 @@ shoreline_hist_subtitle <- "Area-weighted mean net development capacity ($AWM_{{
 analysis_parcels_ndc |> 
   filter(city %in% "Shoreline") |> 
   create_hist_with_inset() +
-  plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
+  patchwork::plot_annotation(title = "HB 2160's Effect on Net Development Capacity in Shoreline, WA",
        subtitle = shoreline_hist_subtitle)
 ```
 
