@@ -25,7 +25,7 @@ keywords:
   - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, House of Representatives members introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would have required cities to permit developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the development capacity increases proposed by the bill compare to existing allowances. The results show a significant potential increase in development for most areas within walking distance of transit stops. Specifically, for developable land currently zoned for lower development capacity than the bill suggests, the projected average capacity increase is an additional 1.79 floor area ratio (FAR). If adopted, this bill would have increased the development capacity of land near the region's public transit network by as much as 1.8 billion square feet.
+  During the 2024 legislative session in Washington State, House of Representatives members introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would have required cities to permit developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the development capacity increases proposed by the bill compare to existing allowances. The results show a while the typical developable station area parcel already allows more development capacity that HB 2160, there is a significant amount of land that would be impacted by the bill. Specifically, for developable land currently zoned for lower development capacity than the bill would have required, the estimated average capacity increase would be an additional 1.79 floor area ratio (FAR). If adopted, this bill would have increased the development capacity of land near the region's public transit network by as much as 1.8 billion square feet.
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered a bill aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. This bill would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
@@ -244,7 +244,7 @@ The study uses a combination of a relational database and statistical software t
 
 Data sets containing information relevant to HB 2160 are combined through spatial filtering and spatial joining to produce a data set of all parcels within the station areas. The refined parcel data are augmented with zoning and land use regulation information from the zoning districts. A maximum FAR baseline is estimated for all parcels, then the new maximum FAR that would be introduced by HB 2160 is estimated. For each parcel, the net difference between the current (old) and new FAR is calculated. For parcels where the current zoning allows development greater than the new FAR, the effect of the bill is considered to be zero additional FAR; for parcels where the current zoning is more restrictive that the new FAR, the effect is calculated in terms of additional FAR allowed. The bill's effect on each parcel is then aggregated by station area, jurisdiction, and region, and summarized using the area-weight mean.[^6]
 
-[^6]: Parcels that do not allow residential uses are characterized as "not developable" and are not included in the area-weighted mean statistic; however, these parcels are included in the study's analysis for other purposes such as describing and quantithe characteristics of land within each station area or jurisdiction.
+[^6]: Parcels that do not allow residential uses are characterized as "not developable" and are not included in the area-weighted mean statistic; however, these parcels are included in the study's analysis for other purposes such as describing and quantifying the characteristics of land within each station area or jurisdiction.
 
 ### Limitations
 
@@ -314,25 +314,6 @@ dev_cap_total <- analysis_study_group |>
   filter(str_detect(name, "total")) |> 
   pluck("devcap_tbl") |> 
   str_replace("B", " billion")
-
-
-# p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#              layer = "tod-parcels",
-#              quiet = TRUE)
-# 
-# p_affected <- p |> 
-#   st_drop_geometry() |> 
-#   filter(analysis_type %in% "Developable, Affected")
-# 
-# undev_land_codes <- c(94, 93, 92)
-# 
-# t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#          layer = "transit-station-areas",
-#          quiet = TRUE)
-# 
-# zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#          layer = "tod-zoning-districts",
-#          quiet = TRUE)
 
 ```
 
@@ -416,7 +397,7 @@ analysis_study_group |>
 
 ```
 
-We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is +`r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. Plotting the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, we observe that the majority (by land area) would be affected by a development capacity increase of 1.5 FAR or greater. See @fig-results-histogram-affected below.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is `r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. However, for parcels where the current development capacity is less than what HB 1110 would require, we observe that the majority would be significantly impacted by the bill. @fig-results-histogram-affected plots the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, revealing that most of the land in this group of station area parcels would be affected by a development capacity increase of 1.5 FAR or greater.
 
 ```{r}
 #| label: fig-results-histogram-affected
