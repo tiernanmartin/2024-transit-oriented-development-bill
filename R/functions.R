@@ -604,9 +604,18 @@ make_analysis_station_types_dev_affected <- function(analysis_parcels_ndc){
   
   return(analysis_station_types_dev_affected)
 }
+
+make_mode_pal <- function(analysis_transit_walksheds){
+  mode_pal <- brewer.pal(4, "Set2") |> 
+    rev() |> 
+    set_names(levels(factor(analysis_transit_walksheds$mode,
+                            levels = c("LR","CR","SC","BRT"))))
+  
+  return(mode_pal)
+}
 # UTILITY FUNCTIONS -----
 
-create_hist_with_inset <- function(data){
+create_hist_with_inset <- function(data, binwidth = .5){
   
   
   # P1 ----------------------------------------------------------------------
@@ -614,8 +623,7 @@ create_hist_with_inset <- function(data){
   color_values <- c("tomato","grey70", "grey80") |> 
     set_names(levels(factor(data$analysis_type_uni)))
   
-  p1 <- data |> 
-    filter(city %in% "Kent") |> 
+  p1 <- data |>
     create_pie_chart(category_col = "analysis_type_uni",
                      value_col = "area_mi2",
                      color_values = color_values) +
@@ -629,7 +637,7 @@ create_hist_with_inset <- function(data){
     ggplot() +
     aes(x = analysis_ndc,
         weight = area_mi2) +
-    geom_histogram(binwidth = 0.5, color = "white", fill = "tomato") +
+    geom_histogram(binwidth = binwidth, color = "white", fill = "tomato") +
     scale_y_continuous(labels = scales::label_comma()) +
     scale_x_continuous(breaks = seq(0, max_ndc, by = 0.5),
                        limits = c(0,max_ndc)) +
@@ -640,13 +648,13 @@ create_hist_with_inset <- function(data){
   # HIST + INSET ------------------------------------------------------------
   
   hist_with_inset <- p2 + 
-    inset_element(p1, 
+    patchwork::inset_element(p1, 
                   left = 0, 
                   bottom = 0.6, 
                   right = 0.4, 
                   top = 1, 
                   align_to = 'full') +
-    plot_layout(guides = "collect") 
+    patchwork::plot_layout(guides = "collect") 
   
   return(hist_with_inset)
   
