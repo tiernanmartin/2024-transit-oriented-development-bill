@@ -244,7 +244,7 @@ The study uses a combination of a relational database and statistical software t
 
 Data sets containing information relevant to HB 2160 are combined through spatial filtering and spatial joining to produce a data set of all parcels within the station areas. The refined parcel data are augmented with zoning and land use regulation information from the zoning districts. A maximum FAR baseline is estimated for all parcels, then the new maximum FAR that would be introduced by HB 2160 is estimated. For each parcel, the net difference between the current (old) and new FAR is calculated. For parcels where the current zoning allows development greater than the new FAR, the effect of the bill is considered to be zero additional FAR; for parcels where the current zoning is more restrictive that the new FAR, the effect is calculated in terms of additional FAR allowed. The bill's effect on each parcel is then aggregated by station area, jurisdiction, and region, and summarized using the area-weight mean.[^6]
 
-[^6]: Parcels that do not allow residential uses are characterized as "not developable" and are not included in the area-weighted mean statistic; however, these parcels are included in the study's analysis for other purposes such as describing and quantithe characteristics of land within each station area or jurisdiction.
+[^6]: Parcels that do not allow residential uses are characterized as "not developable" and are not included in the area-weighted mean statistic; however, these parcels are included in the study's analysis for other purposes such as describing and quantifying the characteristics of land within each station area or jurisdiction.
 
 ### Limitations
 
@@ -263,12 +263,6 @@ Our method is subject to several limitations that are important to consider when
 -   **Omission of Other Development Regulations**: The estimated FAR metric does not incorporate other development regulations, such as setbacks, which can significantly impact the buildable area on a parcel.
 
 -   **Homeowner Association (HOA) Restrictions**: The analysis does not consider HOA restrictions that might limit allowed density on parcels, which could reduce the impact of bill in station areas where restrictive HOA's exist.
-
--   **Housing Unit Limits Ignored**: The study does not account for maximum unit limits that can further restrict the number of residences within a given development, possibly leading to inaccurate assessments of potential housing contributions.
-
--   **Regulatory Combinations Not Considered**: Interactions between different regulations, such as maximum building height and maximum FAR, are not accounted for. This omission can lead to an oversimplification of the practical limits on parcel development.
-
--   **Currency of Data**: The study assumes that all data used in the analysis are concurrent and up-to-date. Any discrepancies in data timeliness could affect the accuracy of the results.
 
 [^7]: HB 2160 would exclude "public facilities and portions of lots with critical areas and critical area buffers as designated in RCW 36.70A.060, except for critical aquifer recharge areas where a single-family detached house is an allowed use provided that any requirements to maintain aquifer recharge are met." [@reed2024]
 
@@ -320,25 +314,6 @@ dev_cap_total <- analysis_study_group |>
   filter(str_detect(name, "total")) |> 
   pluck("devcap_tbl") |> 
   str_replace("B", " billion")
-
-
-# p <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#              layer = "tod-parcels",
-#              quiet = TRUE)
-# 
-# p_affected <- p |> 
-#   st_drop_geometry() |> 
-#   filter(analysis_type %in% "Developable, Affected")
-# 
-# undev_land_codes <- c(94, 93, 92)
-# 
-# t <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#          layer = "transit-station-areas",
-#          quiet = TRUE)
-# 
-# zd <- st_read(here("data_outputs/2024-tod-bill.gpkg"),
-#          layer = "tod-zoning-districts",
-#          quiet = TRUE)
 
 ```
 
