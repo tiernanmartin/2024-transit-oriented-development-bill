@@ -606,6 +606,53 @@ make_analysis_station_types_dev_affected <- function(analysis_parcels_ndc){
 }
 # UTILITY FUNCTIONS -----
 
+create_hist_with_inset <- function(data){
+  
+  
+  # P1 ----------------------------------------------------------------------
+  
+  color_values <- c("tomato","grey70", "grey80") |> 
+    set_names(levels(factor(data$analysis_type_uni)))
+  
+  p1 <- data |> 
+    filter(city %in% "Kent") |> 
+    create_pie_chart(category_col = "analysis_type_uni",
+                     value_col = "area_mi2",
+                     color_values = color_values) +
+    labs(fill = "Land Area\nby Parcel Type")
+  
+  
+  # P2 ----------------------------------------------------------------------
+  
+  p2 <- data |>  
+    filter(analysis_type_uni %in% "Developable, Affected") |> 
+    ggplot() +
+    aes(x = analysis_ndc,
+        weight = area_mi2) +
+    geom_histogram(binwidth = 0.5, color = "white", fill = "tomato") +
+    scale_y_continuous(labels = scales::label_comma()) +
+    scale_x_continuous(breaks = seq(0, max_ndc, by = 0.5),
+                       limits = c(0,max_ndc)) +
+    labs(y = expression("Land Area (mi"^2*")"),
+         x = "Net Development Capacity (FAR)") 
+  
+  
+  # HIST + INSET ------------------------------------------------------------
+  
+  hist_with_inset <- p2 + 
+    inset_element(p1, 
+                  left = 0, 
+                  bottom = 0.6, 
+                  right = 0.4, 
+                  top = 1, 
+                  align_to = 'full') +
+    plot_layout(guides = "collect") 
+  
+  return(hist_with_inset)
+  
+  
+}
+
 create_pie_chart <- function(data, category_col, value_col, color_values = NULL, label_size = 3L) { 
   data <- data %>%
     mutate(!!sym(category_col) := factor(!!sym(category_col)))
