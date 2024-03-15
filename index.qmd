@@ -397,13 +397,54 @@ analysis_study_group |>
 
 ```
 
-We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is `r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. However, for parcels where the current development capacity is less than what HB 1110 would require, we observe that the majority would be significantly impacted by the bill. @fig-results-histogram-affected plots the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, revealing that most of the land in this group of station area parcels would be affected by a development capacity increase of 1.5 FAR or greater.
+We use the area-weighted mean net development capacity ($AWM_{NDC}$) to summarize HB 2160's effect across geographic scales. The $AWM_{NDC}$ for the central Puget Sound region is `r total_awmndc` FAR. We intrepret this result to mean that, after adjusting for land area, the typical station area parcel is likely to have slightly more development capacity than what HB 2160 would introduce. By plotting the distribution of net development capacity, we can observe that while a significant amount of land would be affected (the histogram bars to the right of the red dashed line), there is a "long tail" of land that is already zoned for high development capacity in these station areas (the bars to the left of the dashed line). See @fig-results-histogram below.
+
+```{r}
+#| label: fig-results-histogram
+#| output: true
+#| message: false
+#| fig-cap: "Distribution of Net Development Capacity"
+#| fig-height: 4
+
+tar_load(analysis_parcels_ndc)
+
+awmndc_dev_total <- analysis_study_group |> 
+  filter(value == "Total") |> 
+  pluck("awmndc_tbl")
+
+area_dev_aff_mi <- analysis_study_group |> 
+  filter(value == "Total") |> 
+  pluck("area_tbl") |> 
+  str_extract("^[^\\s]*")
+
+s <- glue("Includes all 'Developable' parcels, $AWM_{{NDC}}$ = {awmndc_dev_total} FAR, land area = {area_dev_aff_mi} $mi^2$.")
+
+subtitle <- TeX(s)
+
+analysis_parcels_ndc |> 
+  st_drop_geometry() |> 
+  ggplot() +
+  aes(x = analysis_ndc,
+      weight = area_mi2) + 
+  geom_histogram(binwidth = 0.5, color = "grey20", fill= "grey80") +
+  geom_vline(xintercept = 0, color = "tomato", linetype = 2) +
+  scale_y_continuous(labels = scales::label_comma()) + 
+  scale_x_continuous(limits = c(-10,4),
+                     breaks = c(-10,-5,0,1,2,3,4)) + 
+  labs(title = "Distribution of Net Development Capacity",
+       subtitle = subtitle,
+       y = expression("Land Area (mi"^2*")"),
+       x = "Net Development Capacity (FAR)") 
+```
+
+
+However, for parcels where the current development capacity is less than what HB 2160 would require, we observe that the majority would be significantly impacted by the bill. @fig-results-histogram-affected plots the distribution of net development capacity ($NDC$) for all *Developable, Affected* parcels, revealing that most of the land in this group of station area parcels would be affected by a development capacity increase of 1.5 FAR or greater.
 
 ```{r}
 #| label: fig-results-histogram-affected
 #| output: true
 #| message: false
-#| fig-cap: "HB 2160's Effect on Net Development Capacity"
+#| fig-cap: "Distribution of Net Development Capacity in Affected Parcels"
 #| fig-height: 4
 
 tar_load(analysis_parcels_ndc)
@@ -438,7 +479,7 @@ analysis_parcels_ndc |>
   scale_y_continuous(labels = scales::label_comma()) + 
   scale_x_continuous(breaks = seq(0, ndc_uni_max, by = 0.5),
                      limits = c(0,ndc_uni_max)) + 
-  labs(title = "HB 2160's Effect on Net Development Capacity",
+  labs(title = "Distribution of Net Development Capacity in Affected Parcels",
        subtitle = subtitle,
        y = expression("Land Area (mi"^2*")"),
        x = "Net Development Capacity (FAR)") 
