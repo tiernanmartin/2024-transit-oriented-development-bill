@@ -1,6 +1,6 @@
 ---
 title: "Unlocking Smart Growth: The Effects of a Proposed Transit-Oriented Development Law on the Puget Sound Region"
-subtitle: "Exploring the Impact of the Community and Transit-Oriented Housing Development Bill HB 2160 Across Washington State's Central Puget Sound Region"
+subtitle: "Exploring the Potential Impact of the Community and Transit-Oriented Housing Development Bill HB 2160 Across Washington State's Central Puget Sound Region"
 author:
   - name: Tiernan Martin
     corresponding: true
@@ -25,7 +25,7 @@ keywords:
   - Central Puget Sound Region
   - Washington State 2024 Legislative Session
 abstract: |
-  During the 2024 legislative session in Washington State, House of Representatives members introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would have required cities to permit developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the development capacity increases proposed by the bill compare to existing allowances. The results show a while the typical developable station area parcel already allows more development capacity that HB 2160, there is a significant amount of land that would be impacted by the bill. Specifically, for developable land currently zoned for lower development capacity than the bill would have required, the estimated average capacity increase would be an additional 1.79 floor area ratio (FAR). If adopted, this bill would have increased the development capacity of land near the region's public transit network by as much as 1.8 billion square feet.
+  During the 2024 legislative session in Washington State, members of the House of Representatives introduced House Bill 2160, aiming to promote community and transit-oriented housing development. The bill would have required cities to allow developments of a specified scale within defined distances from high-capacity transit stops. This study assesses how the proposed increases in development capacity by the bill compare to existing allowances. The results show that while the typical developable station area parcel already permits more development capacity than HB 2160 would have, a significant amount of land would be affected by the bill. Specifically, for developable land currently zoned for a lower development capacity than the bill's requirements, the estimated average capacity change would be an additional 1.79 floor area ratio (FAR). If adopted, this bill could have increased the development capacity of land near the region's public transit network by as much as 1.8 billion square feet.
  
 plain-language-summary: |
   In 2024, the Washington State Legislature considered a bill aimed at making it easier to build homes near public transit areas, like light rail stations and bus rapid transit stops. This bill would require cities to allow taller, denser buildings in these areas. Our study looked at how much more development could happen under these new laws compared to what's currently allowed. We found that, if these laws pass, there would be a lot more room for building new homes and apartments near transit stops.
